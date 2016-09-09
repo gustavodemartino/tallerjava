@@ -1,7 +1,5 @@
 package services;
 
-import java.util.Date;
-
 public class Credit {
 	private long saleDate; // miliseconds
 	private long eCreditNumber;
