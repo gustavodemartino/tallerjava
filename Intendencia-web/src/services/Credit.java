@@ -1,7 +1,7 @@
 package services;
 
 public class Credit {
-	private long saleDate; // Miliseconds
+	private long saleDate; // miliseconds
 	private long eCreditNumber;
 	private String customerName;
 	private long amount; // Cents
