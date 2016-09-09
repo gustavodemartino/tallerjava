@@ -1,11 +1,11 @@
-package tallerjava.data;
+package data;
 
 import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tallerjava.model.Constants;
-import tallerjava.util.FixedPoint;
+import model.Constants;
+import util.FixedPoint;
 
 public class Ticket extends MessageData {
 	private String agency;

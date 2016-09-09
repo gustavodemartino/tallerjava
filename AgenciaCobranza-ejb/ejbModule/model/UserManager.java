@@ -1,6 +1,6 @@
-package tallerjava.model;
+package model;
 
-import tallerjava.data.LoginParameters;
+import data.LoginParameters;
 
 public class UserManager {
 	private static UserManager instance = null;

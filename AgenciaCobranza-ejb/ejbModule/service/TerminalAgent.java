@@ -1,4 +1,4 @@
-package tallerjava.service;
+package service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,16 +6,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import tallerjava.data.ErrorMessage;
-import tallerjava.data.LoginParameters;
-import tallerjava.data.Message;
-import tallerjava.data.Ticket;
-import tallerjava.data.TicketCancelParameters;
-import tallerjava.data.TicketSaleParameters;
-import tallerjava.model.Constants;
-import tallerjava.model.SalesManager;
-import tallerjava.model.User;
-import tallerjava.model.UserManager;
+import data.ErrorMessage;
+import data.LoginParameters;
+import data.Message;
+import data.Ticket;
+import data.TicketCancelParameters;
+import data.TicketSaleParameters;
+import model.Constants;
+import model.SalesManager;
+import model.User;
+import model.UserManager;
 
 
 public class TerminalAgent implements Runnable {

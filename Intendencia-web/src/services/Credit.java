@@ -3,18 +3,17 @@ package services;
 import java.util.Date;
 
 public class Credit {
-	private Date saleDate;
+	private long saleDate; // miliseconds
 	private long eCreditNumber;
 	private String customerName;
 	private long amount; // Cents
-
 	private long eTicketNumber;
 
-	public Date getSaleDate() {
+	public long getSaleDate() {
 		return saleDate;
 	}
 
-	public void setSaleDate(Date saleDate) {
+	public void setSaleDate(long saleDate) {
 		this.saleDate = saleDate;
 	}
 

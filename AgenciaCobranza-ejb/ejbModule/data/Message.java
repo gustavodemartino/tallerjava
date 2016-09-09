@@ -1,8 +1,8 @@
-package tallerjava.data;
+package data;
 
 import org.json.JSONObject;
 
-import tallerjava.model.Constants;
+import model.Constants;
 
 public class Message {
 	public static final int COMMAND_LOGIN = 1;

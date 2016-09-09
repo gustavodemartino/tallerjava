@@ -1,17 +1,20 @@
-package tallerjava.model;
+package model;
 
 import java.util.Date;
 
-import tallerjava.data.Ticket;
-import tallerjava.data.TicketCancelParameters;
-import tallerjava.data.TicketSaleParameters;
-import tallerjava.util.FixedPoint;
+import data.Ticket;
+import data.TicketCancelParameters;
+import data.TicketSaleParameters;
+import intendencia.Parking;
+import intendencia.ParkingService;
+import util.FixedPoint;
 
 public class SalesManager {
 	private static SalesManager instance = null;
+	private Parking parkingService;
 
 	private SalesManager() {
-
+		this.parkingService = new ParkingService().getParkingPort();
 	}
 
 	public static SalesManager getInstance() {

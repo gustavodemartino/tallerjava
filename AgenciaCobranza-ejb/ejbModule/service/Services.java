@@ -1,4 +1,4 @@
-package tallerjava.service;
+package service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

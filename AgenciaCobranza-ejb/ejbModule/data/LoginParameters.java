@@ -1,9 +1,9 @@
-package tallerjava.data;
+package data;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tallerjava.model.Constants;
+import model.Constants;
 
 public class LoginParameters extends MessageData {
 	private String userName;

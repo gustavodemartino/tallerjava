@@ -1,4 +1,4 @@
-package tallerjava.model;
+package model;
 
 public class User {
 

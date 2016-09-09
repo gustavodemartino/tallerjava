@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import tallerjava.data.Ticket;
+import data.Ticket;
 
 public class Main {
 	public static void main(String[] args) {
