@@ -1,4 +1,4 @@
-package tallerjava.data;
+package data;
 
 import org.json.JSONException;
 import org.json.JSONObject;

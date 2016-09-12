@@ -1,11 +1,11 @@
-package tallerjava.service;
+package service;
 
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import tallerjava.model.Constants;
+import model.Constants;
 
 public class TerminalServer implements Runnable {
 	static final int port = 1218;

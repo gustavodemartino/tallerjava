@@ -1,10 +1,10 @@
-package tallerjava.data;
+package data;
 
 import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tallerjava.model.Constants;
+import model.Constants;
 
 public class TicketSaleParameters extends MessageData {
 	private String plate;

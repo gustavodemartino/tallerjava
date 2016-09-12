@@ -7,12 +7,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Date;
 
-import tallerjava.data.Message;
-import tallerjava.data.ErrorMessage;
-import tallerjava.data.LoginParameters;
-import tallerjava.data.Ticket;
-import tallerjava.data.TicketCancelParameters;
-import tallerjava.data.TicketSaleParameters;
+import data.ErrorMessage;
+import data.LoginParameters;
+import data.Message;
+import data.Ticket;
+import data.TicketCancelParameters;
+import data.TicketSaleParameters;
 
 public class Agencia {
 	private String terminalId;
