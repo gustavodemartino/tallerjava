@@ -1,10 +1,11 @@
-package terminal;
+package service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.MessageDigest;
 import java.util.Date;
 
 import data.ErrorMessage;
@@ -21,7 +22,7 @@ public class Agencia {
 	private int port = 1218;
 	private BufferedReader entrada;
 	private PrintWriter salida;
-	
+
 	public Agencia(String terminalId) throws Exception {
 		this.terminalId = terminalId;
 		this.socket = new Socket(serverName, port);
@@ -29,26 +30,13 @@ public class Agencia {
 		this.salida = new PrintWriter(socket.getOutputStream(), true);
 	}
 
-	private Message procesarRespuesta() throws Exception {
-		StringBuffer sb = new StringBuffer();
-		String datos;
-		while (true) {
-			datos = entrada.readLine().trim();
-			if (datos.equals("")) {
-				break;
-			} else {
-				sb.append(datos);
-			}
-		}
-		Message result = new Message(sb.toString());
-		// TODO Debug
-		System.out.println("<"+sb.toString()+">");
-		sb.delete(0, sb.length());
-		return result;
-	}
 
 	public void login(String userName, String password) throws Exception {
-		LoginParameters parameters = new LoginParameters(userName, password, this.terminalId);
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(password.getBytes("UTF-8"));
+		String passwordHash = String.format("%064x", new java.math.BigInteger(1, md.digest()));
+		
+		LoginParameters parameters = new LoginParameters(userName, passwordHash, this.terminalId);
 		Message command = new Message(Message.COMMAND_LOGIN, parameters);
 		salida.println(command.toString() + "\n");
 		Message respuesta = procesarRespuesta();
@@ -96,4 +84,23 @@ public class Agencia {
 			throw new Exception(((ErrorMessage) respuesta.getData()).getMessage());
 		}
 	}
+
+	private Message procesarRespuesta() throws Exception {
+		StringBuffer sb = new StringBuffer();
+		String datos;
+		while (true) {
+			datos = entrada.readLine().trim();
+			if (datos.equals("")) {
+				break;
+			} else {
+				sb.append(datos);
+			}
+		}
+		Message result = new Message(sb.toString());
+		// TODO Debug
+		System.out.println("<" + sb.toString() + ">");
+		sb.delete(0, sb.length());
+		return result;
+	}
+
 }
