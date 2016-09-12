@@ -1,18 +1,20 @@
 package services;
 
 public class Credit {
-	private long saleDate; // miliseconds
+	private int result;
+	private String message;
+	private long creditDate; // miliseconds
 	private long eCreditNumber;
 	private String customerName;
 	private long amount; // Cents
 	private long eTicketNumber;
 
 	public long getSaleDate() {
-		return saleDate;
+		return creditDate;
 	}
 
-	public void setSaleDate(long saleDate) {
-		this.saleDate = saleDate;
+	public void setSaleDate(long creditDate) {
+		this.creditDate = creditDate;
 	}
 
 	public long geteCreditNumber() {
@@ -45,6 +47,22 @@ public class Credit {
 
 	public void seteTicketNumber(long eTicketNumber) {
 		this.eTicketNumber = eTicketNumber;
+	}
+
+	public int getResult() {
+		return result;
+	}
+
+	public void setResult(int result) {
+		this.result = result;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

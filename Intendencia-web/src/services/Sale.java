@@ -1,24 +1,17 @@
 package services;
 
-import java.util.Date;
-
 public class Sale {
-	private Date saleDate;
+	private int result;
+	private String message;
+
+	private long saleDate;
 	private long eTicketNumber;
 	private String customerName;
 	private long amount; // Cents
 
 	private String plate;
-	private Date startDateTime;
+	private long startDateTime;
 	private int minutes;
-
-	public Date getSaleDate() {
-		return saleDate;
-	}
-
-	public void setSaleDate(Date saleDate) {
-		this.saleDate = saleDate;
-	}
 
 	public long geteTicketNumber() {
 		return eTicketNumber;
@@ -52,11 +45,19 @@ public class Sale {
 		this.plate = plate;
 	}
 
-	public Date getStartDateTime() {
+	public long getSaleDate() {
+		return saleDate;
+	}
+
+	public void setSaleDate(long saleDate) {
+		this.saleDate = saleDate;
+	}
+
+	public long getStartDateTime() {
 		return startDateTime;
 	}
 
-	public void setStartDateTime(Date startDateTime) {
+	public void setStartDateTime(long startDateTime) {
 		this.startDateTime = startDateTime;
 	}
 
@@ -68,4 +69,19 @@ public class Sale {
 		this.minutes = minutes;
 	}
 
+	public int getResult() {
+		return result;
+	}
+
+	public void setResult(int result) {
+		this.result = result;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 }

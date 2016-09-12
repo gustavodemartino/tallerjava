@@ -37,10 +37,6 @@ public class Main {
 						System.out.println("Cantidad de minutos inválida");
 						continue;
 					}
-					if (minutos < 30 || minutos > 600 || minutos % 30 != 0) {
-						System.out.println("La cantidad de minutos tiene que ser múltiplo de 30");
-						continue;
-					}
 					SimpleDateFormat sdf = new SimpleDateFormat("k:m");
 					try {
 						horaInicial = sdf.parse(comando[3]);
@@ -48,14 +44,18 @@ public class Main {
 						System.out.println("Formato de la hora incial incorrecto. Use HH:MM");
 						continue;
 					}
-					Ticket t = agencia.vender(comando[1], minutos, horaInicial);
-					System.out.println("Agencia: " + t.getAgency());
-					System.out.println("Hora venta: " + t.getSaleDateTime());
-					System.out.println("Ticket número: " + t.getTicketNumber());
-					System.out.println("Matrícula: " + t.getPlate());
-					System.out.println("Inicio: " + t.getStartDateTime());
-					System.out.println("Minutos: " + t.getMinutes());
-					System.out.println("Importe: " + t.getAmount());
+					try {
+						Ticket t = agencia.vender(comando[1], minutos, horaInicial);
+						System.out.println("Agencia: " + t.getAgency());
+						System.out.println("Hora venta: " + t.getSaleDateTime());
+						System.out.println("Ticket número: " + t.getTicketNumber());
+						System.out.println("Matrícula: " + t.getPlate());
+						System.out.println("Inicio: " + t.getStartDateTime());
+						System.out.println("Minutos: " + t.getMinutes());
+						System.out.println("Importe: " + t.getAmount());
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
 
 				} else if (comando[0].equals("anular")) {
 					if (comando.length != 2) {

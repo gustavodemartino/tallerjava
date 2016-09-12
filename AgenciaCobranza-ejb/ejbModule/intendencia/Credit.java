@@ -3,9 +3,7 @@ package intendencia;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -20,7 +18,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *       &lt;sequence>
  *         &lt;element name="amount" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="customerName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="saleDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="result" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="saleDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="eCreditNumber" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="eTicketNumber" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
@@ -35,6 +35,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlType(name = "credit", propOrder = {
     "amount",
     "customerName",
+    "message",
+    "result",
     "saleDate",
     "eCreditNumber",
     "eTicketNumber"
@@ -43,8 +45,9 @@ public class Credit {
 
     protected long amount;
     protected String customerName;
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar saleDate;
+    protected String message;
+    protected int result;
+    protected long saleDate;
     protected long eCreditNumber;
     protected long eTicketNumber;
 
@@ -89,26 +92,58 @@ public class Credit {
     }
 
     /**
-     * Gets the value of the saleDate property.
+     * Gets the value of the message property.
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link String }
      *     
      */
-    public XMLGregorianCalendar getSaleDate() {
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Sets the value of the message property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMessage(String value) {
+        this.message = value;
+    }
+
+    /**
+     * Gets the value of the result property.
+     * 
+     */
+    public int getResult() {
+        return result;
+    }
+
+    /**
+     * Sets the value of the result property.
+     * 
+     */
+    public void setResult(int value) {
+        this.result = value;
+    }
+
+    /**
+     * Gets the value of the saleDate property.
+     * 
+     */
+    public long getSaleDate() {
         return saleDate;
     }
 
     /**
      * Sets the value of the saleDate property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
      */
-    public void setSaleDate(XMLGregorianCalendar value) {
+    public void setSaleDate(long value) {
         this.saleDate = value;
     }
 

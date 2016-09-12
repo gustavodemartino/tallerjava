@@ -3,9 +3,7 @@ package intendencia;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -20,10 +18,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *       &lt;sequence>
  *         &lt;element name="amount" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="customerName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="minutes" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="plate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="saleDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="startDateTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="result" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="saleDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="startDateTime" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="eTicketNumber" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -37,8 +37,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlType(name = "sale", propOrder = {
     "amount",
     "customerName",
+    "message",
     "minutes",
     "plate",
+    "result",
     "saleDate",
     "startDateTime",
     "eTicketNumber"
@@ -47,12 +49,12 @@ public class Sale {
 
     protected long amount;
     protected String customerName;
+    protected String message;
     protected int minutes;
     protected String plate;
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar saleDate;
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar startDateTime;
+    protected int result;
+    protected long saleDate;
+    protected long startDateTime;
     protected long eTicketNumber;
 
     /**
@@ -96,6 +98,30 @@ public class Sale {
     }
 
     /**
+     * Gets the value of the message property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Sets the value of the message property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMessage(String value) {
+        this.message = value;
+    }
+
+    /**
      * Gets the value of the minutes property.
      * 
      */
@@ -136,50 +162,50 @@ public class Sale {
     }
 
     /**
+     * Gets the value of the result property.
+     * 
+     */
+    public int getResult() {
+        return result;
+    }
+
+    /**
+     * Sets the value of the result property.
+     * 
+     */
+    public void setResult(int value) {
+        this.result = value;
+    }
+
+    /**
      * Gets the value of the saleDate property.
      * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
      */
-    public XMLGregorianCalendar getSaleDate() {
+    public long getSaleDate() {
         return saleDate;
     }
 
     /**
      * Sets the value of the saleDate property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
      */
-    public void setSaleDate(XMLGregorianCalendar value) {
+    public void setSaleDate(long value) {
         this.saleDate = value;
     }
 
     /**
      * Gets the value of the startDateTime property.
      * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
      */
-    public XMLGregorianCalendar getStartDateTime() {
+    public long getStartDateTime() {
         return startDateTime;
     }
 
     /**
      * Sets the value of the startDateTime property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
      */
-    public void setStartDateTime(XMLGregorianCalendar value) {
+    public void setStartDateTime(long value) {
         this.startDateTime = value;
     }
 

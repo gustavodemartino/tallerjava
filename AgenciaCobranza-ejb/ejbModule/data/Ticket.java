@@ -3,9 +3,7 @@ package data;
 import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import model.Constants;
-import util.FixedPoint;
 
 public class Ticket extends MessageData {
 	private String agency;
@@ -14,8 +12,8 @@ public class Ticket extends MessageData {
 	private String plate;
 	private Date startDateTime;
 	private int minutes;
-	private FixedPoint amount;
-	
+	private Long amount;
+
 	public Ticket() {
 		// TODO Auto-generated constructor stub
 	}
@@ -27,7 +25,7 @@ public class Ticket extends MessageData {
 		this.plate = data.getString(Constants.JSON_IDENTFIER_PLATE);
 		this.startDateTime = new Date(data.getLong(Constants.JSON_IDENTFIER_START_TIME));
 		this.minutes = data.getInt(Constants.JSON_IDENTFIER_MINUTES);
-		this.amount = new FixedPoint(data.getJSONObject(Constants.JSON_IDENTFIER_AMOUNT));
+		this.amount = data.getLong(Constants.JSON_IDENTFIER_AMOUNT);
 	}
 
 	@Override
@@ -39,7 +37,7 @@ public class Ticket extends MessageData {
 		result.put(Constants.JSON_IDENTFIER_PLATE, this.plate);
 		result.put(Constants.JSON_IDENTFIER_START_TIME, this.startDateTime.getTime());
 		result.put(Constants.JSON_IDENTFIER_MINUTES, this.minutes);
-		result.put(Constants.JSON_IDENTFIER_AMOUNT, this.amount.toJSON());
+		result.put(Constants.JSON_IDENTFIER_AMOUNT, this.amount);
 		return result;
 	}
 
@@ -91,11 +89,11 @@ public class Ticket extends MessageData {
 		this.minutes = minutes;
 	}
 
-	public FixedPoint getAmount() {
+	public long getAmount() {
 		return amount;
 	}
 
-	public void setAmount(FixedPoint amount) {
+	public void setAmount(long amount) {
 		this.amount = amount;
 	}
 }
