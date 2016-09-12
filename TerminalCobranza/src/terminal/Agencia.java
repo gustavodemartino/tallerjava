@@ -22,7 +22,7 @@ public class Agencia {
 	private BufferedReader entrada;
 	private PrintWriter salida;
 	
-	Agencia(String terminalId) throws Exception {
+	public Agencia(String terminalId) throws Exception {
 		this.terminalId = terminalId;
 		this.socket = new Socket(serverName, port);
 		this.entrada = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
