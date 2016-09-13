@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
+import data.Credit;
+import data.Sale;
+
 @WebService
 public class Parking {
 	private long lastTicket = 0;

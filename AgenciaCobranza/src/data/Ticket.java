@@ -95,4 +95,8 @@ public class Ticket extends MessageData {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
+
+	public float getFloatAmount() {
+		return ((float) this.amount) / 100;
+	}
 }

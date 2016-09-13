@@ -1,4 +1,4 @@
-package services;
+package data;
 
 public class Credit {
 	private int result;

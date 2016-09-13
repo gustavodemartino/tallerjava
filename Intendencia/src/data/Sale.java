@@ -1,4 +1,4 @@
-package services;
+package data;
 
 public class Sale {
 	private int result;

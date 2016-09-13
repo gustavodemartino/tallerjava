@@ -95,7 +95,7 @@ public class Main {
 							System.out.println("Matrícula: " + t.getPlate());
 							System.out.println("Inicio: " + t.getStartDateTime());
 							System.out.println("Minutos: " + t.getMinutes());
-							System.out.println("Importe: " + t.getAmount());
+							System.out.printf("Importe: %4.2f\n", t.getFloatAmount());
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
