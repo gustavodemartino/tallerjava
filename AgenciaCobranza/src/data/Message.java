@@ -50,7 +50,7 @@ public class Message {
 			
 		} else if (action.equals(Constants.RESPONSE_LOGIN_OK)) {
 			this.action = LOGIN_OK;
-			this.data = null;
+			this.data = new User(data);
 			
 		} else if (action.equals(Constants.RESPONSE_LOGOUT_OK)) {
 			this.action = LOGOUT_OK;

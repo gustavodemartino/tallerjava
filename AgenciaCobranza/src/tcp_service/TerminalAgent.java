@@ -1,4 +1,4 @@
-package service;
+package tcp_service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,9 +12,9 @@ import data.Message;
 import data.Ticket;
 import data.TicketCancelParameters;
 import data.TicketSaleParameters;
+import data.User;
 import model.Constants;
 import model.SalesManager;
-import model.User;
 import model.UserManager;
 
 
@@ -64,7 +64,7 @@ public class TerminalAgent implements Runnable {
 					}
 					try {
 						this.user = UserManager.getInstance().getUser((LoginParameters) command.getData());
-						response = new Message(Message.LOGIN_OK, null);
+						response = new Message(Message.LOGIN_OK, this.user);
 					} catch (Exception e) {
 						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(Constants.ERROR_MSG_INVALID_LOGIN));
 					}
@@ -103,15 +103,15 @@ public class TerminalAgent implements Runnable {
 					writer.println(response.toString() + "\n");
 				}
 			}
-			System.out.println("#D" + connection + " Closed by client");
+			System.out.println("#" + connection + " Closed by client");
 		} catch (Exception e) {
-			System.out.println("#D" + connection + " " + e.getMessage());
+			System.out.println("#" + connection + " " + e.getMessage());
 		}
 		try {
-			System.out.println("#D" + connection + " Closing connection");
+			System.out.println("#" + connection + " Closing connection");
 			socket.close();
 		} catch (Exception e) {
-			System.out.println("#D" + connection + " Exception closing");
+			System.out.println("#" + connection + " Exception closing");
 		}
 	}
 }

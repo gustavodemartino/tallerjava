@@ -6,14 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import data.Ticket;
-import service.Agencia;
+import tcp_service.Agencia;
 
 public class Main {
 	public static void main(String[] args) {
 		try {
 			Agencia agencia = new Agencia("terminal_id");
 
-			agencia.login("admin", "admin");
+			System.out.println("Login as: " + agencia.login("admin", "admin").getUserName());
 
 			BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 			while (true) {

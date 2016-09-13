@@ -1,4 +1,4 @@
-package service;
+package tcp_service;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

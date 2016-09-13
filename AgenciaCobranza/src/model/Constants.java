@@ -7,7 +7,8 @@ public class Constants {
 
 	public static final String JSON_IDENTFIER_ACTION = "action";
 	public static final String JSON_IDENTFIER_DATA = "data";
-	public static final String JSON_IDENTFIER_USERNAME = "username";
+	public static final String JSON_IDENTFIER_USERID = "user_id";
+	public static final String JSON_IDENTFIER_USERNAME = "user_name";
 	public static final String JSON_IDENTFIER_PASSWORD = "password";
 	public static final String JSON_IDENTFIER_TERMINALID = "terminal_id";
 	public static final String JSON_IDENTFIER_PLATE = "plate";
@@ -17,7 +18,8 @@ public class Constants {
 	public static final String JSON_IDENTFIER_TICKET_NUMBER = "ticket_number";
 	public static final String JSON_IDENTFIER_SALE_DATETIME = "sale_timestamp";
 	public static final String JSON_IDENTFIER_AMOUNT = "amount";
-	public static final String JSON_IDENTFIER_AGENCY = "agency";
+	public static final String JSON_IDENTFIER_OPERATOR = "operator";
+	public static final String JSON_IDENTFIER_IS_ADMIN = "admin";
 
 	public static final String COMMAND_LOGIN = "login";
 	public static final String COMMAND_LOGOUT = "logout";
@@ -36,5 +38,6 @@ public class Constants {
 	public static final String ERROR_MSG_REPEATED_LOGIN = "Intento repetido de login";
 	public static final String ERROR_MSG_LOGIN_REQUIRED = "Usuario no logueado";
 	public static final String ERROR_MSG_INVALID_ACTION = "Identificador de acción inválido";
+	public static final String ERROR_MSG_INVALID_LOCATION = "Ubicacion inválida";
 
 }

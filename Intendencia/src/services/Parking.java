@@ -3,7 +3,6 @@ package services;
 import java.util.Date;
 
 import javax.jws.WebMethod;
-import javax.jws.WebParam;
 import javax.jws.WebService;
 
 @WebService
@@ -11,9 +10,10 @@ public class Parking {
 	private long lastTicket = 0;
 
 	@WebMethod
-	public Sale parkingSale(@WebParam(name = "angencyId") String agencyId, @WebParam(name = "plate") String plate,
-			@WebParam(name = "startTime") long startTime, @WebParam(name = "minutes") int minutes) {
-		System.out.println("WS: " + plate);
+	public Sale parkingSale(String operator, String plate, long startTime, int minutes) {
+		System.out.println("\nIntendencia" + "\nOperación: Venta" + "\nOperador: " + operator + "\nMatrícula: " + plate
+				+ "\nInicio: " + new Date(startTime) + "\nDuración: " + minutes + " minutos");
+
 		Sale sale = new Sale();
 		if (minutes < 1) {
 			sale.setResult(401);
@@ -24,7 +24,7 @@ public class Parking {
 			int m = (minutes / 30 + (minutes % 30 > 0 ? 1 : 0));
 			sale.setAmount(m * 1400);
 			sale.setMinutes(m * 30);
-			sale.setCustomerName(agencyId);
+			sale.setCustomerName(operator);
 			sale.setPlate(plate.trim().toUpperCase());
 			lastTicket++;
 			sale.seteTicketNumber(lastTicket);
@@ -35,8 +35,10 @@ public class Parking {
 	}
 
 	@WebMethod
-	public Credit parkingCancel(@WebParam(name = "angencyId") String agencyId,
-			@WebParam(name = "eTicketNumber") long eTicketNumber) {
+	public Credit parkingCancel(String operator, long eTicketNumber) {
+		System.out.println("\nIntendencia" + "\nOperación: Cancelación" + "\nOperador: " + operator + "\nTicket: "
+				+ eTicketNumber);
+
 		Credit credit = new Credit();
 		if (eTicketNumber % 2 == 0) {
 			credit.setResult(200);

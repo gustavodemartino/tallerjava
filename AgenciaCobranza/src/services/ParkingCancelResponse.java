@@ -1,5 +1,5 @@
 
-package intendencia;
+package services;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,16 +8,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for parkingSaleResponse complex type.
+ * <p>Java class for parkingCancelResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="parkingSaleResponse">
+ * &lt;complexType name="parkingCancelResponse">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="return" type="{http://services/}sale" minOccurs="0"/>
+ *         &lt;element name="return" type="{http://services/}credit" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -27,23 +27,23 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "parkingSaleResponse", propOrder = {
+@XmlType(name = "parkingCancelResponse", propOrder = {
     "_return"
 })
-public class ParkingSaleResponse {
+public class ParkingCancelResponse {
 
     @XmlElement(name = "return")
-    protected Sale _return;
+    protected Credit _return;
 
     /**
      * Gets the value of the return property.
      * 
      * @return
      *     possible object is
-     *     {@link Sale }
+     *     {@link Credit }
      *     
      */
-    public Sale getReturn() {
+    public Credit getReturn() {
         return _return;
     }
 
@@ -52,10 +52,10 @@ public class ParkingSaleResponse {
      * 
      * @param value
      *     allowed object is
-     *     {@link Sale }
+     *     {@link Credit }
      *     
      */
-    public void setReturn(Sale value) {
+    public void setReturn(Credit value) {
         this._return = value;
     }
 

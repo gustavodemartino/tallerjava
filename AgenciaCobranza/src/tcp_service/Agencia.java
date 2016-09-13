@@ -1,15 +1,15 @@
-package service;
+package tcp_service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.security.MessageDigest;
 import java.util.Date;
 
 import data.ErrorMessage;
 import data.LoginParameters;
+import data.User;
 import data.Message;
 import data.Ticket;
 import data.TicketCancelParameters;
@@ -31,18 +31,15 @@ public class Agencia {
 	}
 
 
-	public void login(String userName, String password) throws Exception {
-		MessageDigest md = MessageDigest.getInstance("SHA-256");
-		md.update(password.getBytes("UTF-8"));
-		String passwordHash = String.format("%064x", new java.math.BigInteger(1, md.digest()));
-		
-		LoginParameters parameters = new LoginParameters(userName, passwordHash, this.terminalId);
+	public User login(String userName, String password) throws Exception {
+		LoginParameters parameters = new LoginParameters(userName, password, this.terminalId);
 		Message command = new Message(Message.COMMAND_LOGIN, parameters);
 		salida.println(command.toString() + "\n");
 		Message respuesta = procesarRespuesta();
 		if (respuesta.getCommand() == Message.LOGIN_ERROR) {
 			throw new Exception(((ErrorMessage) respuesta.getData()).getMessage());
 		}
+		return (User) respuesta.getData();
 	}
 
 	public void logout() throws Exception {
@@ -56,6 +53,7 @@ public class Agencia {
 	}
 
 	public void close() throws IOException {
+		this.salida.println();
 		this.salida.close();
 		this.salida = null;
 		this.entrada.close();

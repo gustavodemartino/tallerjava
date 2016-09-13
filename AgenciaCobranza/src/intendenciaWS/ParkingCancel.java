@@ -1,5 +1,5 @@
 
-package intendencia;
+package intendenciaWS;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -16,8 +16,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="angencyId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="eTicketNumber" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,52 +28,52 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "parkingCancel", propOrder = {
-    "angencyId",
-    "eTicketNumber"
+    "arg0",
+    "arg1"
 })
 public class ParkingCancel {
 
-    protected String angencyId;
-    protected long eTicketNumber;
+    protected String arg0;
+    protected long arg1;
 
     /**
-     * Gets the value of the angencyId property.
+     * Gets the value of the arg0 property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getAngencyId() {
-        return angencyId;
+    public String getArg0() {
+        return arg0;
     }
 
     /**
-     * Sets the value of the angencyId property.
+     * Sets the value of the arg0 property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setAngencyId(String value) {
-        this.angencyId = value;
+    public void setArg0(String value) {
+        this.arg0 = value;
     }
 
     /**
-     * Gets the value of the eTicketNumber property.
+     * Gets the value of the arg1 property.
      * 
      */
-    public long getETicketNumber() {
-        return eTicketNumber;
+    public long getArg1() {
+        return arg1;
     }
 
     /**
-     * Sets the value of the eTicketNumber property.
+     * Sets the value of the arg1 property.
      * 
      */
-    public void setETicketNumber(long value) {
-        this.eTicketNumber = value;
+    public void setArg1(long value) {
+        this.arg1 = value;
     }
 
 }

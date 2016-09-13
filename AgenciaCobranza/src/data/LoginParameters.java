@@ -6,24 +6,24 @@ import org.json.JSONObject;
 import model.Constants;
 
 public class LoginParameters extends MessageData {
-	private String userName;
+	private String userId;
 	private String password;
 	private String terminalId;
 
 	public LoginParameters(JSONObject data) throws JSONException {
-		this.userName = data.getString(Constants.JSON_IDENTFIER_USERNAME);
+		this.userId = data.getString(Constants.JSON_IDENTFIER_USERID);
 		this.password = data.getString(Constants.JSON_IDENTFIER_PASSWORD);
 		this.terminalId = data.getString(Constants.JSON_IDENTFIER_TERMINALID);
 	}
 
-	public LoginParameters(String userName, String password, String terminalId) {
-		this.userName = userName;
-		this.password = password;
+	public LoginParameters(String userId, String passwordHash, String terminalId) {
+		this.userId = userId;
+		this.password = passwordHash;
 		this.terminalId = terminalId;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUserId() {
+		return userId;
 	}
 
 	public String getPassword() {
@@ -37,7 +37,7 @@ public class LoginParameters extends MessageData {
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put(Constants.JSON_IDENTFIER_USERNAME, this.userName);
+		result.put(Constants.JSON_IDENTFIER_USERID, this.userId);
 		result.put(Constants.JSON_IDENTFIER_PASSWORD, this.password);
 		result.put(Constants.JSON_IDENTFIER_TERMINALID, this.terminalId);
 		return result;

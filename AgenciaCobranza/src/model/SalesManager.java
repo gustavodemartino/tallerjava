@@ -11,10 +11,10 @@ import javax.sql.DataSource;
 import data.Ticket;
 import data.TicketCancelParameters;
 import data.TicketSaleParameters;
-import intendencia.Credit;
-import intendencia.Parking;
-import intendencia.ParkingService;
-import intendencia.Sale;
+import intendenciaWS.Credit;
+import intendenciaWS.Parking;
+import intendenciaWS.ParkingService;
+import intendenciaWS.Sale;
 
 public class SalesManager {
 	private static SalesManager instance = null;

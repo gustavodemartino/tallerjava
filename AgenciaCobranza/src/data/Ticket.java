@@ -15,11 +15,10 @@ public class Ticket extends MessageData {
 	private Long amount;
 
 	public Ticket() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Ticket(JSONObject data) throws JSONException {
-		this.agency = data.getString(Constants.JSON_IDENTFIER_AGENCY);
+		this.agency = data.getString(Constants.JSON_IDENTFIER_OPERATOR);
 		this.saleDateTime = new Date(data.getLong(Constants.JSON_IDENTFIER_SALE_DATETIME));
 		this.ticketNumber = data.getLong(Constants.JSON_IDENTFIER_TICKET_NUMBER);
 		this.plate = data.getString(Constants.JSON_IDENTFIER_PLATE);
@@ -31,7 +30,7 @@ public class Ticket extends MessageData {
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put(Constants.JSON_IDENTFIER_AGENCY, this.agency);
+		result.put(Constants.JSON_IDENTFIER_OPERATOR, this.agency);
 		result.put(Constants.JSON_IDENTFIER_SALE_DATETIME, this.saleDateTime.getTime());
 		result.put(Constants.JSON_IDENTFIER_TICKET_NUMBER, this.ticketNumber);
 		result.put(Constants.JSON_IDENTFIER_PLATE, this.plate);
