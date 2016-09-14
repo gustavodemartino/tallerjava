@@ -13,7 +13,7 @@ public class TicketSaleParameters extends MessageData {
 
 	public TicketSaleParameters(JSONObject data) throws JSONException {
 		this.plate = data.getString(Constants.JSON_IDENTFIER_PLATE);
-		this.minutes = data.getInt(Constants.JSON_IDENTFIER_MINUTES);
+		this.minutes = data.getInt(Constants.JSON_IDENTFIER_END_TIME);
 		this.startTime = new Date(data.getLong(Constants.JSON_IDENTFIER_START_TIME));
 	}
 
@@ -39,7 +39,7 @@ public class TicketSaleParameters extends MessageData {
 	public JSONObject toJSON() throws JSONException {
 		JSONObject result = new JSONObject();
 		result.put(Constants.JSON_IDENTFIER_PLATE, this.plate);
-		result.put(Constants.JSON_IDENTFIER_MINUTES, this.minutes);
+		result.put(Constants.JSON_IDENTFIER_END_TIME, this.minutes);
 		result.put(Constants.JSON_IDENTFIER_START_TIME, startTime.getTime());
 		return result;
 	}

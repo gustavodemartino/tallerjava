@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="amount" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="customerName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="endDateTime" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="minutes" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="plate" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="result" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="saleDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
@@ -37,8 +37,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "sale", propOrder = {
     "amount",
     "customerName",
+    "endDateTime",
     "message",
-    "minutes",
     "plate",
     "result",
     "saleDate",
@@ -49,8 +49,8 @@ public class Sale {
 
     protected long amount;
     protected String customerName;
+    protected long endDateTime;
     protected String message;
-    protected int minutes;
     protected String plate;
     protected int result;
     protected long saleDate;
@@ -98,6 +98,22 @@ public class Sale {
     }
 
     /**
+     * Gets the value of the endDateTime property.
+     * 
+     */
+    public long getEndDateTime() {
+        return endDateTime;
+    }
+
+    /**
+     * Sets the value of the endDateTime property.
+     * 
+     */
+    public void setEndDateTime(long value) {
+        this.endDateTime = value;
+    }
+
+    /**
      * Gets the value of the message property.
      * 
      * @return
@@ -119,22 +135,6 @@ public class Sale {
      */
     public void setMessage(String value) {
         this.message = value;
-    }
-
-    /**
-     * Gets the value of the minutes property.
-     * 
-     */
-    public int getMinutes() {
-        return minutes;
-    }
-
-    /**
-     * Sets the value of the minutes property.
-     * 
-     */
-    public void setMinutes(int value) {
-        this.minutes = value;
     }
 
     /**

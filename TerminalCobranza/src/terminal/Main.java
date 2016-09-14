@@ -2,6 +2,7 @@ package terminal;
 
 import java.io.BufferedReader;
 import java.io.Console;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,37 +27,39 @@ public class Main {
 		return result;
 	}
 
-	private static User login(Agencia agencia) throws Exception {
-		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
-		User user = null;
-		String userName = "";
-		while (true) {
-			while (userName.equals("")) {
-				System.out.print("login: ");
-				userName = teclado.readLine().trim();
-			}
-			System.out.print("password: ");
-			String password = readPassword();
-			try {
-				System.out.println("Conecting to server...");
-				user = agencia.login(userName, password);
-				break;
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				userName = "";
-			}
-		}
-		return user;
-	}
-
 	public static void main(String[] args) {
+		Agencia agencia;
+		boolean open = true;
+		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 		try {
-			Agencia agencia = new Agencia("terminal_id");
-			boolean open = true;
 			while (open) {
-				User user = login(agencia);
+				User user = null;
+				String userName = "";
+				String password = "";
+				while (userName.equals("")) {
+					System.out.print("login: ");
+					userName = teclado.readLine().trim();
+				}
+				if (userName.equals("exit")){
+					break;
+				}
+				System.out.print("password: ");
+				password = readPassword();
+				System.out.println("Conecting to server...");
+				try {
+					agencia = new Agencia("terminal_id");
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+					continue;
+				}
+				try {
+					user = agencia.login(userName, password);
+				} catch (Exception e) {
+					agencia.close();
+					System.out.println(e.getMessage());
+					continue;
+				}
 				System.out.println("Login as: " + user.getUserName());
-				BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 				while (true) {
 					System.out.print(">");
 					String entrada = teclado.readLine().replaceAll("\\s+", " ").trim();
@@ -94,8 +97,11 @@ public class Main {
 							System.out.println("Ticket número: " + t.getTicketNumber());
 							System.out.println("Matrícula: " + t.getPlate());
 							System.out.println("Inicio: " + t.getStartDateTime());
-							System.out.println("Minutos: " + t.getMinutes());
+							System.out.println("Fin: " + t.getEndDateTime());
 							System.out.printf("Importe: %4.2f\n", t.getFloatAmount());
+						} catch (IOException e) {
+							System.out.println(e.getMessage());
+							break;
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
@@ -115,6 +121,9 @@ public class Main {
 						try {
 							agencia.anular(ticket);
 							System.out.println("Ticket cancelado correctamente");
+						} catch (IOException e) {
+							System.out.println(e.getMessage());
+							break;
 						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
@@ -125,11 +134,9 @@ public class Main {
 						System.out.println("Comando incorrecto");
 					}
 				}
+				agencia.close();
 			}
-			agencia.close();
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("Exit program");

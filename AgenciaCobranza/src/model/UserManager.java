@@ -35,32 +35,37 @@ public class UserManager {
 
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
-		pre = connection.prepareStatement("SELECT Id, UserName, IsAdmin FROM Usuarios WHERE UserId = ? AND Password = ?");
+		pre = connection
+				.prepareStatement("SELECT Id, UserName, IsAdmin FROM Usuarios WHERE UserId = ? AND Password = ?");
 		pre.setString(1, data.getUserId());
 		pre.setString(2, passwordHash);
 		ResultSet res = pre.executeQuery();
 		if (!res.next()) {
-			throw new Exception(Constants.ERROR_MSG_INVALID_LOGIN);
-		}
-		long userId = res.getLong("Id");
-		result = new User(res.getString("UserName"), res.getInt("IsAdmin") == 1);
-		pre.close();
-		res.close();
-		if (!result.getIsAdmin()) {
-			pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE UserId = ? AND Location = ?");
-			pre.setLong(1, userId);
-			pre.setString(2, data.getTerminalId());
-			res = pre.executeQuery();
-			if (!res.next()) {
-				throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
-			}
 			pre.close();
 			res.close();
+			connection.close();
+			throw new Exception(Constants.ERROR_MSG_INVALID_LOGIN);
 		}
+		result = new User(res.getLong("Id"), res.getString("UserName"), res.getInt("IsAdmin") == 1);
+		pre.close();
+		res.close();
+		pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Location = ?");
+		pre.setLong(1, result.getUserId());
+		pre.setString(2, data.getTerminalId());
+		res = pre.executeQuery();
+		if (!res.next()) {
+			pre.close();
+			res.close();
+			connection.close();
+			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
+		}
+		pre.close();
+		res.close();
+		connection.close();
 		return result;
 	}
 
-	public void addUser(String userId, String UserName, String password) throws Exception {
+	public void addUser(String userId, String UserName, String password, boolean isAdmin) throws Exception {
 		if (userId == null || userId.contains(" ") || userId.length() == 0) {
 			throw new Exception("Invalid usernanme");
 		}
@@ -76,18 +81,20 @@ public class UserManager {
 
 		PreparedStatement pre;
 		try {
-			pre = connection.prepareStatement("INSERT INTO Usuarios (UserId, UserName, Password, IsAdmin) VALUES (?, ?, ?, ?)");
+			pre = connection
+					.prepareStatement("INSERT INTO Usuarios (UserId, UserName, Password, IsAdmin) VALUES (?, ?, ?, ?)");
 			pre.setString(1, userId);
 			pre.setString(2, UserName);
 			pre.setString(3, passwordHash);
-			pre.setInt(4, 0);
+			pre.setInt(4, (isAdmin ? 1 : 0));
 			pre.execute();
 			pre.close();
 			connection.commit();
+			connection.close();
 		} catch (Exception e) {
 			connection.rollback();
+			connection.close();
 			throw new Exception(e.getMessage());
 		}
-
 	}
 }

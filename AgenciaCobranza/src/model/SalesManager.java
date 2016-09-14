@@ -69,22 +69,24 @@ public class SalesManager {
 			pre.setLong(1, id);
 			pre.setString(2, sale.getPlate());
 			pre.setLong(3, sale.getStartDateTime());
-			pre.setInt(4, sale.getMinutes());
+			pre.setInt(4, (int)(sale.getEndDateTime() - sale.getStartDateTime()));
 			pre.execute();
 			pre.close();
 			connection.commit();
+			connection.close();
 		} catch (Exception e) {
 			connection.rollback();
+			connection.close();
 			throw new Exception(e.getMessage());
 		}
 
 		Ticket result = new Ticket();
 		result.setAgency(sale.getCustomerName());
 		result.setSaleDateTime(new Date(sale.getSaleDate()));
+		result.setStartDateTime(new Date(sale.getStartDateTime()));
+		result.setEndDateTime(new Date(sale.getEndDateTime()));
 		result.setTicketNumber(sale.getETicketNumber());
 		result.setPlate(sale.getPlate());
-		result.setStartDateTime(new Date(sale.getStartDateTime()));
-		result.setMinutes(sale.getMinutes());
 		result.setAmount(sale.getAmount());
 		return result;
 	}
@@ -117,17 +119,18 @@ public class SalesManager {
 			}
 			res.close();
 			pre.close();
-			pre = connection.prepareStatement(
-					"INSERT INTO Anulaciones (Operacion, Numero) VALUES (?, ?)");
+			pre = connection.prepareStatement("INSERT INTO Anulaciones (Operacion, Numero) VALUES (?, ?)");
 			pre.setLong(1, id);
 			pre.setLong(2, credit.getETicketNumber());
 			pre.execute();
 			pre.close();
 			connection.commit();
+			connection.close();
 		} catch (Exception e) {
 			connection.rollback();
+			connection.close();
 			throw new Exception(e.getMessage());
-		}		
+		}
 	}
 
 }

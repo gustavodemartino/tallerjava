@@ -11,7 +11,7 @@ public class Sale {
 
 	private String plate;
 	private long startDateTime;
-	private int minutes;
+	private long endDateTime;
 
 	public long geteTicketNumber() {
 		return eTicketNumber;
@@ -61,14 +61,6 @@ public class Sale {
 		this.startDateTime = startDateTime;
 	}
 
-	public int getMinutes() {
-		return minutes;
-	}
-
-	public void setMinutes(int minutes) {
-		this.minutes = minutes;
-	}
-
 	public int getResult() {
 		return result;
 	}
@@ -84,4 +76,13 @@ public class Sale {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+	public void setEndDateTime(long endDateTime) {
+		this.endDateTime= endDateTime;
+	}
+
+	public long getEndDateTime() {
+		return endDateTime;
+	}
+	
 }

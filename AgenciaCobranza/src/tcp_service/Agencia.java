@@ -9,11 +9,11 @@ import java.util.Date;
 
 import data.ErrorMessage;
 import data.LoginParameters;
-import data.User;
 import data.Message;
 import data.Ticket;
 import data.TicketCancelParameters;
 import data.TicketSaleParameters;
+import data.User;
 
 public class Agencia {
 	private String terminalId;
@@ -29,7 +29,6 @@ public class Agencia {
 		this.entrada = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		this.salida = new PrintWriter(socket.getOutputStream(), true);
 	}
-
 
 	public User login(String userName, String password) throws Exception {
 		LoginParameters parameters = new LoginParameters(userName, password, this.terminalId);
@@ -62,7 +61,16 @@ public class Agencia {
 		this.socket = null;
 	}
 
-	public Ticket vender(String matricula, int minutos, Date horaInicial) throws Exception {
+	public Ticket vender(String matricula, int minutos, Date horaInicial) throws IOException, Exception  {
+		if (matricula == null || !matricula.matches("\\w{3}\\d{4}")){
+			throw new Exception("Matrícula inválida");
+		}
+		if (minutos < 1 || minutos > 600){
+			throw new Exception("Cantidad de minutos no válida");
+		}
+		if (horaInicial == null ){
+			throw new Exception("Hora de inicio inválida");			
+		}
 		TicketSaleParameters parameters = new TicketSaleParameters(matricula, minutos, horaInicial);
 		Message command = new Message(Message.COMMAND_TICKET_SALE, parameters);
 		salida.println(command.toString() + "\n");
@@ -73,7 +81,7 @@ public class Agencia {
 		return (Ticket) respuesta.getData();
 	}
 
-	public void anular(long ticket) throws Exception {
+	public void anular(long ticket) throws IOException, Exception {
 		TicketCancelParameters parameters = new TicketCancelParameters(ticket);
 		Message command = new Message(Message.COMMAND_TICKET_CANCEL, parameters);
 		salida.println(command.toString() + "\n");
@@ -83,7 +91,7 @@ public class Agencia {
 		}
 	}
 
-	private Message procesarRespuesta() throws Exception {
+	private Message procesarRespuesta() throws IOException, Exception  {
 		StringBuffer sb = new StringBuffer();
 		String datos;
 		while (true) {

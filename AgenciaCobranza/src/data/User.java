@@ -6,10 +6,12 @@ import org.json.JSONObject;
 import model.Constants;
 
 public class User extends MessageData {
+	private long userId;
 	private boolean isAdmin;
 	private String userName;
 
-	public User(String userName, boolean isAdmin) {
+	public User(long userId, String userName, boolean isAdmin) {
+		this.userId = userId;
 		this.userName = userName;
 		this.isAdmin = isAdmin;
 	}
@@ -25,6 +27,10 @@ public class User extends MessageData {
 
 	public String getUserName() {
 		return this.userName;
+	}
+
+	public long getUserId() {
+		return this.userId;
 	}
 
 	@Override

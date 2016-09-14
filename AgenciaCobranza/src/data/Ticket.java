@@ -11,8 +11,8 @@ public class Ticket extends MessageData {
 	private long ticketNumber;
 	private String plate;
 	private Date startDateTime;
-	private int minutes;
-	private Long amount;
+	private Date endDateTime;
+	private long amount;
 
 	public Ticket() {
 	}
@@ -23,7 +23,7 @@ public class Ticket extends MessageData {
 		this.ticketNumber = data.getLong(Constants.JSON_IDENTFIER_TICKET_NUMBER);
 		this.plate = data.getString(Constants.JSON_IDENTFIER_PLATE);
 		this.startDateTime = new Date(data.getLong(Constants.JSON_IDENTFIER_START_TIME));
-		this.minutes = data.getInt(Constants.JSON_IDENTFIER_MINUTES);
+		this.endDateTime = new Date(data.getInt(Constants.JSON_IDENTFIER_END_TIME));
 		this.amount = data.getLong(Constants.JSON_IDENTFIER_AMOUNT);
 	}
 
@@ -35,7 +35,7 @@ public class Ticket extends MessageData {
 		result.put(Constants.JSON_IDENTFIER_TICKET_NUMBER, this.ticketNumber);
 		result.put(Constants.JSON_IDENTFIER_PLATE, this.plate);
 		result.put(Constants.JSON_IDENTFIER_START_TIME, this.startDateTime.getTime());
-		result.put(Constants.JSON_IDENTFIER_MINUTES, this.minutes);
+		result.put(Constants.JSON_IDENTFIER_END_TIME, this.endDateTime.getTime());
 		result.put(Constants.JSON_IDENTFIER_AMOUNT, this.amount);
 		return result;
 	}
@@ -80,12 +80,12 @@ public class Ticket extends MessageData {
 		this.startDateTime = startDateTime;
 	}
 
-	public int getMinutes() {
-		return minutes;
+	public Date getEndDateTime() {
+		return endDateTime;
 	}
 
-	public void setMinutes(int minutes) {
-		this.minutes = minutes;
+	public void setEndDateTime(Date endDateTime) {
+		this.endDateTime = endDateTime;
 	}
 
 	public long getAmount() {
