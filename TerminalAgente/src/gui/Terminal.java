@@ -14,25 +14,28 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import data.Ticket;
+import data.User;
 import tcp_service.Agencia;
 
-public class Terminal extends JFrame implements ActionListener {
+public class Terminal extends JFrame  implements ActionListener {
 	private static final long serialVersionUID = 5424215328670752425L;
-	private JLabel texto1, texto2;
+	private JLabel infoUsuario, infoTerminal;
 	private JButton botonLogin, botonSalir, botonAlta, botonAnular;
-	private String nombreTerminal = "Abitab / Punta Carretas 001";
 	private JPanel cartas, cardLogin, cardInicio, cardAlta, cardAnulacion;
 	Agencia agencia;
+	private String terminalId = "PCarretas001";
+	private String nombreTerminal = "Abitab / Punta Carretas 001";
+	User usuarioDatos;
+	
 
 	public Terminal() {
 		initUI();
@@ -72,18 +75,18 @@ public class Terminal extends JFrame implements ActionListener {
 		});
 
 		// Header - Barra espaceadora superior
-		JPanel topEspacio = new JPanel();
-		texto1 = new JLabel(" ");
-		topEspacio.add(texto1);
-		topEspacio.setBackground(Color.ORANGE);
+		JPanel topEspacio = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		infoUsuario = new JLabel(" ");
+		topEspacio.add(infoUsuario);
+		topEspacio.setBackground(Color.orange);
 		add(topEspacio, BorderLayout.PAGE_START);
 
 		// Footer - Info de conexión
-		JPanel infoTerminal = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		texto1 = new JLabel("Terminal: " + nombreTerminal);
-		infoTerminal.add(texto1);
-		infoTerminal.setBackground(Color.ORANGE);
-		add(infoTerminal, BorderLayout.PAGE_END);
+		JPanel botomEspacio = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		infoTerminal = new JLabel("Terminal: " + nombreTerminal);
+		botomEspacio.add(infoTerminal);
+		botomEspacio.setBackground(Color.orange);
+		add(botomEspacio, BorderLayout.PAGE_END);
 
 		cartas = new JPanel(new CardLayout());
 		cargaCarta1();
@@ -129,7 +132,7 @@ public class Terminal extends JFrame implements ActionListener {
 		botonSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					agencia.logout();
+					//TODO agencia.logout();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -181,11 +184,14 @@ public class Terminal extends JFrame implements ActionListener {
 				try {
 					mensajeError.setText("");
 					String strPassword = new String(passwordText.getPassword());
-					agencia.login(userText.getText(), strPassword);
-
+					//TODO usuarioDatos = agencia.login(userText.getText(), strPassword);
+					
+					//TODO infoUsuario.setText("Hola " + usuarioDatos.getUserName());
+					infoUsuario.setText("Hola " + userText.getText());
+					
 					userText.setText("");
 					passwordText.setText("");
-
+					
 					CardLayout cl = (CardLayout) (cartas.getLayout());
 					cl.show(cartas, "INICIO");
 				} catch (Exception e) {
@@ -204,7 +210,7 @@ public class Terminal extends JFrame implements ActionListener {
 
 		JPanel contenedor = new JPanel();
 		contenedor.setLayout(null);
-		texto2 = new JLabel("Bienvenido al sistema de gestión de tickets");
+		JLabel texto2 = new JLabel("Bienvenido al sistema de gestión de tickets");
 		texto2.setBounds(50, 50, 300, 40);
 		contenedor.add(texto2);
 
@@ -246,15 +252,15 @@ public class Terminal extends JFrame implements ActionListener {
 		inicioText.setBounds(140, 90, 160, 25);
 		contenedor.add(inicioText);
 
-		JLabel mensajeError = new JLabel("");
-		mensajeError.setBounds(50, 150, 300, 25);
-		contenedor.add(mensajeError);
-		JLabel mensajeError2 = new JLabel("");
-		mensajeError2.setBounds(50, 175, 300, 25);
-		contenedor.add(mensajeError2);
-		JLabel mensajeError3 = new JLabel("");
-		mensajeError3.setBounds(50, 200, 300, 25);
-		contenedor.add(mensajeError3);
+		JLabel mensajeLinea1 = new JLabel("");
+		mensajeLinea1.setBounds(50, 150, 300, 25);
+		contenedor.add(mensajeLinea1);
+		JLabel mensajeLinea2 = new JLabel("");
+		mensajeLinea2.setBounds(50, 175, 300, 25);
+		contenedor.add(mensajeLinea2);
+		JLabel mensajeLinea3 = new JLabel("");
+		mensajeLinea3.setBounds(50, 200, 300, 25);
+		contenedor.add(mensajeLinea3);
 
 		JButton botonConfirm = new JButton("Confirmar");
 		botonConfirm.setBounds(140, 120, 100, 30);
@@ -262,29 +268,36 @@ public class Terminal extends JFrame implements ActionListener {
 		botonConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent eve) {
 				try {
-					mensajeError.setText("");
+					mensajeLinea1.setText("");
+					mensajeLinea2.setText("");
+					mensajeLinea3.setText("");
+					
 					SimpleDateFormat sdf = new SimpleDateFormat("k:m");
 					Date date = sdf.parse(inicioText.getText());
 
 					int cantidadMinutos = Integer.parseInt(minutosText.getText());
-					Ticket t = agencia.vender(matriculaText.getText(), cantidadMinutos, date);
-
+					//TODO Ticket t = agencia.vender(matriculaText.getText(), cantidadMinutos, date);
+					Ticket t = new Ticket();
+					
 					matriculaText.setText("");
 					minutosText.setText("");
 					inicioText.setText("");
+					
+					String confirmacion;
+					confirmacion =  "Ticket: " + t.getTicketNumber() + "\n";
+					confirmacion += "Matrícula: " + t.getPlate() + "\n";
+					confirmacion += "Válido desde " + t.getStartDateTime() + " hasta " + t.getEndDateTime() + "\n";
+					confirmacion += "\n" + "Importe a cobrar = $" + t.getFloatAmount() + "\n";
+					confirmacion += " " + "\n";
+					
+					//custom title, no icon
+					JOptionPane.showMessageDialog(cardAlta,confirmacion,"Confirmación de venta",JOptionPane.PLAIN_MESSAGE);
 
-					mensajeError.setForeground(Color.BLACK);
-					mensajeError.setText(
-							"Se ha creado el ticket " + t.getTicketNumber() + " para la matrícula " + t.getPlate());
-					mensajeError2.setForeground(Color.BLACK);
-					mensajeError2.setText("desde " + t.getStartDateTime() + " hasta " + t.getEndDateTime());
-					mensajeError3.setForeground(Color.BLACK);
-					mensajeError3.setText("Importe a cobrar = $" + t.getAmount());
 					// CardLayout cl = (CardLayout)(cartas.getLayout());
 					// cl.show(cartas,"INICIO");
 				} catch (Exception e) {
-					mensajeError.setForeground(Color.RED);
-					mensajeError.setText(e.getMessage());
+					mensajeLinea1.setForeground(Color.RED);
+					mensajeLinea1.setText(e.getMessage());
 				}
 			}
 		});
@@ -301,10 +314,50 @@ public class Terminal extends JFrame implements ActionListener {
 
 		cardAnulacion = new JPanel(new BorderLayout(5, 5));
 
-		texto2 = new JLabel("Función de anulación");
-		texto2.setAlignmentX(CENTER_ALIGNMENT);
-		texto2.setAlignmentY(CENTER_ALIGNMENT);
-		cardAnulacion.add(texto2, BorderLayout.CENTER);
+		JPanel contenedor = new JPanel();
+		contenedor.setLayout(null);
+		
+		JLabel ticketLabel = new JLabel("Ticket");
+		ticketLabel.setBounds(50, 30, 80, 25);
+		contenedor.add(ticketLabel);
+
+		JTextField ticketText = new JTextField(20);
+		ticketText.setBounds(140, 30, 160, 25);
+		contenedor.add(ticketText);
+		
+		JLabel mensajeLinea1 = new JLabel("");
+		mensajeLinea1.setBounds(50, 110, 300, 25);
+		contenedor.add(mensajeLinea1);
+		
+		JButton botonConfirm = new JButton("Confirmar");
+		botonConfirm.setBounds(140, 70, 100, 30);
+		botonConfirm.setMargin(new Insets(2, 2, 2, 2));
+		botonConfirm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent eve) {
+				try {
+					mensajeLinea1.setText("");
+					
+					long ticketLong = Integer.parseInt(ticketText.getText());
+					//TODO agencia.anular(ticketLong);
+
+					String confirmacion;
+					confirmacion =  "Ticket: " + ticketLong + "anulado correctamente\n";
+					confirmacion += " " + "\n";
+					
+					//custom title, no icon
+					JOptionPane.showMessageDialog(cardAnulacion,confirmacion,"Confirmación de anulación",JOptionPane.PLAIN_MESSAGE);
+
+					// CardLayout cl = (CardLayout)(cartas.getLayout());
+					// cl.show(cartas,"INICIO");
+				} catch (Exception e) {
+					mensajeLinea1.setForeground(Color.RED);
+					mensajeLinea1.setText(e.getMessage());
+				}
+			}
+		});
+		contenedor.add(botonConfirm);
+		
+		cardAnulacion.add(contenedor, BorderLayout.CENTER);
 
 		cardAnulacion.add(cargaMenu(), BorderLayout.LINE_START);
 
@@ -354,7 +407,7 @@ public class Terminal extends JFrame implements ActionListener {
 			// texto2.setText("Desde aqui podrá anular tickets vendidos");
 		}
 	}
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			Terminal ventana = new Terminal();
