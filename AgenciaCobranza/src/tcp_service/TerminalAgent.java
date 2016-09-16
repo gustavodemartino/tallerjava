@@ -63,7 +63,7 @@ public class TerminalAgent implements Runnable {
 						throw new Exception(Constants.ERROR_MSG_REPEATED_LOGIN);
 					}
 					try {
-						this.user = UserManager.getInstance().getUser((LoginParameters) command.getData());
+						this.user = UserManager.getInstance().login((LoginParameters) command.getData());
 						response = new Message(Message.LOGIN_OK, this.user);
 					} catch (Exception e) {
 						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(Constants.ERROR_MSG_INVALID_LOGIN));
