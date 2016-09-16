@@ -28,6 +28,14 @@ public class UserManager {
 		return instance;
 	}
 
+	public User getWebUser(String userId, String password) throws Exception {
+		User u = getUser(userId, password);
+		if (!u.getIsAdmin()) {
+			throw new Exception("Usuario no administrativo");
+		}
+		return u;
+	}
+
 	public User getUser(String userId, String password) throws Exception {
 		User result = null;
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
