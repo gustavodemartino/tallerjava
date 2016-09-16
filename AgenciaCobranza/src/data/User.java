@@ -6,12 +6,14 @@ import org.json.JSONObject;
 import model.Constants;
 
 public class User extends MessageData {
-	private long userId;
+	private long id;
 	private boolean isAdmin;
+	private String userId;
+
 	private String userName;
 
-	public User(long userId, String userName, boolean isAdmin) {
-		this.userId = userId;
+	public User(long id, String userName, boolean isAdmin) {
+		this.id = id;
 		this.userName = userName;
 		this.isAdmin = isAdmin;
 	}
@@ -21,16 +23,20 @@ public class User extends MessageData {
 		this.userName = data.getString(Constants.JSON_IDENTFIER_USERNAME);
 	}
 
-	public boolean getIsAdmin() {
-		return this.isAdmin;
+	public long getId() {
+		return this.id;
 	}
-
+	
+	public String getUserId() {
+		return userId;
+	}
+	
 	public String getUserName() {
 		return this.userName;
 	}
-
-	public long getUserId() {
-		return this.userId;
+	
+	public boolean getIsAdmin() {
+		return this.isAdmin;
 	}
 
 	@Override

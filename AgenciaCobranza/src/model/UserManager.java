@@ -67,7 +67,7 @@ public class UserManager {
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Location = ?");
-		pre.setLong(1, result.getUserId());
+		pre.setLong(1, result.getId());
 		pre.setString(2, data.getTerminalId());
 		ResultSet res;
 		res = pre.executeQuery();

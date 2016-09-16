@@ -28,9 +28,6 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		if (args.length > 1){
-			
-		}
 		Agencia agencia;
 		boolean open = true;
 		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
