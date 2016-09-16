@@ -7,10 +7,9 @@ import model.Constants;
 
 public class User extends MessageData {
 	private long id;
-	private boolean isAdmin;
 	private String userId;
-
 	private String userName;
+	private boolean isAdmin;
 
 	public User(long id, String userName, boolean isAdmin) {
 		this.id = id;
