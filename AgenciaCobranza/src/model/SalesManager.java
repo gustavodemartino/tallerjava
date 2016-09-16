@@ -36,7 +36,7 @@ public class SalesManager {
 	}
 
 	public Ticket saleTicket(TicketSaleParameters data) throws Exception {
-		Sale sale = this.parkingService.parkingSale("Agencia de cobranza", data.getPlate(),
+		Sale sale = this.parkingService.parkingSale("abitab", data.getPlate(),
 				data.getStartTime().getTime(), data.getMinutes());
 		if (sale.getResult() != 200) {
 			throw new Exception(sale.getResult() + ": " + sale.getMessage());

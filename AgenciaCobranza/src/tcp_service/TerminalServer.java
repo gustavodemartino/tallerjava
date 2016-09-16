@@ -1,6 +1,5 @@
 package tcp_service;
 
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,12 +21,12 @@ public class TerminalServer implements Runnable {
 				Socket socket = server.accept();
 				connectionNum++;
 				System.out.println(
-						"#D" + connectionNum + " Connection started from " + socket.getInetAddress().getHostAddress());
+						"#" + connectionNum + " Connection started from " + socket.getInetAddress().getHostAddress());
 				try {
 					Thread t = new Thread(new TerminalAgent(socket, connectionNum));
 					t.start();
 				} catch (IOException e) {
-					System.out.println("#D" + connectionNum + " ErrorMessage starting connection");
+					System.out.println("#" + connectionNum + " ErrorMessage starting connection");
 				}
 			}
 		} catch (Exception e) {
@@ -40,7 +39,5 @@ public class TerminalServer implements Runnable {
 				System.out.println("ErrorMessage closing connection");
 			}
 		}
-
 	}
-
 }

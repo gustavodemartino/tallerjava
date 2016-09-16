@@ -1,26 +1,50 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import data.Operator;
 
 public class OperatorManager {
 	private static OperatorManager instance = null;
+	private DataSource ds;
 
-	private OperatorManager() {
-
+	private OperatorManager() throws Exception {
+		InitialContext initContext = new InitialContext();
+		this.ds = (DataSource) initContext.lookup("java:jboss/datasources/IntendenciaDS");
 	}
 
-	public static OperatorManager getInstance() {
+	public static OperatorManager getInstance() throws Exception {
 		if (instance == null) {
 			instance = new OperatorManager();
 		}
 		return instance;
 	}
 
-	public Operator getOperator(String firma) {
-		// TODO Buscar en DB
-		Operator result = new Operator();
-		result.setId(-1);
-		result.setName(firma);
+	public Operator getOperator(String signature) throws Exception {
+		Operator result = null;
+		try {
+			Connection connection = this.ds.getConnection();
+			PreparedStatement pre;
+			pre = connection.prepareStatement("SELECT Id, Nombre FROM Operadores WHERE firma = ?");
+			pre.setString(1, signature);
+			ResultSet res = pre.executeQuery();
+			if (res.next()) {
+				result = new Operator();
+				result.setId(res.getLong("Id"));
+				result.setSignature(signature);
+				result.setName(res.getString("Nombre"));
+			}
+			res.close();
+			pre.close();
+			connection.close();
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 		return result;
 	}
 }
