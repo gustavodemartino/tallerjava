@@ -13,7 +13,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,7 +24,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+
 import data.Ticket;
 import data.User;
 import tcp_service.Agencia;
@@ -32,8 +40,8 @@ public class Terminal extends JFrame  implements ActionListener {
 	private JButton botonLogin, botonSalir, botonAlta, botonAnular;
 	private JPanel cartas, cardLogin, cardInicio, cardAlta, cardAnulacion;
 	Agencia agencia;
-	private String terminalId = "PCarretas001";
-	private String nombreTerminal = "Abitab / Punta Carretas 001";
+	private String terminalId = "terminal_1";
+	private String nombreTerminal = "Terminal 1";
 	User usuarioDatos;
 	
 
@@ -44,7 +52,7 @@ public class Terminal extends JFrame  implements ActionListener {
 	private void initUI() {
 
 		try {
-			agencia = new Agencia(nombreTerminal);
+			agencia = new Agencia(terminalId);
 		} catch (Exception e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -76,7 +84,7 @@ public class Terminal extends JFrame  implements ActionListener {
 
 		// Header - Barra espaceadora superior
 		JPanel topEspacio = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		infoUsuario = new JLabel(" ");
+		infoUsuario = new JLabel("(Sin usuario conectado)");
 		topEspacio.add(infoUsuario);
 		topEspacio.setBackground(Color.orange);
 		add(topEspacio, BorderLayout.PAGE_START);
@@ -132,9 +140,9 @@ public class Terminal extends JFrame  implements ActionListener {
 		botonSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					//TODO agencia.logout();
+					agencia.logout();
+					infoUsuario.setText("(Sin usuario conectado)");
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				CardLayout cl = (CardLayout) (cartas.getLayout());
@@ -158,7 +166,7 @@ public class Terminal extends JFrame  implements ActionListener {
 		cardLogin.add(userLabel);
 
 		JTextField userText = new JTextField(20);
-		userText.setText("admin");
+		userText.setText("user");
 		userText.setBounds(170, 10, 160, 25);
 		cardLogin.add(userText);
 
@@ -168,7 +176,7 @@ public class Terminal extends JFrame  implements ActionListener {
 
 		JPasswordField passwordText = new JPasswordField(20);
 		passwordText.setBounds(170, 40, 160, 25);
-		passwordText.setText("admin");
+		passwordText.setText("user");
 		cardLogin.add(passwordText);
 
 		JLabel mensajeError = new JLabel("");
@@ -184,10 +192,10 @@ public class Terminal extends JFrame  implements ActionListener {
 				try {
 					mensajeError.setText("");
 					String strPassword = new String(passwordText.getPassword());
-					//TODO usuarioDatos = agencia.login(userText.getText(), strPassword);
+					usuarioDatos = agencia.login(userText.getText(), strPassword);
 					
-					//TODO infoUsuario.setText("Hola " + usuarioDatos.getUserName());
-					infoUsuario.setText("Hola " + userText.getText());
+					infoUsuario.setText("Bienvenido " + usuarioDatos.getUserName());
+					//infoUsuario.setText("Hola " + userText.getText());
 					
 					userText.setText("");
 					passwordText.setText("");
@@ -196,6 +204,7 @@ public class Terminal extends JFrame  implements ActionListener {
 					cl.show(cartas, "INICIO");
 				} catch (Exception e) {
 					mensajeError.setText(e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		});
@@ -210,7 +219,7 @@ public class Terminal extends JFrame  implements ActionListener {
 
 		JPanel contenedor = new JPanel();
 		contenedor.setLayout(null);
-		JLabel texto2 = new JLabel("Bienvenido al sistema de gestión de tickets");
+		JLabel texto2 = new JLabel("Sistema de gestión de parking - IMM");
 		texto2.setBounds(50, 50, 300, 40);
 		contenedor.add(texto2);
 
@@ -243,24 +252,51 @@ public class Terminal extends JFrame  implements ActionListener {
 		JTextField minutosText = new JTextField(20);
 		minutosText.setBounds(140, 60, 160, 25);
 		contenedor.add(minutosText);
+		
+		SpinnerModel hora = new SpinnerNumberModel( 0,  //initial value
+		                               				0,  //min
+	                               					23, //max
+	                               					1); //step
+		SpinnerModel minutos = new SpinnerNumberModel(  0,  //initial value
+   														0,  //min
+   														59, //max
+   														1); //step
+
+		JSpinner spinnerHora = new JSpinner(hora);
+		JSpinner spinnerMinutos = new JSpinner(minutos);
 
 		JLabel inicioLabel = new JLabel("Inicio");
 		inicioLabel.setBounds(50, 90, 80, 25);
 		contenedor.add(inicioLabel);
 
-		JTextField inicioText = new JTextField(20);
-		inicioText.setBounds(140, 90, 160, 25);
-		contenedor.add(inicioText);
+//		JTextField inicioText = new JTextField(20);
+//		inicioText.setBounds(140, 90, 160, 25);
+//		contenedor.add(inicioText);
+		
+		Date hoy = new Date();   // given date
+		Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+		calendar.setTime(hoy);   // assigns calendar to given date 		
+		
+		spinnerHora.setBounds(140, 90, 50, 25);
+		spinnerHora.setValue(calendar.get(Calendar.HOUR_OF_DAY));
+		contenedor.add(spinnerHora);
+		
+		JLabel column = new JLabel(" : ");
+		column.setBounds(190, 90, 10, 25);
+		contenedor.add(column);
+		
+		spinnerMinutos.setBounds(200, 90, 50, 25);
+		spinnerMinutos.setValue(calendar.get(Calendar.MINUTE));
+		contenedor.add(spinnerMinutos);
 
+		
 		JLabel mensajeLinea1 = new JLabel("");
 		mensajeLinea1.setBounds(50, 150, 300, 25);
 		contenedor.add(mensajeLinea1);
 		JLabel mensajeLinea2 = new JLabel("");
 		mensajeLinea2.setBounds(50, 175, 300, 25);
 		contenedor.add(mensajeLinea2);
-		JLabel mensajeLinea3 = new JLabel("");
-		mensajeLinea3.setBounds(50, 200, 300, 25);
-		contenedor.add(mensajeLinea3);
+
 
 		JButton botonConfirm = new JButton("Confirmar");
 		botonConfirm.setBounds(140, 120, 100, 30);
@@ -269,24 +305,30 @@ public class Terminal extends JFrame  implements ActionListener {
 			public void actionPerformed(ActionEvent eve) {
 				try {
 					mensajeLinea1.setText("");
-					mensajeLinea2.setText("");
-					mensajeLinea3.setText("");
 					
 					SimpleDateFormat sdf = new SimpleDateFormat("k:m");
-					Date date = sdf.parse(inicioText.getText());
-
+					Date date = sdf.parse(spinnerHora.getValue()+":"+spinnerMinutos.getValue());
+					
 					int cantidadMinutos = Integer.parseInt(minutosText.getText());
-					//TODO Ticket t = agencia.vender(matriculaText.getText(), cantidadMinutos, date);
-					Ticket t = new Ticket();
+					Ticket t = agencia.vender(matriculaText.getText(), cantidadMinutos, date);
 					
 					matriculaText.setText("");
 					minutosText.setText("");
-					inicioText.setText("");
+					spinnerHora.setValue(0);
+					spinnerMinutos.setValue(0);
+					
+					Date horaInicio = t.getStartDateTime();
+					calendar.setTime(horaInicio);   // assigns calendar to given date
+					String horaIniStr = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+					
+					Date horaFin = t.getEndDateTime();
+					calendar.setTime(horaFin);   // assigns calendar to given date
+					String horaFinStr = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
 					
 					String confirmacion;
 					confirmacion =  "Ticket: " + t.getTicketNumber() + "\n";
 					confirmacion += "Matrícula: " + t.getPlate() + "\n";
-					confirmacion += "Válido desde " + t.getStartDateTime() + " hasta " + t.getEndDateTime() + "\n";
+					confirmacion += "Válido desde " + horaIniStr  + " hasta " + horaFinStr + "\n";
 					confirmacion += "\n" + "Importe a cobrar = $" + t.getFloatAmount() + "\n";
 					confirmacion += " " + "\n";
 					
@@ -298,6 +340,7 @@ public class Terminal extends JFrame  implements ActionListener {
 				} catch (Exception e) {
 					mensajeLinea1.setForeground(Color.RED);
 					mensajeLinea1.setText(e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		});
@@ -338,10 +381,10 @@ public class Terminal extends JFrame  implements ActionListener {
 					mensajeLinea1.setText("");
 					
 					long ticketLong = Integer.parseInt(ticketText.getText());
-					//TODO agencia.anular(ticketLong);
+					agencia.anular(ticketLong);
 
 					String confirmacion;
-					confirmacion =  "Ticket: " + ticketLong + "anulado correctamente\n";
+					confirmacion =  "Ticket " + ticketLong + " anulado correctamente\n";
 					confirmacion += " " + "\n";
 					
 					//custom title, no icon
@@ -367,45 +410,6 @@ public class Terminal extends JFrame  implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		CardLayout cl = (CardLayout) (cartas.getLayout());
-
-		if (e.getSource() == botonLogin) {
-			cl.show(cartas, "INICIO");
-		}
-
-		if (e.getSource() == botonSalir) {
-			cl.show(cartas, "LOGIN");
-
-			/*
-			 * try{ Thread.sleep(500); System.exit(0); } catch(Exception excep)
-			 * { System.exit(0); }
-			 */
-
-		}
-
-		if (e.getSource() == botonAlta) {
-			cl.show(cartas, "ALTA");
-
-			/*
-			 * texto2.setText("Desde aqui podrá vender nuevos tickets"); try {
-			 * Agencia agencia = new Agencia("terminal_id");
-			 * agencia.login("admin", "admin"); Date hoy = new Date(); Ticket t
-			 * = agencia.vender("Prueba1",30,hoy); String infoString =
-			 * "Agencia: " + t.getAgency(); infoString += "Hora venta: " +
-			 * t.getSaleDateTime(); infoString += "Ticket número: " +
-			 * t.getTicketNumber(); infoString += "Matrícula: " + t.getPlate();
-			 * infoString += "Inicio: " + t.getStartDateTime(); infoString +=
-			 * "Minutos: " + t.getMinutes(); infoString += "Importe: " +
-			 * t.getAmount(); texto2.setText(infoString); } catch (Exception e)
-			 * { // TODO Auto-generated catch block texto2.setText("Error!"); }
-			 */
-
-		}
-
-		if (e.getSource() == botonAnular) {
-			cl.show(cartas, "ANULA");
-			// texto2.setText("Desde aqui podrá anular tickets vendidos");
-		}
 	}
 	
 	public static void main(String[] args) {
