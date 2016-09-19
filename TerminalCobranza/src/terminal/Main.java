@@ -64,7 +64,7 @@ public class Main {
 					System.out.println(e.getMessage());
 					continue;
 				}
-				System.out.println("Login as: " + user.getUserName());
+				System.out.println("Login as: " + user.getName());
 				while (true) {
 					System.out.print(">");
 					String entrada = teclado.readLine().replaceAll("\\s+", " ").trim();

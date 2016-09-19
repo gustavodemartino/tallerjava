@@ -7,42 +7,71 @@ import model.Constants;
 
 public class User extends MessageData {
 	private long id;
-	private String userId;
-	private String userName;
-	private boolean isAdmin;
+	private String shortName;
+	private String name;
+	private String password;
+	private boolean admin;
 
-	public User(long id, String userName, boolean isAdmin) {
+	public User(long id, String userId, String userName, boolean isAdmin) {
 		this.id = id;
-		this.userName = userName;
-		this.isAdmin = isAdmin;
+		this.shortName = userId;
+		this.name = userName;
+		this.admin = isAdmin;
 	}
 
-	public User(JSONObject data) throws JSONException {
-		this.isAdmin = data.getBoolean(Constants.JSON_IDENTFIER_IS_ADMIN);
-		this.userName = data.getString(Constants.JSON_IDENTFIER_USERNAME);
+	public User(String shortName, String name, String password, boolean isAdmin) {
+		this.shortName = shortName;
+		this.name = name;
+		this.password = password;
+		this.admin = isAdmin;
 	}
 
 	public long getId() {
 		return this.id;
 	}
-	
-	public String getUserId() {
-		return userId;
+
+	public String getShortName() {
+		return shortName;
 	}
-	
-	public String getUserName() {
-		return this.userName;
+
+	public String getName() {
+		return this.name;
 	}
-	
+
 	public boolean getIsAdmin() {
-		return this.isAdmin;
+		return this.admin;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.admin = isAdmin;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public User(JSONObject data) throws JSONException {
+		this.admin = data.getBoolean(Constants.JSON_IDENTFIER_IS_ADMIN);
+		this.name = data.getString(Constants.JSON_IDENTFIER_USERNAME);
 	}
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put(Constants.JSON_IDENTFIER_IS_ADMIN, this.isAdmin);
-		result.put(Constants.JSON_IDENTFIER_USERNAME, this.userName);
+		result.put(Constants.JSON_IDENTFIER_IS_ADMIN, this.admin);
+		result.put(Constants.JSON_IDENTFIER_USERNAME, this.name);
 		return result;
 	}
 }
