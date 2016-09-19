@@ -193,7 +193,7 @@ public class Terminal extends JFrame  implements ActionListener {
 					String strPassword = new String(passwordText.getPassword());
 					usuarioDatos = agencia.login(userText.getText(), strPassword);
 					
-					infoUsuario.setText("Bienvenido " + usuarioDatos.getUserName());
+					infoUsuario.setText("Bienvenido " + usuarioDatos.getName());
 					//infoUsuario.setText("Hola " + userText.getText());
 					
 					userText.setText("");
