@@ -29,8 +29,8 @@
     <!--=================================================-->
 
     <!--Page Load Progress Bar-->
-    <link href="../template/plugins/pace/pace.min.css" rel="stylesheet">
-    <script src="../template/plugins/pace/pace.min.js"></script>
+    <link href="plugins/pace/pace.min.css" rel="stylesheet">
+    <script src="plugins/pace/pace.min.js"></script>
 		
 
 </head>
@@ -42,27 +42,28 @@
 	<div id="container">
 		
 		<div class="cls-content">
+			<div class="pad-btm mar-btm text-center">
+				<h2 class="text-thin mar-no">Agencia | Administración</h2>
+			</div>
 			<div class="cls-content-sm panel">
 				<div class="panel-body">
 					<p class="pad-btm">Ingrese usuario y clave para acceder</p>
-					<form action="../template/index.html">
+					<form method="post" action="Login">
 						<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-addon"><i class="fa fa-user"></i></div>
-								<input type="text" class="form-control" placeholder="Nombre de usuario">
+								<input type="text" class="form-control" id="userId" placeholder="Nombre de usuario" required>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-addon"><i class="fa fa-asterisk"></i></div>
-								<input type="password" class="form-control" placeholder="Contraseña">
+								<input type="password" class="form-control" id="password" placeholder="Contraseña" required>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-xs-8 text-left checkbox">
-<!--								<label class="form-checkbox form-icon">
-								<input type="checkbox"> Remember me
-								</label>-->
+							<div class="col-xs-8 text-left text-danger">
+								<%= session.getAttribute("userError")==null?"Hea":session.getAttribute("userError") %>
 							</div>
 							<div class="col-xs-4">
 								<div class="form-group text-right">
