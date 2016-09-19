@@ -13,6 +13,8 @@ import tcp_service.Agencia;
 
 public class Main {
 
+	private static String terminal_id = "terminal_id";
+
 	private static String readPassword() throws Exception {
 		String result = null;
 		Console console = System.console();
@@ -28,6 +30,9 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		if (args.length > 1 && args[0].equals("-t")) {
+			terminal_id = args[1];
+		}
 		Agencia agencia;
 		boolean open = true;
 		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
@@ -47,7 +52,7 @@ public class Main {
 				password = readPassword();
 				System.out.println("Conecting to server...");
 				try {
-					agencia = new Agencia("terminal_id");
+					agencia = new Agencia(terminal_id);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					continue;
@@ -59,7 +64,7 @@ public class Main {
 					System.out.println(e.getMessage());
 					continue;
 				}
-				System.out.println("Login as: " + user.getUserName());
+				System.out.println("Login as: " + user.getName());
 				while (true) {
 					System.out.print(">");
 					String entrada = teclado.readLine().replaceAll("\\s+", " ").trim();

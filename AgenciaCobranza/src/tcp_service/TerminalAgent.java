@@ -66,7 +66,7 @@ public class TerminalAgent implements Runnable {
 						this.user = UserManager.getInstance().login((LoginParameters) command.getData());
 						response = new Message(Message.LOGIN_OK, this.user);
 					} catch (Exception e) {
-						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(Constants.ERROR_MSG_INVALID_LOGIN));
+						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(e.getMessage()));
 					}
 					writer.println(response.toString() + "\n");
 					
