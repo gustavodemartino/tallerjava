@@ -27,17 +27,25 @@ public class UserManager {
 		return instance;
 	}
 
-	public User getUser(LoginParameters data) throws Exception {
+	public User getWebUser(String userId, String password) throws Exception {
+		User u = getUser(userId, password);
+		if (!u.getIsAdmin()) {
+			throw new Exception("Usuario no administrativo");
+		}
+		return u;
+	}
+
+	public User getUser(String userId, String password) throws Exception {
 		User result = null;
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
-		md.update(data.getPassword().getBytes("UTF-8"));
+		md.update(password.getBytes("UTF-8"));
 		String passwordHash = String.format("%064x", new java.math.BigInteger(1, md.digest()));
 
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection
 				.prepareStatement("SELECT Id, UserName, IsAdmin FROM Usuarios WHERE UserId = ? AND Password = ?");
-		pre.setString(1, data.getUserId());
+		pre.setString(1, userId);
 		pre.setString(2, passwordHash);
 		ResultSet res = pre.executeQuery();
 		if (!res.next()) {
@@ -49,9 +57,18 @@ public class UserManager {
 		result = new User(res.getLong("Id"), res.getString("UserName"), res.getInt("IsAdmin") == 1);
 		pre.close();
 		res.close();
+		connection.close();
+		return result;
+	}
+
+	public User login(LoginParameters data) throws Exception {
+		User result = getUser(data.getUserId(), data.getPassword());
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
 		pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Location = ?");
-		pre.setLong(1, result.getUserId());
+		pre.setLong(1, result.getId());
 		pre.setString(2, data.getTerminalId());
+		ResultSet res;
 		res = pre.executeQuery();
 		if (!res.next()) {
 			pre.close();

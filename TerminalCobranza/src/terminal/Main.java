@@ -13,6 +13,8 @@ import tcp_service.Agencia;
 
 public class Main {
 
+	private static String terminal_id = "terminal_id";
+
 	private static String readPassword() throws Exception {
 		String result = null;
 		Console console = System.console();
@@ -28,6 +30,9 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		if (args.length > 1 && args[0].equals("-t")) {
+			terminal_id = args[1];
+		}
 		Agencia agencia;
 		boolean open = true;
 		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
@@ -40,14 +45,14 @@ public class Main {
 					System.out.print("login: ");
 					userName = teclado.readLine().trim();
 				}
-				if (userName.equals("exit")){
+				if (userName.equals("exit")) {
 					break;
 				}
 				System.out.print("password: ");
 				password = readPassword();
 				System.out.println("Conecting to server...");
 				try {
-					agencia = new Agencia("terminal_id");
+					agencia = new Agencia(terminal_id);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					continue;
@@ -71,7 +76,7 @@ public class Main {
 						agencia.logout();
 						break;
 					} else if (comando[0].equals("vender")) {
-						if (comando.length != 4) {
+						if (comando.length < 3) {
 							System.out.println("Cantidad incorrecta de parametros");
 							continue;
 						}
@@ -84,11 +89,15 @@ public class Main {
 							continue;
 						}
 						SimpleDateFormat sdf = new SimpleDateFormat("k:m");
-						try {
-							horaInicial = sdf.parse(comando[3]);
-						} catch (Exception e) {
-							System.out.println("Formato de la hora incial incorrecto. Use HH:MM");
-							continue;
+						if (comando.length == 3) {
+							horaInicial = new Date(0);
+						} else {
+							try {
+								horaInicial = sdf.parse(comando[3]);
+							} catch (Exception e) {
+								System.out.println("Formato de la hora incial incorrecto. Use HH:MM");
+								continue;
+							}
 						}
 						try {
 							Ticket t = agencia.vender(comando[1], minutos, horaInicial);

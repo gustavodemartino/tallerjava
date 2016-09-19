@@ -23,20 +23,20 @@ public class Ticket extends MessageData {
 		this.ticketNumber = data.getLong(Constants.JSON_IDENTFIER_TICKET_NUMBER);
 		this.plate = data.getString(Constants.JSON_IDENTFIER_PLATE);
 		this.startDateTime = new Date(data.getLong(Constants.JSON_IDENTFIER_START_TIME));
-		this.endDateTime = new Date(data.getInt(Constants.JSON_IDENTFIER_END_TIME));
+		this.endDateTime = new Date(data.getLong(Constants.JSON_IDENTFIER_END_TIME));
 		this.amount = data.getLong(Constants.JSON_IDENTFIER_AMOUNT);
 	}
 
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put(Constants.JSON_IDENTFIER_OPERATOR, this.agency);
 		result.put(Constants.JSON_IDENTFIER_SALE_DATETIME, this.saleDateTime.getTime());
-		result.put(Constants.JSON_IDENTFIER_TICKET_NUMBER, this.ticketNumber);
-		result.put(Constants.JSON_IDENTFIER_PLATE, this.plate);
 		result.put(Constants.JSON_IDENTFIER_START_TIME, this.startDateTime.getTime());
 		result.put(Constants.JSON_IDENTFIER_END_TIME, this.endDateTime.getTime());
+		result.put(Constants.JSON_IDENTFIER_TICKET_NUMBER, this.ticketNumber);
+		result.put(Constants.JSON_IDENTFIER_OPERATOR, this.agency);
 		result.put(Constants.JSON_IDENTFIER_AMOUNT, this.amount);
+		result.put(Constants.JSON_IDENTFIER_PLATE, this.plate);
 		return result;
 	}
 
