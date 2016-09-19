@@ -52,6 +52,7 @@ public class SalesManager {
 			pre.setLong(3, sale.getAmount());
 			pre.execute();
 			pre.close();
+			// TODO Modificar esgtrategia
 			pre = connection
 					.prepareStatement("SELECT Id FROM Operaciones WHERE FechaHora = ? AND Numero = ? AND Importe = ?");
 			pre.setLong(1, sale.getSaleDate());
