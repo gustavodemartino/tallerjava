@@ -1,5 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1" import="data.User, java.util.List, model.UserManager"
+%>
+
+<%	
+	List<User> users = UserManager.getInstance().getUsers();
+%>
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,27 +17,27 @@
     <!--STYLESHEET-->
     <!--=================================================-->
 
-    <!--Open Sans Font [ OPTIONAL ] -->
+    <!--Open Sans Font-->
     <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin" rel="stylesheet">
 
-    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <!--Bootstrap Stylesheet-->
     <link href="css/bootstrap.css" rel="stylesheet">
 
-    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <!--Nifty Stylesheet-->
     <link href="css/styles.css" rel="stylesheet">
 
-    <!--Font Awesome [ OPTIONAL ]-->
+    <!--Font Awesome-->
     <link href="plugins/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    <!--Bootstrap Table [ OPTIONAL ]-->
-    <link href="plugins/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+    <!--Bootstrap Table-->
+    <link href="plugins/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet"> 
 
     <!--SCRIPT-->
     <!--=================================================-->
 
     <!--Page Load Progress Bar [ OPTIONAL ]-->
-    <link href="../template/plugins/pace/pace.min.css" rel="stylesheet">
-    <script src="../template/plugins/pace/pace.min.js"></script>
+    <link href="plugins/pace/pace.min.css" rel="stylesheet">
+    <script src="plugins/pace/pace.min.js"></script>
         
 </head>
 
@@ -46,10 +53,10 @@
             <!--Page Title-->
             <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
             <div id="page-title">
-                <h1 class="page-header text-overflow"><strong>Panel Administrativos</strong></h1>
+                <h1 class="page-header text-overflow"><strong>Panel de Administración de Usuarios</strong></h1>
                 <div class="searchbox">
                     <div class="input-group custom-search-form">
-                        Bienvenido, <strong><%= session.getAttribute("userSession") %></strong>
+                        Bienvenido, <strong><%= ((User)session.getAttribute("userSession")).getName() %></strong> | Cerrar Sesión
                     </div>
                 </div>
             </div>
@@ -62,22 +69,32 @@
             
                 <div class="panel">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Agregar un nuevo usuario</h3>
+                        <h3 class="panel-title">Agregar un nuevo Usuario</h3>
                     </div>
                     <div class="panel-body">
                 
                         <!-- Inline Form  -->
                         <!--===================================================-->
-                        <form class="form-inline">
+                        <form class="form-inline" method="post" action="UserServlet">
                             <div class="form-group">
-                                <label for="demo-inline-inputmail" class="sr-only">Nombre de usuario</label>
-                                <input type="text" placeholder="Nombre de usuario" id="demo-inline-inputmail" class="form-control">
+                                <label for="demo-inline-inputmail" class="sr-only">Usuario</label>
+                                <input type="text" id="shortName" name="shortName" placeholder="Nickname" id="demo-inline-inputmail" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="demo-inline-inputpass" class="sr-only">Password</label>
-                                <input type="password" placeholder="Password" id="demo-inline-inputpass" class="form-control">
+                                <label for="demo-inline-inputmail" class="sr-only">Nombre completo</label>
+                                <input type="text" id="name" name="name" placeholder="Nombre completo" id="demo-inline-inputmail" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="demo-inline-inputpass" class="sr-only">Contraseña</label>
+                                <input type="password" id="password" name="password" placeholder="Contraseña" id="demo-inline-inputpass" class="form-control">
+                            </div>
+                            <div class="form-group">
+                            	<div class="checkbox">
+									<label class="form-checkbox form-icon"><input id="admin" name="admin" type="checkbox" checked=""> Administrativo</label>
+								</div>
                             </div>
                             <button class="btn btn-primary" type="submit">Agregar</button>
+                            <div class="form-group"><%= session.getAttribute("mensaje")==null?"":session.getAttribute("mensaje") %></div>
                         </form>
                         <!--===================================================-->
                         <!-- End Inline Form  -->
@@ -95,163 +112,21 @@
                         <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Identificador</th>
-                                    <th>Nombre Usuario</th>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
                                     <th>Administrativo</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
+                            	<% for(User user: users){ %>
                                 <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>61</td>
+                                    <td><%= user.getShortName()  %></td>
+                                    <td><%= user.getName()  %></td>
+                                    <td><%= (user.getIsAdmin()?"si":"no") %></td>
+                                    <td><button class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-pencil"></button>  <button class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-trash"></button></td>
                                 </tr>
-                                <tr>
-                                    <td>Rhona Davidson</td>
-                                    <td>Integration Specialist</td>
-                                    <td>Tokyo</td>
-                                    <td>55</td>
-                                </tr>
-                                <tr>
-                                    <td>Charde Marshall</td>
-                                    <td>Regional Director</td>
-                                    <td>San Francisco</td>
-                                    <td>36</td>
-                                </tr>
-                                <tr>
-                                    <td>Haley Kennedy</td>
-                                    <td>Senior Marketing Designer</td>
-                                    <td>London</td>
-                                    <td>43</td>
-                                </tr>
-                                <tr>
-                                    <td>Tatyana Fitzpatrick</td>
-                                    <td>Regional Director</td>
-                                    <td>London</td>
-                                    <td>19</td>
-                                </tr>
-                                <tr>
-                                    <td>Michael Silva</td>
-                                    <td>Marketing Designer</td>
-                                    <td>London</td>
-                                    <td>66</td>
-                                </tr>
-                                <tr>
-                                    <td>Paul Byrd</td>
-                                    <td>Chief Financial Officer (CFO)</td>
-                                    <td>New York</td>
-                                    <td>64</td>
-                                </tr>
-                                <tr>
-                                    <td>Dai Rios</td>
-                                    <td>Personnel Lead</td>
-                                    <td>Edinburgh</td>
-                                    <td>35</td>
-                                </tr>
-                                <tr>
-                                    <td>Jenette Caldwell</td>
-                                    <td>Development Lead</td>
-                                    <td>New York</td>
-                                    <td>30</td>
-                                </tr>
-                                <tr>
-                                    <td>Doris Wilder</td>
-                                    <td>Sales Assistant</td>
-                                    <td>Sidney</td>
-                                    <td>23</td>
-                                </tr>
-                                <tr>
-                                    <td>Angelica Ramos</td>
-                                    <td>Chief Executive Officer (CEO)</td>
-                                    <td>London</td>
-                                    <td>47</td>
-                                </tr>
-                                <tr>
-                                    <td>Gavin Joyce</td>
-                                    <td>Developer</td>
-                                    <td>Edinburgh</td>
-                                    <td>42</td>
-                                </tr>
-                                <tr>
-                                    <td>Jennifer Chang</td>
-                                    <td>Regional Director</td>
-                                    <td>Singapore</td>
-                                    <td>28</td>
-                                </tr>
-                                <tr>
-                                    <td>Brenden Wagner</td>
-                                    <td>Software Engineer</td>
-                                    <td>San Francisco</td>
-                                    <td>28</td>
-                                </tr>
-                                <tr>
-                                    <td>Fiona Green</td>
-                                    <td>Chief Operating Officer (COO)</td>
-                                    <td>San Francisco</td>
-                                    <td>48</td>
-                                </tr>
-                                <tr>
-                                    <td>Shou Itou</td>
-                                    <td>Regional Marketing</td>
-                                    <td>Tokyo</td>
-                                    <td>20</td>
-                                </tr>
-                                <tr>
-                                    <td>Michelle House</td>
-                                    <td>Integration Specialist</td>
-                                    <td>Sidney</td>
-                                    <td>37</td>
-                                </tr>
-                                <tr>
-                                    <td>Suki Burks</td>
-                                    <td>Developer</td>
-                                    <td>London</td>
-                                    <td>53</td>
-                                </tr>
-                                <tr>
-                                    <td>Prescott Bartlett</td>
-                                    <td>Technical Author</td>
-                                    <td>London</td>
-                                    <td>27</td>
-                                </tr>
-                                <tr>
-                                    <td>Gavin Cortez</td>
-                                    <td>Team Leader</td>
-                                    <td>San Francisco</td>
-                                    <td>22</td>
-                                </tr>
-                                <tr>
-                                    <td>Martena Mccray</td>
-                                    <td>Post-Sales support</td>
-                                    <td>Edinburgh</td>
-                                    <td>46</td>
-                                </tr>
-                                <tr>
-                                    <td>Unity Butler</td>
-                                    <td>Marketing Designer</td>
-                                    <td>San Francisco</td>
-                                    <td>47</td>
-                                </tr>
-                                <tr>
-                                    <td>Howard Hatfield</td>
-                                    <td>Office Manager</td>
-                                    <td>San Francisco</td>
-                                    <td>51</td>
-                                </tr>
-                                <tr>
-                                    <td>Hope Fuentes</td>
-                                    <td>Secretary</td>
-                                    <td>San Francisco</td>
-                                    <td>41</td>
-                                </tr>
-                                <tr>
-                                    <td>Vivian Harrell</td>
-                                    <td>Financial Controller</td>
-                                    <td>San Francisco</td>
-                                    <td>62</td>
-                                </tr>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -274,16 +149,18 @@
     <!--SCRIPT-->
     <!--=================================================-->
 
-    <!--jQuery [ REQUIRED ]-->
+    <!--jQuery-->
     <script src="js/jquery-2.1.1.min.js"></script>
 
-    <!--DataTables [ OPTIONAL ]-->
+    <!--DataTables-->
     <script src="plugins/datatables/media/js/jquery.dataTables.js"></script>
 	<script src="plugins/datatables/media/js/dataTables.bootstrap.js"></script>
 
-    <!--DataTables Sample [ SAMPLE ]-->
+    <!--DataTables Sample-->
     <script src="js/tables-datatables.js"></script>
-
+    
+    <!--Agencia Admin-->
+    <script src="js/agencia.min.js"></script>
     
 </body>
 </html>
