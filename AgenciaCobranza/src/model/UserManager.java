@@ -12,6 +12,7 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import data.Auditoria;
 import data.LoginParameters;
 import data.User;
 
@@ -69,6 +70,7 @@ public class UserManager {
 	}
 
 	public User login(LoginParameters data) throws Exception {
+		
 		User result = getUser(data.getUserId(), data.getPassword());
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
@@ -83,6 +85,18 @@ public class UserManager {
 			connection.close();
 			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
 		}
+		
+		//+ Auditar
+		pre = connection.prepareStatement("SELECT UserName FROM Usuarios WHERE Id = ?");
+		pre.setLong(1, result.getId());
+		res = pre.executeQuery();
+		res.next();
+		
+		Auditoria auditoria = new Auditoria();
+		String auditoriaDetalle = "Login de " + res.getString(1) + " en " + data.getTerminalId();
+		auditoria.auditar(result.getId(), data.getTerminalId(), Constants.ACCION_LOGIN , Constants.NIVEL_INFO, auditoriaDetalle);
+		//-
+		
 		pre.close();
 		res.close();
 		connection.close();
