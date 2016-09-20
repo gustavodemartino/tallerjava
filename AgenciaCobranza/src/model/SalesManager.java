@@ -3,6 +3,7 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Date;
 
 import javax.naming.InitialContext;
@@ -36,8 +37,8 @@ public class SalesManager {
 	}
 
 	public Ticket saleTicket(TicketSaleParameters data) throws Exception {
-		Sale sale = this.parkingService.parkingSale("abitab", data.getPlate(),
-				data.getStartTime().getTime(), data.getMinutes());
+		Sale sale = this.parkingService.parkingSale("abitab", data.getPlate(), data.getStartTime().getTime(),
+				data.getMinutes());
 		if (sale.getResult() != 200) {
 			throw new Exception(sale.getResult() + ": " + sale.getMessage());
 		}
@@ -46,31 +47,24 @@ public class SalesManager {
 
 		PreparedStatement pre;
 		try {
-			pre = connection.prepareStatement("INSERT INTO Operaciones (FechaHora, Numero, Importe) VALUES (?, ?, ?)");
+			pre = connection.prepareStatement("INSERT INTO Operaciones (FechaHora, Numero, Importe) VALUES (?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
 			pre.setLong(1, sale.getSaleDate());
 			pre.setLong(2, sale.getETicketNumber());
 			pre.setLong(3, sale.getAmount());
-			pre.execute();
-			pre.close();
-			// TODO Modificar esgtrategia
-			pre = connection
-					.prepareStatement("SELECT Id FROM Operaciones WHERE FechaHora = ? AND Numero = ? AND Importe = ?");
-			pre.setLong(1, sale.getSaleDate());
-			pre.setLong(2, sale.getETicketNumber());
-			pre.setLong(3, sale.getAmount());
-			ResultSet res = pre.executeQuery();
-			long id = -1;
-			if (res.next()) {
-				id = res.getLong("Id");
-			}
+
+			pre.executeUpdate();
+			ResultSet res = pre.getGeneratedKeys();
+			res.next();
+			long operacion = res.getLong(1);
 			res.close();
 			pre.close();
 			pre = connection.prepareStatement(
 					"INSERT INTO Tickets (Operacion, Matricula, Inicio, Minutos) VALUES (?, ?, ?, ?)");
-			pre.setLong(1, id);
+			pre.setLong(1, operacion);
 			pre.setString(2, sale.getPlate());
 			pre.setLong(3, sale.getStartDateTime());
-			pre.setInt(4, (int)(sale.getEndDateTime() - sale.getStartDateTime()));
+			pre.setInt(4, (int) (sale.getEndDateTime() - sale.getStartDateTime()));
 			pre.execute();
 			pre.close();
 			connection.commit();
@@ -102,26 +96,19 @@ public class SalesManager {
 
 		PreparedStatement pre;
 		try {
-			pre = connection.prepareStatement("INSERT INTO Operaciones (FechaHora, Numero, Importe) VALUES (?, ?, ?)");
+			pre = connection.prepareStatement("INSERT INTO Operaciones (FechaHora, Numero, Importe) VALUES (?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
 			pre.setLong(1, credit.getSaleDate());
 			pre.setLong(2, credit.getECreditNumber());
 			pre.setLong(3, credit.getAmount());
-			pre.execute();
-			pre.close();
-			pre = connection
-					.prepareStatement("SELECT Id FROM Operaciones WHERE FechaHora = ? AND Numero = ? AND Importe = ?");
-			pre.setLong(1, credit.getSaleDate());
-			pre.setLong(2, credit.getECreditNumber());
-			pre.setLong(3, credit.getAmount());
-			ResultSet res = pre.executeQuery();
-			long id = -1;
-			if (res.next()) {
-				id = res.getLong("Id");
-			}
+			pre.executeUpdate();
+			ResultSet res = pre.getGeneratedKeys();
+			res.next();
+			long operacion = res.getLong(1);
 			res.close();
 			pre.close();
 			pre = connection.prepareStatement("INSERT INTO Anulaciones (Operacion, Numero) VALUES (?, ?)");
-			pre.setLong(1, id);
+			pre.setLong(1, operacion);
 			pre.setLong(2, credit.getETicketNumber());
 			pre.execute();
 			pre.close();
