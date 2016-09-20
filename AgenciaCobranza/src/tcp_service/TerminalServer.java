@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import model.Constants;
-
 public class TerminalServer implements Runnable {
-	static final int port = 1218;
+	private static final int port = 1218;
 
 	@Override
 	public void run() {
 		ServerSocket server = null;
-		System.out.println(Constants.APPLICATION_NAME + " version " + Constants.APPLICATION_VERSION);
 		System.out.println("Waiting for connections");
 		int connectionNum = 0;
 		try {

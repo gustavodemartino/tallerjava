@@ -26,7 +26,7 @@ public class SalesManager {
 		ParkingService p = new ParkingService();
 		this.parkingService = p.getParkingPort();
 		InitialContext initContext = new InitialContext();
-		this.ds = (DataSource) initContext.lookup("java:jboss/datasources/AgenciaDS");
+		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
 	}
 
 	public static SalesManager getInstance() throws Exception {

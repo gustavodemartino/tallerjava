@@ -53,8 +53,6 @@ public class TerminalAgent implements Runnable {
 					break;
 				}
 				Message command = new Message(sb.toString());
-				// TODO Debug
-				System.out.println("<"+sb.toString()+">");
 				sb.delete(0, sb.length());
 				Message response = null;
 

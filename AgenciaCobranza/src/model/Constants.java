@@ -2,9 +2,7 @@ package model;
 
 public class Constants {
 
-	public static final String APPLICATION_NAME = "agenciacobranza.tallerjava.antel.com.uy";
-	public static final String APPLICATION_VERSION = "0.1";
-
+	public static final String DATASOURCE_LOOKUP = "java:jboss/datasources/AgenciaDS";
 	public static final String JSON_IDENTFIER_ACTION = "action";
 	public static final String JSON_IDENTFIER_DATA = "data";
 	public static final String JSON_IDENTFIER_USERID = "user_id";
@@ -35,23 +33,14 @@ public class Constants {
 	public static final String RESPONSE_TICKET_CANCEL_ERROR = "ticket_cancel_error";
 
 	public static final String ERROR_MSG_INVALID_LOGIN = "Nombre de usuario o contraseña incorrecta";
+	public static final String ERROR_MSG_INVALID_NICKNAME = "Identificado de usuario inválido";
 	public static final String ERROR_MSG_REPEATED_LOGIN = "Intento repetido de login";
 	public static final String ERROR_MSG_LOGIN_REQUIRED = "Usuario no logueado";
 	public static final String ERROR_MSG_INVALID_ACTION = "Identificador de acción inválido";
-	public static final String ERROR_MSG_INVALID_LOCATION = "Ubicacion inválida";
-	
-	public static final String DATASOURCE_LOOKUP = "java:jboss/datasources/AgenciaDS";
-	
-	public static final int NIVEL_INFO    = 1;
-	public static final int NIVEL_WARNING = 2;
-	public static final int NIVEL_ERROR   = 3;
-	
-	public static final int ACCION_LOGIN     = 1;
-	public static final int ACCION_LOGOUT 	 = 2;
-	public static final int ACCION_VENTA     = 3;
-	public static final int ACCION_ANULACION = 4;
-	public static final int ACCION_USR_INS   = 5;
-	public static final int ACCION_USR_UPD   = 6;
-	public static final int ACCION_USR_DLT   = 7;
-
+	public static final String ERROR_MSG_INVALID_USERNAME = "Nombre de usuario inválido";
+	public static final String ERROR_MSG_INVALID_PASSWORD = "Password inválido";	
+	public static final String ERROR_MSG_INVALID_USERMOD = "No tiene permisos para modificar otro usuario";
+	public static final String ERROR_MSG_INVALID_LOCATION = "No tiene permisos para acceder desde esta ubicación";
+	public static final String ERROR_MSG_NOT_USER_PRIVILEGES = "No tiene permisos para utilizar este recurso";
+	public static final String ERROR_MSG_INVALID_USER_UPGRADE = "No tiene permisos para promover el usuario";
 }

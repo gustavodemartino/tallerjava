@@ -16,12 +16,13 @@ import data.TicketSaleParameters;
 import data.User;
 
 public class Agencia {
+	private static final int port = 1218;
 	private String terminalId;
 	private Socket socket = null;
 	private String serverName = "localhost";
-	private int port = 1218;
 	private BufferedReader entrada;
 	private PrintWriter salida;
+	private User user = null;
 
 	public Agencia(String terminalId) throws Exception {
 		this.terminalId = terminalId;
@@ -36,9 +37,11 @@ public class Agencia {
 		salida.println(command.toString() + "\n");
 		Message respuesta = procesarRespuesta();
 		if (respuesta.getCommand() == Message.LOGIN_ERROR) {
-			throw new Exception(((ErrorMessage) respuesta.getData()).getMessage());
+			String message = ((ErrorMessage) respuesta.getData()).getMessage();
+			throw new Exception(message);
 		}
-		return (User) respuesta.getData();
+		this.user = (User)respuesta.getData();		
+		return this.user  ;
 	}
 
 	public void logout() throws Exception {
@@ -46,7 +49,8 @@ public class Agencia {
 		salida.println(command.toString() + "\n");
 		Message respuesta = procesarRespuesta();
 		if (respuesta.getCommand() != Message.LOGOUT_OK) {
-			throw new Exception(((ErrorMessage) respuesta.getData()).getMessage());
+			String message = ((ErrorMessage) respuesta.getData()).getMessage();
+			throw new Exception(message);
 		}
 		System.out.println("Logout ok");
 	}

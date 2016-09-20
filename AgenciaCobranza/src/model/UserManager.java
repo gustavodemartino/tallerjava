@@ -12,7 +12,6 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import data.Auditoria;
 import data.LoginParameters;
 import data.User;
 
@@ -22,7 +21,7 @@ public class UserManager {
 
 	private UserManager() throws Exception {
 		InitialContext initContext = new InitialContext();
-		this.ds = (DataSource) initContext.lookup("java:jboss/datasources/AgenciaDS");
+		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
 	}
 
 	public static UserManager getInstance() throws Exception {
@@ -42,8 +41,8 @@ public class UserManager {
 		User result = null;
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
-		pre = connection.prepareStatement(
-				"SELECT Id, Usuario, Nombre, EsAdmin FROM Usuarios WHERE Usuario = ? AND Clave = ?");
+		pre = connection
+				.prepareStatement("SELECT Id, Usuario, Nombre, EsAdmin FROM Usuarios WHERE Usuario = ? AND Clave = ?");
 		pre.setString(1, userId);
 		pre.setString(2, hashPassword(password));
 		ResultSet res = pre.executeQuery();
@@ -62,20 +61,29 @@ public class UserManager {
 	}
 
 	public User webLogin(String userId, String password) throws Exception {
-		User u = getUser(userId, password);
+		AuditManager auditor = AuditManager.getInstance();
+		User u;
+		try{
+			u = getUser(userId, password);
+			auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
+		} catch (Exception e) {
+			auditor.register(-1, "Web", AuditManager.AUDIT_EVENT_LOGIN_ERROR, AuditManager.EVENT_LEVEL_WARNING, e.getMessage());
+			throw new Exception(e.getMessage());
+		}
 		if (!u.getIsAdmin()) {
-			throw new Exception("Usuario no administrativo");
+			auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_INVALID_LOCATION, AuditManager.EVENT_LEVEL_WARNING, null);
+			throw new Exception(Constants.ERROR_MSG_NOT_USER_PRIVILEGES);
 		}
 		return u;
 	}
 
 	public User login(LoginParameters data) throws Exception {
-		
-		User result = getUser(data.getUserId(), data.getPassword());
+		AuditManager auditor = AuditManager.getInstance();
+		User user = getUser(data.getUserId(), data.getPassword());
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Ubicacion = ?");
-		pre.setLong(1, result.getId());
+		pre.setLong(1, user.getId());
 		pre.setString(2, data.getTerminalId());
 		ResultSet res;
 		res = pre.executeQuery();
@@ -83,24 +91,12 @@ public class UserManager {
 			pre.close();
 			res.close();
 			connection.close();
+			auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_INVALID_LOCATION, AuditManager.EVENT_LEVEL_WARNING, null);			
 			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
 		}
-		
-		//+ Auditar
-		pre = connection.prepareStatement("SELECT Nombre FROM Usuarios WHERE Id = ?");
-		pre.setLong(1, result.getId());
-		res = pre.executeQuery();
-		res.next();
-		
-		Auditoria auditoria = new Auditoria();
-		String auditoriaDetalle = "Login de " + res.getString(1) + " en " + data.getTerminalId();
-		auditoria.auditar(result.getId(), data.getTerminalId(), Constants.ACCION_LOGIN , Constants.NIVEL_INFO, auditoriaDetalle);
-		//-
-		
-		pre.close();
-		res.close();
 		connection.close();
-		return result;
+		auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);			
+		return user;
 	}
 
 	public List<User> getUsers() throws SQLException {
@@ -122,14 +118,14 @@ public class UserManager {
 	public void addUser(String adminId, String adminPassword, User newUser) throws Exception {
 		User admin = getUser(adminId, adminPassword);
 		if (!admin.getIsAdmin()) {
-			throw new Exception("You must be an administrator to add users");
+			throw new Exception(Constants.ERROR_MSG_INVALID_USERMOD);
 		}
 		if (newUser.getShortName() == null || newUser.getShortName().contains(" ")
 				|| newUser.getShortName().length() == 0) {
-			throw new Exception("Invalid UserId");
+			throw new Exception(Constants.ERROR_MSG_INVALID_NICKNAME);
 		}
 		if (newUser.getName() == null || newUser.getName().trim().length() == 0) {
-			throw new Exception("Invalid user name");
+			throw new Exception(Constants.ERROR_MSG_INVALID_USERNAME);
 		}
 		if (newUser.getPassword() == null || newUser.getPassword().length() == 0) {
 			throw new Exception("Invalid password");
@@ -159,20 +155,20 @@ public class UserManager {
 	public void modUser(String adminId, String adminPassword, User modUser) throws Exception {
 		User admin = getUser(adminId, adminPassword);
 		if (!admin.getIsAdmin() && admin.getId() != modUser.getId()) {
-			throw new Exception("You must be an administrator to modify another user");
+			throw new Exception(Constants.ERROR_MSG_INVALID_USERMOD);
 		}
-		if (modUser.getIsAdmin() && !admin.getIsAdmin()){
-			throw new Exception("You must be an administrator to promote an user");			
+		if (modUser.getIsAdmin() && !admin.getIsAdmin()) {
+			throw new Exception(Constants.ERROR_MSG_INVALID_USER_UPGRADE);
 		}
 		if (modUser.getShortName() == null || modUser.getShortName().contains(" ")
 				|| modUser.getShortName().length() == 0) {
-			throw new Exception("Invalid user short name");
+			throw new Exception(Constants.ERROR_MSG_INVALID_NICKNAME);
 		}
 		if (modUser.getName() == null || modUser.getName().trim().length() == 0) {
-			throw new Exception("Invalid user name");
+			throw new Exception(Constants.ERROR_MSG_INVALID_USERNAME);
 		}
 		if (modUser.getPassword() == null || modUser.getPassword().length() == 0) {
-			throw new Exception("Invalid password");
+			throw new Exception(Constants.ERROR_MSG_INVALID_PASSWORD);
 		}
 
 		Connection connection = this.ds.getConnection();
@@ -180,8 +176,8 @@ public class UserManager {
 
 		PreparedStatement pre;
 		try {
-			pre = connection
-					.prepareStatement("UPDATE Usuarios SET Usuario = ?, Nombre = ?, Clave = ?, EsAdmin = ? WHERE Id = ?");
+			pre = connection.prepareStatement(
+					"UPDATE Usuarios SET Usuario = ?, Nombre = ?, Clave = ?, EsAdmin = ? WHERE Id = ?");
 			pre.setString(1, modUser.getShortName());
 			pre.setString(2, modUser.getName());
 			pre.setString(3, hashPassword(modUser.getPassword()));
@@ -198,3 +194,29 @@ public class UserManager {
 		}
 	}
 }
+
+	/*
+	 * Auditar pre =
+	 * connection.prepareStatement("SELECT Nombre FROM Usuarios WHERE Id = ?");
+	 * pre.setLong(1, result.getId()); res = pre.executeQuery(); res.next();
+	 * 
+	 * AuditManager auditor = AuditManager.getInstance(); String
+	 * auditoriaDetalle = "Login de " + res.getString(1) + " en " +
+	 * data.getTerminalId(); auditor.register(result.getId(),
+	 * data.getTerminalId(), Constants.ACCION_LOGIN, Constants.NIVEL_INFO,
+	 * auditoriaDetalle); // -
+	 * 
+	 * pre.close(); res.close(); AuditManager auditor =
+	 * AuditManager.getInstance();
+	 * 
+	 * auditor.register(this.user.getId(), this.terminalId,
+	 * AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
+	 * 
+	 * auditor.register(-1, this.terminalId,
+	 * AuditManager.AUDIT_EVENT_LOGOUT_ERROR, AuditManager.EVENT_LEVEL_ERROR,
+	 * message); auditor.register(-1, this.terminalId,
+	 * AuditManager.AUDIT_EVENT_LOGIN_ERROR, AuditManager.EVENT_LEVEL_ERROR,
+	 * message); auditor.register(-1, this.terminalId,
+	 * AuditManager.AUDIT_EVENT_LOGOUT_OK, AuditManager.EVENT_LEVEL_INFO, null);
+	 * 
+	 */
