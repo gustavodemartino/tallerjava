@@ -29,6 +29,71 @@ public class Main {
 		return result;
 	}
 
+	private static void vender(Agencia agencia, String[] comando) {
+		if (comando.length < 3) {
+			System.out.println("Cantidad incorrecta de parametros");
+			return;
+		}
+		int minutos = 0;
+		Date horaInicial;
+		try {
+			minutos = Integer.parseInt(comando[2]);
+		} catch (Exception e) {
+			System.out.println("Cantidad de minutos inválida");
+			return;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("k:m");
+		if (comando.length == 3) {
+			horaInicial = new Date(0);
+		} else {
+			try {
+				horaInicial = sdf.parse(comando[3]);
+			} catch (Exception e) {
+				System.out.println("Formato de la hora incial incorrecto. Use HH:MM");
+				return;
+			}
+		}
+		try {
+			Ticket t = agencia.vender(comando[1], minutos, horaInicial);
+			System.out.println("Agencia: " + t.getAgency());
+			System.out.println("Hora venta: " + t.getSaleDateTime());
+			System.out.println("Ticket número: " + t.getTicketNumber());
+			System.out.println("Matrícula: " + t.getPlate());
+			System.out.println("Inicio: " + t.getStartDateTime());
+			System.out.println("Fin: " + t.getEndDateTime());
+			System.out.printf("Importe: %4.2f\n", t.getFloatAmount());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			return;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private static void anular(Agencia agencia, String[] comando) {
+		if (comando.length != 2) {
+			System.out.println("Cantidad incorrecta de parametros");
+			return;
+		}
+		long ticket = 0;
+		try {
+			ticket = Integer.parseInt(comando[1]);
+		} catch (Exception e) {
+			System.out.println("Formato del número incorrecto");
+			return;
+		}
+		try {
+			agencia.anular(ticket);
+			System.out.println("Ticket cancelado correctamente");
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			return;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
 	public static void main(String[] args) {
 		if (args.length > 1 && args[0].equals("-t")) {
 			terminal_id = args[1];
@@ -76,66 +141,9 @@ public class Main {
 						agencia.logout();
 						break;
 					} else if (comando[0].equals("vender")) {
-						if (comando.length < 3) {
-							System.out.println("Cantidad incorrecta de parametros");
-							continue;
-						}
-						int minutos = 0;
-						Date horaInicial;
-						try {
-							minutos = Integer.parseInt(comando[2]);
-						} catch (Exception e) {
-							System.out.println("Cantidad de minutos inválida");
-							continue;
-						}
-						SimpleDateFormat sdf = new SimpleDateFormat("k:m");
-						if (comando.length == 3) {
-							horaInicial = new Date(0);
-						} else {
-							try {
-								horaInicial = sdf.parse(comando[3]);
-							} catch (Exception e) {
-								System.out.println("Formato de la hora incial incorrecto. Use HH:MM");
-								continue;
-							}
-						}
-						try {
-							Ticket t = agencia.vender(comando[1], minutos, horaInicial);
-							System.out.println("Agencia: " + t.getAgency());
-							System.out.println("Hora venta: " + t.getSaleDateTime());
-							System.out.println("Ticket número: " + t.getTicketNumber());
-							System.out.println("Matrícula: " + t.getPlate());
-							System.out.println("Inicio: " + t.getStartDateTime());
-							System.out.println("Fin: " + t.getEndDateTime());
-							System.out.printf("Importe: %4.2f\n", t.getFloatAmount());
-						} catch (IOException e) {
-							System.out.println(e.getMessage());
-							break;
-						} catch (Exception e) {
-							System.out.println(e.getMessage());
-						}
-
+						vender(agencia, comando);
 					} else if (comando[0].equals("anular")) {
-						if (comando.length != 2) {
-							System.out.println("Cantidad incorrecta de parametros");
-							continue;
-						}
-						long ticket = 0;
-						try {
-							ticket = Integer.parseInt(comando[1]);
-						} catch (Exception e) {
-							System.out.println("Formato del número incorrecto");
-							continue;
-						}
-						try {
-							agencia.anular(ticket);
-							System.out.println("Ticket cancelado correctamente");
-						} catch (IOException e) {
-							System.out.println(e.getMessage());
-							break;
-						} catch (Exception e) {
-							System.out.println(e.getMessage());
-						}
+						anular(agencia, comando);
 					} else if (comando[0].equals("exit")) {
 						open = false;
 						break;
@@ -150,4 +158,5 @@ public class Main {
 		}
 		System.out.println("Exit program");
 	}
+
 }
