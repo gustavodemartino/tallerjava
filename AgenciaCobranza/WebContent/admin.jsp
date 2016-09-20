@@ -3,7 +3,6 @@
 %>
 
 <%	
-	// Falta controlar que el usuario esté logueado.
 	List<User> users = UserManager.getInstance().getUsers();
 %>
 
@@ -76,14 +75,14 @@
                 
                         <!-- Inline Form  -->
                         <!--===================================================-->
-                        <form class="form-inline">
+                        <form class="form-inline" method="post" action="UserServlet">
                             <div class="form-group">
-                                <label for="demo-inline-inputmail" class="sr-only">Nombre de usuario</label>
-                                <input type="text" id="name" name="name" placeholder="Nombre de usuario" id="demo-inline-inputmail" class="form-control" required>
+                                <label for="demo-inline-inputmail" class="sr-only">Usuario</label>
+                                <input type="text" id="shortName" name="shortName" placeholder="Nickname" id="demo-inline-inputmail" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="demo-inline-inputmail" class="sr-only">Identificador de usuario</label>
-                                <input type="text" id="shortName" name="shortName" placeholder="Identificador de usuario" id="demo-inline-inputmail" class="form-control" required>
+                                <label for="demo-inline-inputmail" class="sr-only">Nombre completo</label>
+                                <input type="text" id="name" name="name" placeholder="Nombre completo" id="demo-inline-inputmail" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="demo-inline-inputpass" class="sr-only">Contraseña</label>
@@ -91,10 +90,11 @@
                             </div>
                             <div class="form-group">
                             	<div class="checkbox">
-									<label class="form-checkbox form-icon"><input type="checkbox" checked=""> Administrativo</label>
+									<label class="form-checkbox form-icon"><input id="admin" name="admin" type="checkbox" checked=""> Administrativo</label>
 								</div>
                             </div>
                             <button class="btn btn-primary" type="submit">Agregar</button>
+                            <div class="form-group"><%= session.getAttribute("mensaje")==null?"":session.getAttribute("mensaje") %></div>
                         </form>
                         <!--===================================================-->
                         <!-- End Inline Form  -->
@@ -112,8 +112,8 @@
                         <table id="demo-dt-basic" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Identificador</th>
-                                    <th>Nombre Usuario</th>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
                                     <th>Administrativo</th>
                                     <th></th>
                                 </tr>
@@ -123,7 +123,7 @@
                                 <tr>
                                     <td><%= user.getShortName()  %></td>
                                     <td><%= user.getName()  %></td>
-                                    <td><%= if(user.getIsAdmin()==true){ out.print("Si") }  %></td>
+                                    <td><%= (user.getIsAdmin()?"si":"no") %></td>
                                     <td><button class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-pencil"></button>  <button class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-trash"></button></td>
                                 </tr>
                                 <% } %>

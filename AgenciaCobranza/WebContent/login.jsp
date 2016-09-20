@@ -32,7 +32,6 @@
     <link href="plugins/pace/pace.min.css" rel="stylesheet">
     <script src="plugins/pace/pace.min.js"></script>
 		
-
 </head>
 
 <body>
@@ -48,7 +47,7 @@
 			<div class="cls-content-sm panel">
 				<div class="panel-body">
 					<p class="pad-btm">Ingrese usuario y clave para acceder</p>
-					<form method="post" action="Login">
+					<form method="post" action="LoginServlet">
 						<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-addon"><i class="fa fa-user"></i></div>
