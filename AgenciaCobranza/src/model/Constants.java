@@ -39,5 +39,19 @@ public class Constants {
 	public static final String ERROR_MSG_LOGIN_REQUIRED = "Usuario no logueado";
 	public static final String ERROR_MSG_INVALID_ACTION = "Identificador de acción inválido";
 	public static final String ERROR_MSG_INVALID_LOCATION = "Ubicacion inválida";
+	
+	public static final String DATASOURCE_LOOKUP = "java:jboss/datasources/AgenciaDS";
+	
+	public static final int NIVEL_INFO    = 1;
+	public static final int NIVEL_WARNING = 2;
+	public static final int NIVEL_ERROR   = 3;
+	
+	public static final int ACCION_LOGIN     = 1;
+	public static final int ACCION_LOGOUT 	 = 2;
+	public static final int ACCION_VENTA     = 3;
+	public static final int ACCION_ANULACION = 4;
+	public static final int ACCION_USR_INS   = 5;
+	public static final int ACCION_USR_UPD   = 6;
+	public static final int ACCION_USR_DLT   = 7;
 
 }
