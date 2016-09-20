@@ -42,11 +42,10 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		HttpSession session = request.getSession();
 		try{
-			User user = UserManager.getInstance().getWebUser(userId, password);
+			User user = UserManager.getInstance().webLogin(userId, password);
 			session.setAttribute("userSession", user);
 			response.sendRedirect("admin.jsp");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			session.setAttribute("userError", e.getMessage());
             response.sendRedirect("login.jsp");
 		}		

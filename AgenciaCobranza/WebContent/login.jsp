@@ -52,18 +52,18 @@
 						<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-addon"><i class="fa fa-user"></i></div>
-								<input type="text" class="form-control" id="userId" placeholder="Nombre de usuario" required>
+								<input type="text" class="form-control" id="userId" name="userId" placeholder="Nombre de usuario" required>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-addon"><i class="fa fa-asterisk"></i></div>
-								<input type="password" class="form-control" id="password" placeholder="Contraseña" required>
+								<input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-xs-8 text-left text-danger">
-								<%= session.getAttribute("userError")==null?"Hea":session.getAttribute("userError") %>
+								<%= session.getAttribute("userError")==null?"":session.getAttribute("userError") %>
 							</div>
 							<div class="col-xs-4">
 								<div class="form-group text-right">
