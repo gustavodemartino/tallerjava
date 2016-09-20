@@ -43,7 +43,7 @@ public class UserManager {
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection.prepareStatement(
-				"SELECT Id, UserId, UserName, IsAdmin FROM Usuarios WHERE UserId = ? AND Password = ?");
+				"SELECT Id, Usuario, Nombre, EsAdmin FROM Usuarios WHERE Usuario = ? AND Clave = ?");
 		pre.setString(1, userId);
 		pre.setString(2, hashPassword(password));
 		ResultSet res = pre.executeQuery();
@@ -53,8 +53,8 @@ public class UserManager {
 			connection.close();
 			throw new Exception(Constants.ERROR_MSG_INVALID_LOGIN);
 		}
-		result = new User(res.getLong("Id"), res.getString("UserId"), res.getString("UserName"),
-				res.getInt("IsAdmin") == 1);
+		result = new User(res.getLong("Id"), res.getString("Usuario"), res.getString("Nombre"),
+				res.getInt("EsAdmin") == 1);
 		pre.close();
 		res.close();
 		connection.close();
@@ -74,7 +74,7 @@ public class UserManager {
 		User result = getUser(data.getUserId(), data.getPassword());
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
-		pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Location = ?");
+		pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Ubicacion = ?");
 		pre.setLong(1, result.getId());
 		pre.setString(2, data.getTerminalId());
 		ResultSet res;
@@ -87,7 +87,7 @@ public class UserManager {
 		}
 		
 		//+ Auditar
-		pre = connection.prepareStatement("SELECT UserName FROM Usuarios WHERE Id = ?");
+		pre = connection.prepareStatement("SELECT Nombre FROM Usuarios WHERE Id = ?");
 		pre.setLong(1, result.getId());
 		res = pre.executeQuery();
 		res.next();
@@ -108,10 +108,10 @@ public class UserManager {
 		Connection connection = this.ds.getConnection();
 		Statement sta;
 		sta = connection.createStatement();
-		ResultSet res = sta.executeQuery("SELECT Id, UserId, UserName, IsAdmin FROM Usuarios");
+		ResultSet res = sta.executeQuery("SELECT Id, Usuario, Nombre, EsAdmin FROM Usuarios");
 		while (res.next()) {
-			result.add(new User(res.getLong("Id"), res.getString("UserId"), res.getString("UserName"),
-					res.getInt("IsAdmin") == 1));
+			result.add(new User(res.getLong("Id"), res.getString("Usuario"), res.getString("Nombre"),
+					res.getInt("EsAdmin") == 1));
 		}
 		sta.close();
 		res.close();
@@ -140,7 +140,7 @@ public class UserManager {
 		PreparedStatement pre;
 		try {
 			pre = connection
-					.prepareStatement("INSERT INTO Usuarios (UserId, UserName, Password, IsAdmin) VALUES (?, ?, ?, ?)");
+					.prepareStatement("INSERT INTO Usuarios (Usuario, Nombre, Clave, EsAdmin) VALUES (?, ?, ?, ?)");
 			pre.setString(1, newUser.getShortName());
 			pre.setString(2, newUser.getName());
 			pre.setString(3, hashPassword(newUser.getPassword()));
@@ -181,7 +181,7 @@ public class UserManager {
 		PreparedStatement pre;
 		try {
 			pre = connection
-					.prepareStatement("UPDATE Usuarios SET UserId = ?, UserName = ?, Password = ?, IsAdmin = ? WHERE Id = ?");
+					.prepareStatement("UPDATE Usuarios SET Usuario = ?, Nombre = ?, Clave = ?, EsAdmin = ? WHERE Id = ?");
 			pre.setString(1, modUser.getShortName());
 			pre.setString(2, modUser.getName());
 			pre.setString(3, hashPassword(modUser.getPassword()));
