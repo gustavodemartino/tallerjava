@@ -65,7 +65,6 @@ public class UserManager {
 		User u;
 		try{
 			u = getUser(userId, password);
-			auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
 		} catch (Exception e) {
 			auditor.register(-1, "Web", AuditManager.AUDIT_EVENT_LOGIN_ERROR, AuditManager.EVENT_LEVEL_WARNING, e.getMessage());
 			throw new Exception(e.getMessage());
@@ -74,6 +73,7 @@ public class UserManager {
 			auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_INVALID_LOCATION, AuditManager.EVENT_LEVEL_WARNING, null);
 			throw new Exception(Constants.ERROR_MSG_NOT_USER_PRIVILEGES);
 		}
+		auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
 		return u;
 	}
 
