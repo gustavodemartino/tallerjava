@@ -19,9 +19,11 @@ public class UserManager {
 	private static UserManager instance = null;
 	private DataSource ds;
 
+	// Singleton
 	private UserManager() throws Exception {
 		InitialContext initContext = new InitialContext();
 		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
+		init();
 	}
 
 	public static UserManager getInstance() throws Exception {
@@ -29,6 +31,29 @@ public class UserManager {
 			instance = new UserManager();
 		}
 		return instance;
+	}
+	
+	private void init() throws Exception {
+		// Si no hay usuarios en la base de datos crea un administrador
+		Connection connection = this.ds.getConnection();
+		Statement sta;
+		sta = connection.createStatement();
+		ResultSet res = sta.executeQuery("SELECT COUNT(Id) FROM Usuarios");
+		res.next();
+		boolean empty = (res.getLong(1) == 0);
+		sta.close();
+		res.close();
+		if (empty) {
+			PreparedStatement pre = connection
+					.prepareStatement("INSERT INTO Usuarios (Usuario, Nombre, Clave, EsAdmin) VALUES (?, ?, ?, ?)");
+			pre.setString(1, "admin");
+			pre.setString(2, "Administrador");
+			pre.setString(3, hashPassword("admin"));
+			pre.setInt(4, 1);
+			pre.execute();
+			pre.close();
+		}
+		connection.close();
 	}
 
 	private String hashPassword(String password) throws Exception {
@@ -63,14 +88,16 @@ public class UserManager {
 	public User webLogin(String userId, String password) throws Exception {
 		AuditManager auditor = AuditManager.getInstance();
 		User u;
-		try{
+		try {
 			u = getUser(userId, password);
 		} catch (Exception e) {
-			auditor.register(-1, "Web", AuditManager.AUDIT_EVENT_LOGIN_ERROR, AuditManager.EVENT_LEVEL_WARNING, e.getMessage());
+			auditor.register(-1, "Web", AuditManager.AUDIT_EVENT_LOGIN_ERROR, AuditManager.EVENT_LEVEL_WARNING,
+					e.getMessage());
 			throw new Exception(e.getMessage());
 		}
 		if (!u.getIsAdmin()) {
-			auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_INVALID_LOCATION, AuditManager.EVENT_LEVEL_WARNING, null);
+			auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_INVALID_LOCATION,
+					AuditManager.EVENT_LEVEL_WARNING, null);
 			throw new Exception(Constants.ERROR_MSG_NOT_USER_PRIVILEGES);
 		}
 		auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
@@ -91,11 +118,13 @@ public class UserManager {
 			pre.close();
 			res.close();
 			connection.close();
-			auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_INVALID_LOCATION, AuditManager.EVENT_LEVEL_WARNING, null);			
+			auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_INVALID_LOCATION,
+					AuditManager.EVENT_LEVEL_WARNING, null);
 			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
 		}
 		connection.close();
-		auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);			
+		auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_LOGIN_OK,
+				AuditManager.EVENT_LEVEL_INFO, null);
 		return user;
 	}
 
@@ -131,8 +160,6 @@ public class UserManager {
 			throw new Exception("Invalid password");
 		}
 		Connection connection = this.ds.getConnection();
-		connection.setAutoCommit(false);
-
 		PreparedStatement pre;
 		try {
 			pre = connection
@@ -143,10 +170,8 @@ public class UserManager {
 			pre.setInt(4, (newUser.getIsAdmin() ? 1 : 0));
 			pre.execute();
 			pre.close();
-			connection.commit();
 			connection.close();
 		} catch (Exception e) {
-			connection.rollback();
 			connection.close();
 			throw new Exception(e.getMessage());
 		}
@@ -195,28 +220,26 @@ public class UserManager {
 	}
 }
 
-	/*
-	 * Auditar pre =
-	 * connection.prepareStatement("SELECT Nombre FROM Usuarios WHERE Id = ?");
-	 * pre.setLong(1, result.getId()); res = pre.executeQuery(); res.next();
-	 * 
-	 * AuditManager auditor = AuditManager.getInstance(); String
-	 * auditoriaDetalle = "Login de " + res.getString(1) + " en " +
-	 * data.getTerminalId(); auditor.register(result.getId(),
-	 * data.getTerminalId(), Constants.ACCION_LOGIN, Constants.NIVEL_INFO,
-	 * auditoriaDetalle); // -
-	 * 
-	 * pre.close(); res.close(); AuditManager auditor =
-	 * AuditManager.getInstance();
-	 * 
-	 * auditor.register(this.user.getId(), this.terminalId,
-	 * AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
-	 * 
-	 * auditor.register(-1, this.terminalId,
-	 * AuditManager.AUDIT_EVENT_LOGOUT_ERROR, AuditManager.EVENT_LEVEL_ERROR,
-	 * message); auditor.register(-1, this.terminalId,
-	 * AuditManager.AUDIT_EVENT_LOGIN_ERROR, AuditManager.EVENT_LEVEL_ERROR,
-	 * message); auditor.register(-1, this.terminalId,
-	 * AuditManager.AUDIT_EVENT_LOGOUT_OK, AuditManager.EVENT_LEVEL_INFO, null);
-	 * 
-	 */
+/*
+ * Auditar pre =
+ * connection.prepareStatement("SELECT Nombre FROM Usuarios WHERE Id = ?");
+ * pre.setLong(1, result.getId()); res = pre.executeQuery(); res.next();
+ * 
+ * AuditManager auditor = AuditManager.getInstance(); String auditoriaDetalle =
+ * "Login de " + res.getString(1) + " en " + data.getTerminalId();
+ * auditor.register(result.getId(), data.getTerminalId(),
+ * Constants.ACCION_LOGIN, Constants.NIVEL_INFO, auditoriaDetalle); // -
+ * 
+ * pre.close(); res.close(); AuditManager auditor = AuditManager.getInstance();
+ * 
+ * auditor.register(this.user.getId(), this.terminalId,
+ * AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
+ * 
+ * auditor.register(-1, this.terminalId, AuditManager.AUDIT_EVENT_LOGOUT_ERROR,
+ * AuditManager.EVENT_LEVEL_ERROR, message); auditor.register(-1,
+ * this.terminalId, AuditManager.AUDIT_EVENT_LOGIN_ERROR,
+ * AuditManager.EVENT_LEVEL_ERROR, message); auditor.register(-1,
+ * this.terminalId, AuditManager.AUDIT_EVENT_LOGOUT_OK,
+ * AuditManager.EVENT_LEVEL_INFO, null);
+ * 
+ */
