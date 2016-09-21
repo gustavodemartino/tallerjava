@@ -42,7 +42,6 @@ public class Terminal extends JFrame  implements ActionListener {
 	private String terminalId = "terminal_1";
 	private String nombreTerminal = "Terminal 1";
 	User usuarioDatos;
-	
 
 	public Terminal() {
 		initUI();

@@ -3,6 +3,7 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,11 +50,18 @@ public class LocationManager {
 		return result;
 	}
 
+	public void addLocation(String nombre) throws Exception {
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre = connection.prepareStatement("INSERT INTO Ubicaciones (Nombre) VALUES (?)");
+		pre.execute();
+		pre.close();
+		connection.close();
+	}
+
 	public List<Location> getLocations() throws Exception {
 		List<Location> result = new ArrayList<Location>();
 		Connection connection = this.ds.getConnection();
-		Statement sta;
-		sta = connection.createStatement();
+		Statement sta = connection.createStatement();
 		ResultSet res = sta.executeQuery("SELECT Id, Nombre FROM Ubicaciones");
 		while (res.next()) {
 			result.add(new Location(res.getLong(1), res.getString(2)));
@@ -64,22 +72,3 @@ public class LocationManager {
 		return result;
 	}
 }
-
-// Connection connection = this.ds.getConnection();
-// PreparedStatement pre;
-// pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario
-// = ? AND Ubicacion = ?");
-// pre.setLong(1, user.getId());
-// pre.setString(2, data.getTerminalId());
-// ResultSet res;
-//
-// res = pre.executeQuery();
-// if (!res.next()) {
-// pre.close();
-// res.close();
-// connection.close();
-// auditor.register(user.getId(), data.getTerminalId(),
-// AuditManager.AUDIT_EVENT_INVALID_LOCATION,
-// AuditManager.EVENT_LEVEL_WARNING, null);
-// throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
-// }
