@@ -191,4 +191,26 @@ public class UserManager {
 		connection.close();
 		return result;
 	}
+	
+	void grant(long userId, long locationId) throws Exception{
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre = connection
+				.prepareStatement("INSERT INTO Permisos (Usuario, Ubicacion) VALUES (?, ?)");
+		pre.setLong(1, userId);
+		pre.setLong(2, locationId);
+		pre.execute();
+		pre.close();
+		connection.close();
+	}
+	
+	void revoke(long userId, long locationId) throws Exception{
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre = connection
+				.prepareStatement("DELETE FROM Permisos WHERE Usuario = ? AND Ubicacion = ?");
+		pre.setLong(1, userId);
+		pre.setLong(2, locationId);
+		pre.execute();
+		pre.close();
+		connection.close();
+	}
 }
