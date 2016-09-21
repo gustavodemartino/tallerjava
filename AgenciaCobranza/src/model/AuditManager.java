@@ -38,8 +38,9 @@ public class AuditManager {
 		return instance;
 	}
 
-	public void register(long user, String location, int event, int level, String detail) throws Exception {
-
+	public void register(long user, long location, int event, int level, String detail) throws Exception {
+		// Si no hay usuario pasar un valor negativo
+		// Si no hay ubicación, pasar un valor negativo
 		Connection connection = ds.getConnection();
 		PreparedStatement pre;
 		long timestamp = new Date().getTime();
@@ -52,10 +53,10 @@ public class AuditManager {
 			} else {
 				pre.setNull(2, java.sql.Types.BIGINT);
 			}
-			if (location != null) {
-				pre.setString(3, location);
+			if (location >0) {
+				pre.setLong(3, location);
 			} else {
-				pre.setNull(3, java.sql.Types.VARCHAR);
+				pre.setNull(3, java.sql.Types.BIGINT);
 			}
 			pre.setInt(4, event);
 			pre.setInt(5, level);

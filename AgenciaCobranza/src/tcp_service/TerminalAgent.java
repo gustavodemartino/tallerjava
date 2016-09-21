@@ -14,8 +14,8 @@ import data.TicketCancelParameters;
 import data.TicketSaleParameters;
 import data.User;
 import model.Constants;
+import model.LoginManager;
 import model.SalesManager;
-import model.UserManager;
 
 
 public class TerminalAgent implements Runnable {
@@ -61,7 +61,7 @@ public class TerminalAgent implements Runnable {
 						throw new Exception(Constants.ERROR_MSG_REPEATED_LOGIN);
 					}
 					try {
-						this.user = UserManager.getInstance().login((LoginParameters) command.getData());
+						this.user = LoginManager.getInstance().terminalLogin((LoginParameters) command.getData());
 						response = new Message(Message.LOGIN_OK, this.user);
 					} catch (Exception e) {
 						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(e.getMessage()));

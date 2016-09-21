@@ -12,7 +12,6 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import data.LoginParameters;
 import data.User;
 
 public class UserManager {
@@ -32,7 +31,7 @@ public class UserManager {
 		}
 		return instance;
 	}
-	
+
 	private void init() throws Exception {
 		// Si no hay usuarios en la base de datos crea un administrador
 		Connection connection = this.ds.getConnection();
@@ -40,10 +39,7 @@ public class UserManager {
 		sta = connection.createStatement();
 		ResultSet res = sta.executeQuery("SELECT COUNT(Id) FROM Usuarios");
 		res.next();
-		boolean empty = (res.getLong(1) == 0);
-		sta.close();
-		res.close();
-		if (empty) {
+		if (res.getLong(1) == 0) {
 			PreparedStatement pre = connection
 					.prepareStatement("INSERT INTO Usuarios (Usuario, Nombre, Clave, EsAdmin) VALUES (?, ?, ?, ?)");
 			pre.setString(1, "admin");
@@ -53,6 +49,8 @@ public class UserManager {
 			pre.execute();
 			pre.close();
 		}
+		sta.close();
+		res.close();
 		connection.close();
 	}
 
@@ -83,49 +81,6 @@ public class UserManager {
 		res.close();
 		connection.close();
 		return result;
-	}
-
-	public User webLogin(String userId, String password) throws Exception {
-		AuditManager auditor = AuditManager.getInstance();
-		User u;
-		try {
-			u = getUser(userId, password);
-		} catch (Exception e) {
-			auditor.register(-1, "Web", AuditManager.AUDIT_EVENT_LOGIN_ERROR, AuditManager.EVENT_LEVEL_WARNING,
-					e.getMessage());
-			throw new Exception(e.getMessage());
-		}
-		if (!u.getIsAdmin()) {
-			auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_INVALID_LOCATION,
-					AuditManager.EVENT_LEVEL_WARNING, null);
-			throw new Exception(Constants.ERROR_MSG_NOT_USER_PRIVILEGES);
-		}
-		auditor.register(u.getId(), "Web", AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
-		return u;
-	}
-
-	public User login(LoginParameters data) throws Exception {
-		AuditManager auditor = AuditManager.getInstance();
-		User user = getUser(data.getUserId(), data.getPassword());
-		Connection connection = this.ds.getConnection();
-		PreparedStatement pre;
-		pre = connection.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Ubicacion = ?");
-		pre.setLong(1, user.getId());
-		pre.setString(2, data.getTerminalId());
-		ResultSet res;
-		res = pre.executeQuery();
-		if (!res.next()) {
-			pre.close();
-			res.close();
-			connection.close();
-			auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_INVALID_LOCATION,
-					AuditManager.EVENT_LEVEL_WARNING, null);
-			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
-		}
-		connection.close();
-		auditor.register(user.getId(), data.getTerminalId(), AuditManager.AUDIT_EVENT_LOGIN_OK,
-				AuditManager.EVENT_LEVEL_INFO, null);
-		return user;
 	}
 
 	public List<User> getUsers() throws SQLException {
@@ -218,28 +173,22 @@ public class UserManager {
 			throw new Exception(e.getMessage());
 		}
 	}
-}
 
-/*
- * Auditar pre =
- * connection.prepareStatement("SELECT Nombre FROM Usuarios WHERE Id = ?");
- * pre.setLong(1, result.getId()); res = pre.executeQuery(); res.next();
- * 
- * AuditManager auditor = AuditManager.getInstance(); String auditoriaDetalle =
- * "Login de " + res.getString(1) + " en " + data.getTerminalId();
- * auditor.register(result.getId(), data.getTerminalId(),
- * Constants.ACCION_LOGIN, Constants.NIVEL_INFO, auditoriaDetalle); // -
- * 
- * pre.close(); res.close(); AuditManager auditor = AuditManager.getInstance();
- * 
- * auditor.register(this.user.getId(), this.terminalId,
- * AuditManager.AUDIT_EVENT_LOGIN_OK, AuditManager.EVENT_LEVEL_INFO, null);
- * 
- * auditor.register(-1, this.terminalId, AuditManager.AUDIT_EVENT_LOGOUT_ERROR,
- * AuditManager.EVENT_LEVEL_ERROR, message); auditor.register(-1,
- * this.terminalId, AuditManager.AUDIT_EVENT_LOGIN_ERROR,
- * AuditManager.EVENT_LEVEL_ERROR, message); auditor.register(-1,
- * this.terminalId, AuditManager.AUDIT_EVENT_LOGOUT_OK,
- * AuditManager.EVENT_LEVEL_INFO, null);
- * 
- */
+	public boolean permission(Long userId, Long locationId) throws Exception {
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre = connection
+				.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Ubicacion = ? LIMIT 1");
+		pre.setLong(1, userId);
+		pre.setLong(2, locationId);
+		ResultSet res;
+		res = pre.executeQuery();
+		boolean result = true;
+		if (!res.next()) {
+			result = false;
+		}
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+}
