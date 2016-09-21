@@ -17,27 +17,27 @@ public class AuditManager {
 	public static final int AUDIT_EVENT_LOGOUT_OK = 1003;
 	public static final int AUDIT_EVENT_LOGOUT_ERROR = 1004;
 	public static final int AUDIT_EVENT_INVALID_LOCATION = 1005;
-	
+
 	public static final int AUDIT_EVENT_SALE = 3;
 	public static final int AUDIT_EVENT_ANNULATION = 4;
 	public static final int AUDIT_EVENT_USER_CREATE = 5;
 	public static final int AUDIT_EVENT_USER_UPDATE = 6;
 
-
 	private static AuditManager instance = null;
 	private DataSource ds;
-	
-	private AuditManager() throws Exception{	
+
+	private AuditManager() throws Exception {
 		InitialContext initContext = new InitialContext();
 		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
 	}
 
-	public static AuditManager getInstance() throws Exception{
-		if (instance == null){
+	public static AuditManager getInstance() throws Exception {
+		if (instance == null) {
 			instance = new AuditManager();
 		}
 		return instance;
 	}
+
 	public void register(long user, String location, int event, int level, String detail) throws Exception {
 
 		Connection connection = ds.getConnection();
@@ -47,8 +47,16 @@ public class AuditManager {
 			pre = connection.prepareStatement(
 					"INSERT INTO Auditoria (FechaHora, Usuario, Ubicacion, Evento, Nivel, Detalle) VALUES (?, ?, ?, ?, ?, ?)");
 			pre.setLong(1, timestamp);
-			pre.setLong(2, user);
-			pre.setString(3, location);
+			if (user > 0) {
+				pre.setLong(2, user);
+			} else {
+				pre.setNull(2, java.sql.Types.BIGINT);
+			}
+			if (location != null) {
+				pre.setString(3, location);
+			} else {
+				pre.setNull(3, java.sql.Types.VARCHAR);
+			}
 			pre.setInt(4, event);
 			pre.setInt(5, level);
 			pre.setString(6, detail);
