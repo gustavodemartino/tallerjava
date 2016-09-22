@@ -43,5 +43,5 @@ public class Constants {
 	public static final String ERROR_MSG_LOCATION_NOT_ALLOWED = "No tiene permisos para acceder desde esta ubicación";
 	public static final String ERROR_MSG_NOT_USER_PRIVILEGES = "No tiene permisos para utilizar este recurso";
 	public static final String ERROR_MSG_INVALID_USERMOD = "No tiene permisos para modificar otro usuario";
-	public static final String ERROR_MSG_INVALID_USER_UPGRADE = "No tiene permisos para promover el usuario";
+	public static final String ERROR_MSG_INVALID_SELF_ADMIN = "No puede cambiar sus privilegios administrativos";
 }

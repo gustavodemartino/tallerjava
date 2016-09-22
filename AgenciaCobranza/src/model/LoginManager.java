@@ -22,7 +22,7 @@ public class LoginManager {
 	public User terminalLogin(LoginParameters data) throws Exception {
 		User user = UserManager.getInstance().getUser(data.getUserId(), data.getPassword());
 		Location location = LocationManager.getInstance().getLocation(data.getTerminalId());
-		if (!UserManager.getInstance().permission(user.getId(), location.getId())) {
+		if (!UserManager.getInstance().hasPermission(user.getId(), location.getId())) {
 			throw new Exception(Constants.ERROR_MSG_LOCATION_NOT_ALLOWED);
 		}
 		return user;

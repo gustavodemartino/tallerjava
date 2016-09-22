@@ -12,6 +12,7 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import data.Location;
 import data.User;
 
 public class UserManager {
@@ -115,9 +116,8 @@ public class UserManager {
 			throw new Exception("Invalid password");
 		}
 		Connection connection = this.ds.getConnection();
-		PreparedStatement pre;
 		try {
-			pre = connection
+			PreparedStatement pre = connection
 					.prepareStatement("INSERT INTO Usuarios (Usuario, Nombre, Clave, EsAdmin) VALUES (?, ?, ?, ?)");
 			pre.setString(1, newUser.getShortName());
 			pre.setString(2, newUser.getName());
@@ -134,11 +134,16 @@ public class UserManager {
 
 	public void modUser(String adminId, String adminPassword, User modUser) throws Exception {
 		User admin = getUser(adminId, adminPassword);
-		if (!admin.getIsAdmin() && admin.getId() != modUser.getId()) {
-			throw new Exception(Constants.ERROR_MSG_INVALID_USERMOD);
-		}
-		if (modUser.getIsAdmin() && !admin.getIsAdmin()) {
-			throw new Exception(Constants.ERROR_MSG_INVALID_USER_UPGRADE);
+		if (admin.getId() == modUser.getId()) {
+			// El usuario se está modificando a si mismo
+			if (admin.getIsAdmin() != modUser.getIsAdmin()) {
+				throw new Exception(Constants.ERROR_MSG_INVALID_SELF_ADMIN);
+			}
+		} else {
+			if (!admin.getIsAdmin()) {
+				// Usuario no administador pretende cambiar a otro usuario
+				throw new Exception(Constants.ERROR_MSG_INVALID_USERMOD);
+			}
 		}
 		if (modUser.getShortName() == null || modUser.getShortName().contains(" ")
 				|| modUser.getShortName().length() == 0) {
@@ -174,14 +179,13 @@ public class UserManager {
 		}
 	}
 
-	public boolean permission(Long userId, Long locationId) throws Exception {
+	public boolean hasPermission(Long userId, Long locationId) throws Exception {
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre = connection
 				.prepareStatement("SELECT Id FROM Permisos WHERE Usuario = ? AND Ubicacion = ? LIMIT 1");
 		pre.setLong(1, userId);
 		pre.setLong(2, locationId);
-		ResultSet res;
-		res = pre.executeQuery();
+		ResultSet res = pre.executeQuery();
 		boolean result = true;
 		if (!res.next()) {
 			result = false;
@@ -191,26 +195,40 @@ public class UserManager {
 		connection.close();
 		return result;
 	}
-	
-	void grant(long userId, long locationId) throws Exception{
+
+	void grantPermission(long userId, long locationId) throws Exception {
 		Connection connection = this.ds.getConnection();
-		PreparedStatement pre = connection
-				.prepareStatement("INSERT INTO Permisos (Usuario, Ubicacion) VALUES (?, ?)");
+		PreparedStatement pre = connection.prepareStatement("INSERT INTO Permisos (Usuario, Ubicacion) VALUES (?, ?)");
 		pre.setLong(1, userId);
 		pre.setLong(2, locationId);
 		pre.execute();
 		pre.close();
 		connection.close();
 	}
-	
-	void revoke(long userId, long locationId) throws Exception{
+
+	void revokePermission(long userId, long locationId) throws Exception {
 		Connection connection = this.ds.getConnection();
-		PreparedStatement pre = connection
-				.prepareStatement("DELETE FROM Permisos WHERE Usuario = ? AND Ubicacion = ?");
+		PreparedStatement pre = connection.prepareStatement("DELETE FROM Permisos WHERE Usuario = ? AND Ubicacion = ?");
 		pre.setLong(1, userId);
 		pre.setLong(2, locationId);
 		pre.execute();
 		pre.close();
 		connection.close();
+	}
+
+	List<Location> getPermissions(long userId) throws Exception{
+		Connection connection = this.ds.getConnection();
+		List<Location> result = new ArrayList<Location>();
+		PreparedStatement pre = connection
+				.prepareStatement("SELECT Ubicacion FROM Permisos WHERE Usuario = ?");
+		pre.setLong(1, userId);
+		ResultSet res = pre.executeQuery();
+		while (res.next()) {
+			result.add(LocationManager.getInstance().getLocation(res.getLong(1)));
+		}
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
 	}
 }

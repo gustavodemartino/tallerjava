@@ -32,8 +32,7 @@ public class LocationManager {
 
 	public Location getLocation(String terminalId) throws Exception {
 		Connection connection = this.ds.getConnection();
-		PreparedStatement pre;
-		pre = connection.prepareStatement("SELECT Id FROM Ubicaciones WHERE Nombre = ? LIMIT 1");
+		PreparedStatement pre = connection.prepareStatement("SELECT Id FROM Ubicaciones WHERE Nombre = ? LIMIT 1");
 		pre.setString(1, terminalId);
 		ResultSet res = pre.executeQuery();
 		if (!res.next()) {
@@ -43,6 +42,24 @@ public class LocationManager {
 			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
 		}
 		Location result = new Location(res.getLong(1), terminalId);
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+
+	public Location getLocation(long locationId) throws Exception {
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre = connection.prepareStatement("SELECT Nombre FROM Ubicaciones WHERE Id = ? LIMIT 1");
+		pre.setLong(1, locationId);
+		ResultSet res = pre.executeQuery();
+		if (!res.next()) {
+			pre.close();
+			res.close();
+			connection.close();
+			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
+		}
+		Location result = new Location(locationId, res.getString(1));
 		pre.close();
 		res.close();
 		connection.close();
@@ -70,4 +87,5 @@ public class LocationManager {
 		connection.close();
 		return result;
 	}
+
 }
