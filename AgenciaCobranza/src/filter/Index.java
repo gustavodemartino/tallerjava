@@ -11,20 +11,19 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 
 @WebFilter("/index.html")
-public class Start implements Filter {
+public class Index implements Filter {
 
-    public Start() {
+    public Index() {
     }
 
-    public void init(FilterConfig fConfig) throws ServletException {
-    }
-
-    public void destroy() {
+	public void destroy() {
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		((HttpServletResponse) response).sendRedirect("login.jsp");
-		chain.doFilter(request, response);
+		((HttpServletResponse) response).sendRedirect("login.jsp");		
+	}
+
+	public void init(FilterConfig fConfig) throws ServletException {
 	}
 
 }
