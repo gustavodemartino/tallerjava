@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import data.ErrorMessage;
+import data.Location;
+import data.Login;
 import data.LoginParameters;
 import data.Message;
 import data.Ticket;
@@ -24,6 +26,7 @@ public class TerminalAgent implements Runnable {
 	private int connection;
 	private PrintWriter writer;
 	private User user = null;
+	private Location location;
 
 	public TerminalAgent(Socket socket, int connectionNum) throws IOException {
 		this.socket = socket;
@@ -67,14 +70,17 @@ public class TerminalAgent implements Runnable {
 					if (this.user != null) {
 						throw new Exception(Constants.ERROR_MSG_REPEATED_LOGIN);
 					}
+					Login loginResult;
 					try {
 						LoginParameters infoParamLogin = (LoginParameters) command.getData();
 						datosExtra = infoParamLogin.getUserId() + ";" + infoParamLogin.getTerminalId() + ";";
 						
-						this.user = LoginManager.getInstance().terminalLogin(infoParamLogin);
+						loginResult = LoginManager.getInstance().terminalLogin(infoParamLogin);
+						this.user = loginResult.getUser();
+						this.location = loginResult.getLocation();
 						response = new Message(Message.LOGIN_OK, this.user);
 						
-						auditor.register(this.user.getId(), 0, AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_INFO, datosExtra);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_INFO, datosExtra);
 						
 					} catch (Exception e) {
 						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(e.getMessage()));
@@ -89,7 +95,7 @@ public class TerminalAgent implements Runnable {
 					if (this.user == null) {
 						throw new Exception(Constants.ERROR_MSG_LOGIN_REQUIRED);
 					}
-					auditor.register(this.user.getId(), 0, AuditManager.AUDIT_EVENT_LOGOUT, AuditManager.EVENT_LEVEL_INFO, "");
+					auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGOUT, AuditManager.EVENT_LEVEL_INFO, "");
 					
 					this.user = null;
 					response = new Message(Message.LOGOUT_OK, null);
@@ -108,11 +114,11 @@ public class TerminalAgent implements Runnable {
 						Ticket ticket = SalesManager.getInstance().saleTicket(infoParamSale);
 						response = new Message(Message.TICKET_SALE_OK, ticket);
 						
-						auditor.register(this.user.getId(), 0, AuditManager.AUDIT_EVENT_SALE, AuditManager.EVENT_LEVEL_INFO, datosExtra);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE, AuditManager.EVENT_LEVEL_INFO, datosExtra);
 						
 					} catch (Exception e) {
 						response = new Message(Message.TICKET_SALE_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(this.user.getId(), 0, AuditManager.AUDIT_EVENT_SALE, AuditManager.EVENT_LEVEL_ERROR, datosExtra);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE, AuditManager.EVENT_LEVEL_ERROR, datosExtra);
 					}
 					writer.println(response.toString() + "\n");
 					
@@ -129,11 +135,11 @@ public class TerminalAgent implements Runnable {
 						SalesManager.getInstance().cancelTicket(infoParamCancel);
 						response = new Message(Message.TICKET_CANCEL_OK, null);
 						
-						auditor.register(this.user.getId(), 0, AuditManager.AUDIT_EVENT_ANNULATION, AuditManager.EVENT_LEVEL_INFO, datosExtra);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION, AuditManager.EVENT_LEVEL_INFO, datosExtra);
 						
 					} catch (Exception e) {
 						response = new Message(Message.TICKET_CANCEL_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(this.user.getId(), 0, AuditManager.AUDIT_EVENT_ANNULATION, AuditManager.EVENT_LEVEL_ERROR, datosExtra);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION, AuditManager.EVENT_LEVEL_ERROR, datosExtra);
 					}
 					writer.println(response.toString() + "\n");
 				}

@@ -1,6 +1,7 @@
 package model;
 
 import data.Location;
+import data.Login;
 import data.LoginParameters;
 import data.User;
 
@@ -19,13 +20,13 @@ public class LoginManager {
 		return instance;
 	}
 
-	public User terminalLogin(LoginParameters data) throws Exception {
+	public Login terminalLogin(LoginParameters data) throws Exception {
 		User user = UserManager.getInstance().getUser(data.getUserId(), data.getPassword());
 		Location location = LocationManager.getInstance().getLocation(data.getTerminalId());
 		if (!UserManager.getInstance().hasPermission(user.getId(), location.getId())) {
 			throw new Exception(Constants.ERROR_MSG_LOCATION_NOT_ALLOWED);
 		}
-		return user;
+		return new Login(user, location);
 	}
 
 	public User webLogin(String userId, String password) throws Exception {
