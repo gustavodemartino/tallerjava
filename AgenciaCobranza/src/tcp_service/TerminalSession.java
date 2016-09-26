@@ -21,14 +21,14 @@ import model.LoginManager;
 import model.SalesManager;
 
 
-public class TerminalAgent implements Runnable {
+public class TerminalSession implements Runnable {
 	private Socket socket;
 	private int connection;
 	private PrintWriter writer;
 	private User user = null;
 	private Location location;
 
-	public TerminalAgent(Socket socket, int connectionNum) throws IOException {
+	public TerminalSession(Socket socket, int connectionNum) throws IOException {
 		this.socket = socket;
 		this.connection = connectionNum;
 		this.writer = new PrintWriter(this.socket.getOutputStream(), true);

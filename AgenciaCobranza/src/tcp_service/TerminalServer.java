@@ -20,7 +20,7 @@ public class TerminalServer implements Runnable {
 				System.out.println(
 						"#" + connectionNum + " Connection started from " + socket.getInetAddress().getHostAddress());
 				try {
-					Thread t = new Thread(new TerminalAgent(socket, connectionNum));
+					Thread t = new Thread(new TerminalSession(socket, connectionNum));
 					t.start();
 				} catch (IOException e) {
 					System.out.println("#" + connectionNum + " ErrorMessage starting connection");
