@@ -61,15 +61,16 @@
 
 				<div id="page-title">
 					<h1 class="page-header text-overflow">
-						<strong>Panel de Administración de Usuarios</strong>
+						<strong>Administración de Usuarios</strong>
 					</h1>
 					<div class="searchbox">
 						<div class="input-group custom-search-form">
-							Bienvenido, <strong><%=((Login) session.getAttribute(Constants.IDENTFIER_SESSION_LOGIN_INFO)).getUser().getName()%></strong>
+							<strong><%=((Login) session.getAttribute(Constants.IDENTFIER_SESSION_LOGIN_INFO)).getUser().getName()%></strong>
 							| <a href="logout">Cerrar Sesión</a>
 						</div>
 					</div>
 				</div>
+				<a href="menu.jsp">Menú principal</a>
 				<div id="page-content">
 
 					<div class="panel">

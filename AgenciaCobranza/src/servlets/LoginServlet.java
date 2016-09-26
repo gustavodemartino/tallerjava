@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
 				AuditManager.getInstance().register(loginInfo.getUser().getId(), loginInfo.getLocation().getId(),
 						AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_INFO, null);
 			}
-			response.sendRedirect("admin.jsp");
+			response.sendRedirect("menu.jsp");
 		} catch (Exception e) {
 			session.setAttribute("userError", e.getMessage());
 			try {
