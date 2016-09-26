@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,9 +38,8 @@ public class Terminal extends JFrame  implements ActionListener {
 	private JButton botonLogin, botonSalir, botonAlta, botonAnular;
 	private JPanel cartas, cardLogin, cardInicio, cardAlta, cardAnulacion;
 	Agencia agencia;
-	private String terminalId = "terminal_1";
-	private String nombreTerminal = "Terminal 1";
 	User usuarioDatos;
+	String ubicacionNombre;
 
 	public Terminal() {
 		initUI();
@@ -49,18 +47,11 @@ public class Terminal extends JFrame  implements ActionListener {
 
 	private void initUI() {
 
-		try {
-			agencia = new Agencia(terminalId);
-		} catch (Exception e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-
 		setTitle("IMM - Tickets Estacionamiento");
 		ImageIcon webIcon = new ImageIcon("favicon.png");
 		setIconImage(webIcon.getImage());
 
-		setSize(500, 350);
+		setSize(600, 450);
 		setLocationRelativeTo(null); // center the window on the screen
 		// setDefaultCloseOperation(EXIT_ON_CLOSE); //close the window if we
 		// click on the Close button of the titlebar
@@ -71,11 +62,11 @@ public class Terminal extends JFrame  implements ActionListener {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				try {
-					agencia.close();
+					if (agencia != null)
+						agencia.close();
 					System.exit(0);
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					System.exit(0);
 				}
 			}
 		});
@@ -83,35 +74,46 @@ public class Terminal extends JFrame  implements ActionListener {
 		// Header - Barra espaceadora superior
 		JPanel topEspacio = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		infoUsuario = new JLabel("(Sin usuario conectado)");
+		infoUsuario.setForeground(Color.WHITE);
 		topEspacio.add(infoUsuario);
-		topEspacio.setBackground(Color.orange);
+		topEspacio.setBackground(Color.GRAY);
 		add(topEspacio, BorderLayout.PAGE_START);
 
 		// Footer - Info de conexión
 		JPanel botomEspacio = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		infoTerminal = new JLabel("Terminal: " + nombreTerminal);
+		
+		infoTerminal = new JLabel();
+		if (ubicacionNombre == null || ubicacionNombre.isEmpty())
+			ubicacionNombre = "(desconectado)";
+		infoTerminal.setText("Terminal: " + ubicacionNombre);
+		infoTerminal.setForeground(Color.WHITE);	
 		botomEspacio.add(infoTerminal);
-		botomEspacio.setBackground(Color.orange);
+		botomEspacio.setBackground(Color.GRAY);
 		add(botomEspacio, BorderLayout.PAGE_END);
 
 		cartas = new JPanel(new CardLayout());
-		cargaCarta1();
-		cargaCarta2();
-		cargaCarta3();
-		cargaCarta4();
-		add(cartas, BorderLayout.CENTER);
-
+		try {
+			cargaCarta1();		
+			cargaCarta2();
+			cargaCarta3();
+			cargaCarta4();
+			add(cartas, BorderLayout.CENTER);
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(cartas,e1.getMessage(),"Error de aplicación",JOptionPane.PLAIN_MESSAGE);
+			//e1.printStackTrace();
+		}
 	}
 
 	private JPanel cargaMenu() {
 		// Botonera
 		JPanel menu = new JPanel();
 		menu.setLayout(new FlowLayout(FlowLayout.LEFT));
-		menu.setPreferredSize(new Dimension(110, 100));
+		menu.setPreferredSize(new Dimension(150, 100));
 
 		botonAlta = new JButton("Nuevo ticket");
-		botonAlta.setPreferredSize(new Dimension(100, 30));
-		botonAlta.setMargin(new Insets(2, 2, 2, 2));
+		botonAlta.setBackground(Color.LIGHT_GRAY);
+		botonAlta.setPreferredSize(new Dimension(140, 40));
+		//botonAlta.setMargin(new Insets(2, 2, 2, 2));
 		// botonAlta.addActionListener(this);
 		botonAlta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -122,8 +124,9 @@ public class Terminal extends JFrame  implements ActionListener {
 		menu.add(botonAlta);
 
 		botonAnular = new JButton("Anular ticket");
-		botonAnular.setPreferredSize(new Dimension(100, 30));
-		botonAnular.setMargin(new Insets(2, 2, 2, 2));
+		botonAnular.setBackground(Color.LIGHT_GRAY);
+		botonAnular.setPreferredSize(new Dimension(140, 40));
+		//botonAnular.setMargin(new Insets(2, 2, 2, 2));
 		botonAnular.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout cl = (CardLayout) (cartas.getLayout());
@@ -133,18 +136,20 @@ public class Terminal extends JFrame  implements ActionListener {
 		menu.add(botonAnular);
 
 		botonSalir = new JButton("Cerrar sesión");
-		botonSalir.setPreferredSize(new Dimension(100, 30));
-		botonSalir.setMargin(new Insets(2, 2, 2, 2));
+		botonSalir.setBackground(Color.LIGHT_GRAY);
+		botonSalir.setPreferredSize(new Dimension(140, 40));
+		//botonSalir.setMargin(new Insets(2, 2, 2, 2));
 		botonSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				CardLayout cl = (CardLayout) (cartas.getLayout());
 				try {
 					agencia.logout();
 					infoUsuario.setText("(Sin usuario conectado)");
+					cl.show(cartas, "LOGIN");
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					cl.show(cartas, "LOGIN");
+					//e1.printStackTrace();
 				}
-				CardLayout cl = (CardLayout) (cartas.getLayout());
-				cl.show(cartas, "LOGIN");
 			}
 		});
 		menu.add(botonSalir);
@@ -153,41 +158,55 @@ public class Terminal extends JFrame  implements ActionListener {
 
 	}
 
-	private void cargaCarta1() {
+	private void cargaCarta1() throws Exception {
 
 		cardLogin = new JPanel();
 		// cardLogin.setLayout(new BoxLayout(cardLogin, BoxLayout.Y_AXIS));
 		cardLogin.setLayout(null);
 
 		JLabel userLabel = new JLabel("Usuario");
-		userLabel.setBounds(80, 10, 80, 25);
+		userLabel.setBounds(130, 60, 80, 25);
 		cardLogin.add(userLabel);
 
 		JTextField userText = new JTextField(20);
 		userText.setText("user");
-		userText.setBounds(170, 10, 160, 25);
+		userText.setBounds(220, 60, 160, 25);
 		cardLogin.add(userText);
 
 		JLabel passwordLabel = new JLabel("Clave");
-		passwordLabel.setBounds(80, 40, 80, 25);
+		passwordLabel.setBounds(130, 90, 80, 25);
 		cardLogin.add(passwordLabel);
 
 		JPasswordField passwordText = new JPasswordField(20);
-		passwordText.setBounds(170, 40, 160, 25);
+		passwordText.setBounds(220, 90, 160, 25);
 		passwordText.setText("user");
 		cardLogin.add(passwordText);
 
+		JLabel terminalLabel = new JLabel("Terminal");
+		terminalLabel.setBounds(130, 120, 80, 25);
+		cardLogin.add(terminalLabel);
+
+		JTextField terminalText = new JTextField(20);
+		terminalText.setText("terminal_1");
+		terminalText.setBounds(220, 120, 160, 25);
+		cardLogin.add(terminalText);
+		
 		JLabel mensajeError = new JLabel("");
-		mensajeError.setForeground(Color.RED);
-		mensajeError.setBounds(80, 120, 300, 25);
-		cardLogin.add(mensajeError);
 
 		botonLogin = new JButton("Iniciar sesión");
-		botonLogin.setBounds(170, 80, 100, 30);
+		botonLogin.setBounds(220, 170, 100, 30);
 		botonLogin.setMargin(new Insets(2, 2, 2, 2));
+		
+		mensajeError.setForeground(Color.RED);
+		mensajeError.setBounds(130, 220, 500, 100);
+		cardLogin.add(mensajeError);
+
 		botonLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent eve) {
 				try {
+					
+					agencia = new Agencia(terminalText.getText());
+					
 					mensajeError.setText("");
 					String strPassword = new String(passwordText.getPassword());
 					usuarioDatos = agencia.login(userText.getText(), strPassword);
@@ -195,14 +214,14 @@ public class Terminal extends JFrame  implements ActionListener {
 					infoUsuario.setText("Bienvenido " + usuarioDatos.getName());
 					//infoUsuario.setText("Hola " + userText.getText());
 					
-					userText.setText("");
-					passwordText.setText("");
+					//userText.setText("");
+					//passwordText.setText("");
 					
 					CardLayout cl = (CardLayout) (cartas.getLayout());
 					cl.show(cartas, "INICIO");
 				} catch (Exception e) {
 					mensajeError.setText(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		});
@@ -218,7 +237,7 @@ public class Terminal extends JFrame  implements ActionListener {
 		JPanel contenedor = new JPanel();
 		contenedor.setLayout(null);
 		JLabel texto2 = new JLabel("Sistema de gestión de parking - IMM");
-		texto2.setBounds(50, 50, 300, 40);
+		texto2.setBounds(100, 50, 300, 40);
 		contenedor.add(texto2);
 
 		cardInicio.add(contenedor, BorderLayout.CENTER);
@@ -284,7 +303,8 @@ public class Terminal extends JFrame  implements ActionListener {
 		contenedor.add(column);
 		
 		spinnerMinutos.setBounds(200, 90, 50, 25);
-		spinnerMinutos.setValue(calendar.get(Calendar.MINUTE));
+		int minutosCalendar = calendar.get(Calendar.MINUTE) + 5;
+		spinnerMinutos.setValue(minutosCalendar);
 		contenedor.add(spinnerMinutos);
 
 		
@@ -338,7 +358,7 @@ public class Terminal extends JFrame  implements ActionListener {
 				} catch (Exception e) {
 					mensajeLinea1.setForeground(Color.RED);
 					mensajeLinea1.setText(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		});

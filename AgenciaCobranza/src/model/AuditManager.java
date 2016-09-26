@@ -12,16 +12,17 @@ public class AuditManager {
 	public static final int EVENT_LEVEL_WARNING = 2;
 	public static final int EVENT_LEVEL_ERROR = 3;
 
-	public static final int AUDIT_EVENT_LOGIN_OK = 1001;
-	public static final int AUDIT_EVENT_LOGIN_ERROR = 1002;
-	public static final int AUDIT_EVENT_LOGOUT_OK = 1003;
-	public static final int AUDIT_EVENT_LOGOUT_ERROR = 1004;
-	public static final int AUDIT_EVENT_INVALID_LOCATION = 1005;
-
-	public static final int AUDIT_EVENT_SALE = 3;
-	public static final int AUDIT_EVENT_ANNULATION = 4;
-	public static final int AUDIT_EVENT_USER_CREATE = 5;
-	public static final int AUDIT_EVENT_USER_UPDATE = 6;
+	//public static final int AUDIT_EVENT_LOGIN_OK = 1001;
+	//public static final int AUDIT_EVENT_LOGIN_ERROR = 1002;
+	//public static final int AUDIT_EVENT_LOGOUT_OK = 1003;
+	//public static final int AUDIT_EVENT_LOGOUT_ERROR = 1004;
+	public static final int AUDIT_EVENT_LOGIN = 1001;
+	public static final int AUDIT_EVENT_LOGOUT = 1002;
+	//public static final int AUDIT_EVENT_INVALID_LOCATION = 1005;
+	public static final int AUDIT_EVENT_SALE = 1003;
+	public static final int AUDIT_EVENT_ANNULATION = 1004;
+	public static final int AUDIT_EVENT_USER_CREATE = 1005;
+	public static final int AUDIT_EVENT_USER_UPDATE = 1006;
 
 	private static AuditManager instance = null;
 	private DataSource ds;
