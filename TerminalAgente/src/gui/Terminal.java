@@ -99,8 +99,8 @@ public class Terminal extends JFrame  implements ActionListener {
 			cargaCarta4();
 			add(cartas, BorderLayout.CENTER);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(cartas,e1.getMessage(),"Error de aplicación",JOptionPane.PLAIN_MESSAGE);
+			//e1.printStackTrace();
 		}
 	}
 
@@ -148,7 +148,7 @@ public class Terminal extends JFrame  implements ActionListener {
 					cl.show(cartas, "LOGIN");
 				} catch (Exception e1) {
 					cl.show(cartas, "LOGIN");
-					e1.printStackTrace();
+					//e1.printStackTrace();
 				}
 			}
 		});
@@ -198,7 +198,7 @@ public class Terminal extends JFrame  implements ActionListener {
 		botonLogin.setMargin(new Insets(2, 2, 2, 2));
 		
 		mensajeError.setForeground(Color.RED);
-		mensajeError.setBounds(130, 220, 300, 25);
+		mensajeError.setBounds(130, 220, 500, 100);
 		cardLogin.add(mensajeError);
 
 		botonLogin.addActionListener(new ActionListener() {
@@ -214,8 +214,8 @@ public class Terminal extends JFrame  implements ActionListener {
 					infoUsuario.setText("Bienvenido " + usuarioDatos.getName());
 					//infoUsuario.setText("Hola " + userText.getText());
 					
-					userText.setText("");
-					passwordText.setText("");
+					//userText.setText("");
+					//passwordText.setText("");
 					
 					CardLayout cl = (CardLayout) (cartas.getLayout());
 					cl.show(cartas, "INICIO");
@@ -303,7 +303,8 @@ public class Terminal extends JFrame  implements ActionListener {
 		contenedor.add(column);
 		
 		spinnerMinutos.setBounds(200, 90, 50, 25);
-		spinnerMinutos.setValue(calendar.get(Calendar.MINUTE));
+		int minutosCalendar = calendar.get(Calendar.MINUTE) + 5;
+		spinnerMinutos.setValue(minutosCalendar);
 		contenedor.add(spinnerMinutos);
 
 		
@@ -357,7 +358,7 @@ public class Terminal extends JFrame  implements ActionListener {
 				} catch (Exception e) {
 					mensajeLinea1.setForeground(Color.RED);
 					mensajeLinea1.setText(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		});
