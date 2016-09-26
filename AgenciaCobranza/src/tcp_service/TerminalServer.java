@@ -27,7 +27,7 @@ public class TerminalServer implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Server error");
+			System.out.println("Terminal Service error");
 		} finally {
 			try {
 				server.close();

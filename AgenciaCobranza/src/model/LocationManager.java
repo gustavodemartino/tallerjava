@@ -21,6 +21,7 @@ public class LocationManager {
 	private LocationManager() throws Exception {
 		InitialContext initContext = new InitialContext();
 		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
+		init();
 	}
 
 	public static LocationManager getInstance() throws Exception {
@@ -28,6 +29,23 @@ public class LocationManager {
 			instance = new LocationManager();
 		}
 		return instance;
+	}
+
+	private void init() throws Exception {
+		// Si no existe la ubicación web, la crea
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement(
+				"SELECT Id FROM Ubicaciones WHERE Nombre = '" + Constants.IDENTFIER_WEB_LOCATION_NAME + "'");
+		ResultSet res = pre.executeQuery();
+		if (!res.next()) {
+			Statement sta = connection.createStatement();
+			sta.executeUpdate("INSERT INTO Ubicaciones (Nombre) VALUES ('" + Constants.IDENTFIER_WEB_LOCATION_NAME + "')");
+			sta.close();
+		}
+		pre.close();
+		res.close();
+		connection.close();
 	}
 
 	public Location getLocation(String terminalId) throws Exception {

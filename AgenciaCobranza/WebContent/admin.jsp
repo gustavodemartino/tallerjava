@@ -1,6 +1,7 @@
+<%@page import="model.Constants"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"
-	import="data.User, java.util.List, model.UserManager"%>
+	import="data.Login, data.User, java.util.List, model.UserManager"%>
 
 <%
 	List<User> users = UserManager.getInstance().getUsers();
@@ -64,8 +65,8 @@
 					</h1>
 					<div class="searchbox">
 						<div class="input-group custom-search-form">
-							Bienvenido, <strong><%=((User) session.getAttribute("userSession")).getName()%></strong>
-							| Cerrar Sesión
+							Bienvenido, <strong><%=((Login) session.getAttribute(Constants.IDENTFIER_SESSION_LOGIN_INFO)).getUser().getName()%></strong>
+							| <a href="logout">Cerrar Sesión</a>
 						</div>
 					</div>
 				</div>

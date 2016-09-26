@@ -3,12 +3,15 @@ package model;
 public class Constants {
 
 	public static final String DATASOURCE_LOOKUP = "java:jboss/datasources/AgenciaDS";
+	public static final String IDENTFIER_WEB_LOCATION_NAME = "web";
+	public static final String IDENTFIER_SESSION_LOGIN_INFO = "loginInfo";
+	
 	public static final String JSON_IDENTFIER_ACTION = "action";
 	public static final String JSON_IDENTFIER_DATA = "data";
 	public static final String JSON_IDENTFIER_USERID = "user_id";
 	public static final String JSON_IDENTFIER_USERNAME = "user_name";
 	public static final String JSON_IDENTFIER_PASSWORD = "password";
-	public static final String JSON_IDENTFIER_TERMINALID = "terminal_id";
+	public static final String JSON_IDENTFIER_LOCATION_NAME = "location_name";
 	public static final String JSON_IDENTFIER_PLATE = "plate";
 	public static final String JSON_IDENTFIER_END_TIME = "end_time";
 	public static final String JSON_IDENTFIER_START_TIME = "start_time";
@@ -41,7 +44,7 @@ public class Constants {
 	public static final String ERROR_MSG_INVALID_PASSWORD = "Password inválido";	
 	public static final String ERROR_MSG_INVALID_LOCATION = "Ubicación desconocida";
 	public static final String ERROR_MSG_LOCATION_NOT_ALLOWED = "No tiene permisos para acceder desde esta ubicación";
-	public static final String ERROR_MSG_NOT_USER_PRIVILEGES = "No tiene permisos para utilizar este recurso";
 	public static final String ERROR_MSG_INVALID_USERMOD = "No tiene permisos para modificar otro usuario";
 	public static final String ERROR_MSG_INVALID_SELF_ADMIN = "No puede cambiar sus privilegios administrativos";
+	public static final String ERROR_MSG_UNSUPORTED_METHOD = "Método no soportado";
 }

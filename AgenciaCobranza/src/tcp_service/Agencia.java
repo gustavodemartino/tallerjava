@@ -108,7 +108,7 @@ public class Agencia {
 		}
 		Message result = new Message(sb.toString());
 		// TODO Debug
-		System.out.println("<" + sb.toString() + ">");
+		// System.out.println("<" + sb.toString() + ">");
 		sb.delete(0, sb.length());
 		return result;
 	}

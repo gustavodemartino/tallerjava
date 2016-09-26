@@ -8,18 +8,18 @@ import model.Constants;
 public class LoginParameters extends MessageData {
 	private String userId;
 	private String password;
-	private String terminalId;
+	private String locationName;
 
 	public LoginParameters(JSONObject data) throws JSONException {
 		this.userId = data.getString(Constants.JSON_IDENTFIER_USERID);
 		this.password = data.getString(Constants.JSON_IDENTFIER_PASSWORD);
-		this.terminalId = data.getString(Constants.JSON_IDENTFIER_TERMINALID);
+		this.locationName = data.getString(Constants.JSON_IDENTFIER_LOCATION_NAME);
 	}
 
-	public LoginParameters(String userId, String passwordHash, String terminalId) {
+	public LoginParameters(String userId, String passwordHash, String locationName) {
 		this.userId = userId;
 		this.password = passwordHash;
-		this.terminalId = terminalId;
+		this.locationName = locationName;
 	}
 
 	public String getUserId() {
@@ -30,8 +30,8 @@ public class LoginParameters extends MessageData {
 		return password;
 	}
 
-	public String getTerminalId() {
-		return terminalId;
+	public String getLocationName() {
+		return locationName;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class LoginParameters extends MessageData {
 		JSONObject result = new JSONObject();
 		result.put(Constants.JSON_IDENTFIER_USERID, this.userId);
 		result.put(Constants.JSON_IDENTFIER_PASSWORD, this.password);
-		result.put(Constants.JSON_IDENTFIER_TERMINALID, this.terminalId);
+		result.put(Constants.JSON_IDENTFIER_LOCATION_NAME, this.locationName);
 		return result;
 	}
 

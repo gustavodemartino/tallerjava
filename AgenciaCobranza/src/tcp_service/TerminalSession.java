@@ -73,9 +73,9 @@ public class TerminalSession implements Runnable {
 					Login loginResult;
 					try {
 						LoginParameters infoParamLogin = (LoginParameters) command.getData();
-						datosExtra = infoParamLogin.getUserId() + ";" + infoParamLogin.getTerminalId() + ";";
+						datosExtra = infoParamLogin.getUserId() + ";" + infoParamLogin.getLocationName() + ";";
 						
-						loginResult = LoginManager.getInstance().terminalLogin(infoParamLogin);
+						loginResult = LoginManager.getInstance().login(infoParamLogin);
 						this.user = loginResult.getUser();
 						this.location = loginResult.getLocation();
 						response = new Message(Message.LOGIN_OK, this.user);

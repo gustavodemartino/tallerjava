@@ -20,25 +20,16 @@ public class LoginManager {
 		return instance;
 	}
 
-	public Login terminalLogin(LoginParameters data) throws Exception {
-		User user = UserManager.getInstance().getUser(data.getUserId(), data.getPassword());
-		Location location = LocationManager.getInstance().getLocation(data.getTerminalId());
-		if (!UserManager.getInstance().hasPermission(user.getId(), location.getId())) {
+	public Login login(LoginParameters data) throws Exception {
+		return login(data.getUserId(), data.getPassword(), data.getLocationName());
+	}
+
+	public Login login(String userId, String password, String locationName) throws Exception {
+		User user = UserManager.getInstance().getUser(userId, password);
+		Location location = LocationManager.getInstance().getLocation(locationName);
+		if (!(user.getIsAdmin() || UserManager.getInstance().hasPermission(user.getId(), location.getId()))) {
 			throw new Exception(Constants.ERROR_MSG_LOCATION_NOT_ALLOWED);
 		}
 		return new Login(user, location);
-	}
-
-	public User webLogin(String userId, String password) throws Exception {
-		User u;
-		try {
-			u = UserManager.getInstance().getUser(userId, password);
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-		if (!u.getIsAdmin()) {
-			throw new Exception(Constants.ERROR_MSG_NOT_USER_PRIVILEGES);
-		}
-		return u;
 	}
 }
