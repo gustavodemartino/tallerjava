@@ -40,6 +40,57 @@ public class AuditManager {
 	public void register(long user, long location, int event, int level, String detail) throws Exception {
 		// Si no hay usuario pasar un valor negativo
 		// Si no hay ubicación, pasar un valor negativo
+		
+		String descripcion = null;
+		
+		switch (level) {
+	        case AUDIT_EVENT_LOGIN:
+	        	if (level == EVENT_LEVEL_INFO)
+	        		descripcion = "OK Ingreso al sistema " + detail;
+	        	else if (level == EVENT_LEVEL_ERROR)
+	        		descripcion = "FAIL Ingreso al sistema " + detail;
+	            break;
+	            
+	        case AUDIT_EVENT_LOGOUT:  
+	        	if (level == EVENT_LEVEL_INFO)
+	        		descripcion = "OK Salida del sistema " + detail;
+	        	else if (level == EVENT_LEVEL_ERROR)
+	        		descripcion = "FAIL Salida del sistema " + detail;
+	            break;
+	            
+	        case AUDIT_EVENT_SALE:  
+	        	if (level == EVENT_LEVEL_INFO)
+	        		descripcion = "OK Venta " + detail;
+	        	else if (level == EVENT_LEVEL_ERROR)
+	        		descripcion = "FAIL Venta " + detail;
+	            break;
+	                 
+	        case AUDIT_EVENT_ANNULATION:  
+	        	if (level == EVENT_LEVEL_INFO)
+	        		descripcion = "OK Anulación " + detail;
+	        	else if (level == EVENT_LEVEL_ERROR)
+	        		descripcion = "FAIL Anulación " + detail;
+	            break;
+	                 
+	        case AUDIT_EVENT_USER_CREATE:  
+	        	if (level == EVENT_LEVEL_INFO)
+	        		descripcion = "OK Creación de usuario " + detail;
+	        	else if (level == EVENT_LEVEL_ERROR)
+	        		descripcion = "FAIL Creación de usuario " + detail;
+	            break;
+	                 
+	        case AUDIT_EVENT_USER_UPDATE:  
+	        	if (level == EVENT_LEVEL_INFO)
+	        		descripcion = "OK Modificación de usuario " + detail;
+	        	else if (level == EVENT_LEVEL_ERROR)
+	        		descripcion = "FAIL Modificación de usuario " + detail;
+	            break;
+	                 
+	        default: 
+	        	descripcion = "";
+	            break;
+	    }
+		
 		Connection connection = ds.getConnection();
 		PreparedStatement pre;
 		long timestamp = new Date().getTime();
@@ -59,7 +110,7 @@ public class AuditManager {
 			}
 			pre.setInt(4, event);
 			pre.setInt(5, level);
-			pre.setString(6, detail);
+			pre.setString(6, descripcion);
 			pre.execute();
 			pre.close();
 			connection.close();
