@@ -45,7 +45,7 @@ public class UserServlet extends HttpServlet {
 			session.setAttribute("mensaje", e.getMessage());
 			response.sendRedirect("login.jsp");
 		}
-		response.sendRedirect("admin.jsp");
+		response.sendRedirect("userlist.jsp");
 	}
 
 }

@@ -49,6 +49,29 @@
 
 <!--Agencia Admin-->
 <script src="js/agencia.min.js"></script>
+<script>
+function editUser(userId, shortName, name, admin) {
+	document.getElementById("userid").value=userId;
+	document.getElementById("shortName").value =shortName;
+	document.getElementById("name").value = name;
+	document.getElementById("password").value = "";
+	document.getElementById("admin").checked = admin;
+	document.getElementById("btnAdd").type="hidden";
+	document.getElementById("btnMod").type="submit";
+}
+
+function newUser(){
+	document.getElementById("btnAdd").type="submit";
+	document.getElementById("btnMod").type="hidden";
+
+	document.getElementById("userid").value = 0;
+	document.getElementById("shortName").value ="";
+	document.getElementById("name").value = "";
+	document.getElementById("password").value = "";
+	document.getElementById("admin").checked = false;	
+}
+
+</script>
 
 </head>
 
@@ -80,6 +103,7 @@
 						<div class="panel-body">
 
 							<form class="form-inline" method="post" action="user_servlet">
+								<input type="hidden" id="userid" name="userid" value="0">
 								<div class="form-group">
 									<label for="demo-inline-inputmail" class="sr-only">Usuario</label>
 									<input type="text" id="shortName" name="shortName"
@@ -100,12 +124,18 @@
 								</div>
 								<div class="form-group">
 									<div class="checkbox">
-										<label class="form-checkbox form-icon"><input
-											id="admin" name="admin" type="checkbox" checked="">
-											Administrativo</label>
+										<!-- <label class="form-checkbox form-icon"> -->
+										<input id="admin" name="admin" type="checkbox">
+										Administrativo</label>
 									</div>
 								</div>
-								<button class="btn btn-primary" type="submit">Agregar</button>
+								<input id="btnAdd" class="btn btn-primary" type="submit"
+									value="Agregar" />
+								<input id="btnMod" class="btn btn-primary"
+									type="hidden" value="Modificar" /> <input
+									id="btnNew" class="btn btn-primary" value="Nuevo"
+									onclick="newUser()" />
+
 								<div class="form-group"><%=session.getAttribute("mensaje") == null ? "" : session.getAttribute("mensaje")%></div>
 							</form>
 						</div>
@@ -136,7 +166,9 @@
 										<td><%=user.getName()%></td>
 										<td><%=(user.getIsAdmin() ? "si" : "no")%></td>
 										<td><button
-												class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-pencil"></button>
+												class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-pencil"
+												onclick=<%="'editUser(" + user.getId() + ", \"" + user.getShortName() + "\", \"" + user.getName()
+						+ "\", " + user.getIsAdmin() + ")'"%>></button>
 											<button
 												class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-trash"></button></td>
 									</tr>
