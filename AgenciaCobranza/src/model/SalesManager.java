@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import data.ParkingDetail;
 import data.Ticket;
 import data.TicketCancelParameters;
 import data.TicketSaleParameters;
@@ -64,7 +67,7 @@ public class SalesManager {
 			pre.setLong(1, operacion);
 			pre.setString(2, sale.getPlate());
 			pre.setLong(3, sale.getStartDateTime());
-			pre.setInt(4, (int) (sale.getEndDateTime() - sale.getStartDateTime()));
+			pre.setInt(4, (int) ((sale.getEndDateTime() - sale.getStartDateTime()) / 60000));
 			pre.execute();
 			pre.close();
 			connection.commit();
@@ -83,6 +86,38 @@ public class SalesManager {
 		result.setTicketNumber(sale.getETicketNumber());
 		result.setPlate(sale.getPlate());
 		result.setAmount(sale.getAmount());
+		return result;
+	}
+
+	public List<ParkingDetail> getSales(Date from, Date to) throws Exception {
+		System.out.println("From: " + from + " to: " + to);
+		List<ParkingDetail> result = new ArrayList<ParkingDetail>();
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement(
+				"SELECT v.FechaHoraVenta, v.Ticket, v.Matricula, v.Inicio, v.Minutos, c.FechaHoraAnulacion, c.Anulacion, v.Pago, c.Devolucion FROM ( SELECT op.FechaHora as FechaHoraVenta, op.Numero as Ticket, op.Importe as Pago, ti.Matricula, ti.Inicio, ti.Minutos FROM Operaciones as op, Tickets as ti WHERE ti.Operacion = op.Id AND op.FechaHora > ? AND op.FechaHora < ?) AS v LEFT OUTER JOIN ( SELECT op.FechaHora as FechaHoraAnulacion, op.Numero as Anulacion, op.Importe as Devolucion, an.Numero as Ticket FROM Operaciones as op, Anulaciones as an WHERE an.Operacion = op.Id ) AS c ON v.Ticket = c.Ticket");
+		pre.setLong(1, from.getTime());
+		pre.setLong(2, to.getTime());
+		ResultSet res = pre.executeQuery();
+		while (res.next()) {
+			ParkingDetail p = new ParkingDetail();
+			p.setSaleDateTime(new Date(res.getLong("FechaHoraVenta")));
+			p.setSaleTicket(res.getLong("Ticket"));
+			p.setPlate(res.getString("Matricula"));
+			p.setStartDateTime(new Date(res.getLong("Inicio")));
+			p.setDuration(res.getInt("Minutos"));
+			p.setAmount(res.getLong("Pago"));
+			Long l = res.getLong("FechaHoraAnulacion");
+			if (l != null) {
+				p.setCancelationDateTime(new Date(l));
+				p.setCancelationNumber(res.getLong("Anulacion"));
+				p.setCredit(res.getLong("Devolucion"));
+			}
+			result.add(p);
+		}
+		pre.close();
+		res.close();
+		connection.close();
 		return result;
 	}
 

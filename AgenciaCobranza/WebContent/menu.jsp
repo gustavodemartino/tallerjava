@@ -18,7 +18,8 @@
 	</div>
 	<br />
 	<div>
-		<a href='userlist.jsp'">Mantenimiento de usuarios</a>
+		<a href="userlist.jsp">Mantenimiento de usuarios</a>
+		<a href="parkinglist.jsp">Reporte de estacionamientos</a>
 	</div>
 </body>
 </html>
