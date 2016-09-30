@@ -3,8 +3,9 @@ package model;
 public class Constants {
 
 	public static final String DATASOURCE_LOOKUP = "java:jboss/datasources/AgenciaDS";
-	public static final String IDENTFIER_WEB_LOCATION_NAME = "web";
-	public static final String IDENTFIER_SESSION_LOGIN_INFO = "loginInfo";
+	public static final String DB_IDENTFIER_WEB_LOCATION_NAME = "web";
+	public static final String SESSION_IDENTFIER_LOGIN_INFO = "loginInfo";
+	public static final String SESSION_IDENTFIER_USER_INFO = "userInfo";
 	
 	public static final String JSON_IDENTFIER_ACTION = "action";
 	public static final String JSON_IDENTFIER_DATA = "data";
@@ -44,7 +45,11 @@ public class Constants {
 	public static final String ERROR_MSG_INVALID_PASSWORD = "Password inválido";	
 	public static final String ERROR_MSG_INVALID_LOCATION = "Ubicación desconocida";
 	public static final String ERROR_MSG_LOCATION_NOT_ALLOWED = "No tiene permisos para acceder desde esta ubicación";
-	public static final String ERROR_MSG_INVALID_USERMOD = "No tiene permisos para modificar otro usuario";
+	public static final String ERROR_MSG_INVALID_USERADD = "No tiene permisos para crear usuarios";
+	public static final String ERROR_MSG_INVALID_USERMOD = "No tiene permisos para modificar a otro usuario";
+	public static final String ERROR_MSG_INVALID_USERDEL = "No tiene permisos para eliminar usuarios";
 	public static final String ERROR_MSG_INVALID_SELF_ADMIN = "No puede cambiar sus privilegios administrativos";
 	public static final String ERROR_MSG_UNSUPORTED_METHOD = "Método no soportado";
+	public static final String ERROR_MSG_INVALID_USERID = "No existe usuario con el identificador requerido";
+	public static final String ERROR_MSG_CANNOT_DELETE_USER = "No fue posible eliminar el usuario porque tiene registros asociados";
 }

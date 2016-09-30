@@ -84,6 +84,45 @@ public class UserManager {
 		return result;
 	}
 
+	public User getUser(Long userId) throws Exception {
+		User result = null;
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement("SELECT Usuario, Nombre, EsAdmin FROM Usuarios WHERE Id = ?");
+		pre.setLong(1, userId);
+		ResultSet res = pre.executeQuery();
+		if (!res.next()) {
+			pre.close();
+			res.close();
+			connection.close();
+			throw new Exception(Constants.ERROR_MSG_INVALID_USERID);
+		}
+		result = new User(userId, res.getString("Usuario"), res.getString("Nombre"), res.getInt("EsAdmin") == 1);
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+
+	public void deleteUser(String adminId, String adminPassword, Long userId) throws Exception {
+		User admin = getUser(adminId, adminPassword);
+		if (!admin.getIsAdmin()) {
+			throw new Exception(Constants.ERROR_MSG_INVALID_USERDEL);
+		}
+		Connection connection = this.ds.getConnection();
+		try {
+			PreparedStatement pre = connection
+					.prepareStatement("DELETE FROM Usuarios WHERE Id = ?");
+			pre.setLong(1, userId);
+			pre.execute();
+			pre.close();
+			connection.close();
+		} catch (Exception e) {
+			connection.close();
+			throw new Exception(e.getMessage());
+		}
+	}
+	
 	public List<User> getUsers() throws SQLException {
 		List<User> result = new ArrayList<User>();
 		Connection connection = this.ds.getConnection();
@@ -103,7 +142,7 @@ public class UserManager {
 	public void addUser(String adminId, String adminPassword, User newUser) throws Exception {
 		User admin = getUser(adminId, adminPassword);
 		if (!admin.getIsAdmin()) {
-			throw new Exception(Constants.ERROR_MSG_INVALID_USERMOD);
+			throw new Exception(Constants.ERROR_MSG_INVALID_USERADD);
 		}
 		if (newUser.getShortName() == null || newUser.getShortName().contains(" ")
 				|| newUser.getShortName().length() == 0) {
@@ -196,7 +235,7 @@ public class UserManager {
 		return result;
 	}
 
-	void grantPermission(long userId, long locationId) throws Exception {
+	public void grantPermission(long userId, long locationId) throws Exception {
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre = connection.prepareStatement("INSERT INTO Permisos (Usuario, Ubicacion) VALUES (?, ?)");
 		pre.setLong(1, userId);
@@ -206,7 +245,7 @@ public class UserManager {
 		connection.close();
 	}
 
-	void revokePermission(long userId, long locationId) throws Exception {
+	public void revokePermission(long userId, long locationId) throws Exception {
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre = connection.prepareStatement("DELETE FROM Permisos WHERE Usuario = ? AND Ubicacion = ?");
 		pre.setLong(1, userId);
@@ -216,11 +255,10 @@ public class UserManager {
 		connection.close();
 	}
 
-	List<Location> getPermissions(long userId) throws Exception{
+	public List<Location> getPermissions(long userId) throws Exception {
 		Connection connection = this.ds.getConnection();
 		List<Location> result = new ArrayList<Location>();
-		PreparedStatement pre = connection
-				.prepareStatement("SELECT Ubicacion FROM Permisos WHERE Usuario = ?");
+		PreparedStatement pre = connection.prepareStatement("SELECT Ubicacion FROM Permisos WHERE Usuario = ?");
 		pre.setLong(1, userId);
 		ResultSet res = pre.executeQuery();
 		while (res.next()) {
@@ -229,6 +267,12 @@ public class UserManager {
 		pre.close();
 		res.close();
 		connection.close();
+		return result;
+	}
+
+	public List<Location> getMissingPermission(long userId) throws Exception {
+		List<Location> result = LocationManager.getInstance().getLocations();
+		result.removeAll(getPermissions(userId));
 		return result;
 	}
 }

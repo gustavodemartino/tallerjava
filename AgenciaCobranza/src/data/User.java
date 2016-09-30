@@ -12,12 +12,21 @@ public class User extends MessageData {
 	private String password;
 	private boolean admin;
 
-	public User(long id, String userId, String userName, boolean isAdmin) {
+	public User(long id, String shortName, String name, boolean isAdmin) {
 		this.id = id;
-		this.shortName = userId;
-		this.name = userName;
+		this.shortName = shortName;
+		this.name = name;
 		this.admin = isAdmin;
 	}
+
+	public User(long id, String shortName, String name, String password, boolean isAdmin) {
+		this.id = id;
+		this.shortName = shortName;
+		this.name = name;
+		this.password = password;
+		this.admin = isAdmin;
+	}
+
 
 	public User(String shortName, String name, String password, boolean isAdmin) {
 		this.shortName = shortName;

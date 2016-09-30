@@ -1,24 +1,20 @@
 <%@page import="model.Constants"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"
-	import="data.Login, data.User, java.util.List, model.UserManager"%>
-
+	import="java.util.List, data.Login, data.User, data.Location, model.UserManager"%>
 <%
 	List<User> users = UserManager.getInstance().getUsers();
 %>
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agencia | Administración</title>
 
-<!--Open Sans Font-->
-<link
+<!--link
 	href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin"
-	rel="stylesheet">
+	rel="stylesheet" -->
 
 <!--Bootstrap Stylesheet-->
 <link href="css/bootstrap.css" rel="stylesheet">
@@ -50,102 +46,27 @@
 <!--Agencia Admin-->
 <script src="js/agencia.min.js"></script>
 <script>
-function editUser(userId, shortName, name, admin) {
-	document.getElementById("userid").value=userId;
-	document.getElementById("shortName").value =shortName;
-	document.getElementById("name").value = name;
-	document.getElementById("password").value = "";
-	document.getElementById("admin").checked = admin;
-	document.getElementById("btnAdd").type="hidden";
-	document.getElementById("btnMod").type="submit";
+function setSelectedUser(userId) {
+	document.getElementById("selected_user").value=userId;	
 }
-
-function newUser(){
-	document.getElementById("btnAdd").type="submit";
-	document.getElementById("btnMod").type="hidden";
-
-	document.getElementById("userid").value = 0;
-	document.getElementById("shortName").value ="";
-	document.getElementById("name").value = "";
-	document.getElementById("password").value = "";
-	document.getElementById("admin").checked = false;	
-}
-
 </script>
-
 </head>
-
 <body>
+	<h1>Administración de Usuarios</h1>
+	<%=((Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO)).getUser().getName()%>
+	|
+	<a href="logout">Cerrar Sesión</a> |
+	<a href="menu.jsp">Menú principal</a>
+	<h2 class=>Lista de usuarios</h2>
+	<button onclick="window.location.href='new_user'">Nuevo usuario</button>
 	<div id="container">
-
 		<div class="boxed">
-
-			<div id="content-container">
-
-				<div id="page-title">
-					<h1 class="page-header text-overflow">
-						<strong>Administración de Usuarios</strong>
-					</h1>
-					<div class="searchbox">
-						<div class="input-group custom-search-form">
-							<strong><%=((Login) session.getAttribute(Constants.IDENTFIER_SESSION_LOGIN_INFO)).getUser().getName()%></strong>
-							| <a href="logout">Cerrar Sesión</a>
-						</div>
-					</div>
-				</div>
-				<a href="menu.jsp">Menú principal</a>
-				<div id="page-content">
-
-					<div class="panel">
-						<div class="panel-heading">
-							<h3 class="panel-title">Agregar un nuevo Usuario</h3>
-						</div>
-						<div class="panel-body">
-
-							<form class="form-inline" method="post" action="user_servlet">
-								<input type="hidden" id="userid" name="userid" value="0">
-								<div class="form-group">
-									<label for="demo-inline-inputmail" class="sr-only">Usuario</label>
-									<input type="text" id="shortName" name="shortName"
-										placeholder="Nickname" id="demo-inline-inputmail"
-										class="form-control" required>
-								</div>
-								<div class="form-group">
-									<label for="demo-inline-inputmail" class="sr-only">Nombre
-										completo</label> <input type="text" id="name" name="name"
-										placeholder="Nombre completo" id="demo-inline-inputmail"
-										class="form-control" required>
-								</div>
-								<div class="form-group">
-									<label for="demo-inline-inputpass" class="sr-only">Contraseña</label>
-									<input type="password" id="password" name="password"
-										placeholder="Contraseña" id="demo-inline-inputpass"
-										class="form-control">
-								</div>
-								<div class="form-group">
-									<div class="checkbox">
-										<!-- <label class="form-checkbox form-icon"> -->
-										<input id="admin" name="admin" type="checkbox">
-										Administrativo</label>
-									</div>
-								</div>
-								<input id="btnAdd" class="btn btn-primary" type="submit"
-									value="Agregar" />
-								<input id="btnMod" class="btn btn-primary"
-									type="hidden" value="Modificar" /> <input
-									id="btnNew" class="btn btn-primary" value="Nuevo"
-									onclick="newUser()" />
-
-								<div class="form-group"><%=session.getAttribute("mensaje") == null ? "" : session.getAttribute("mensaje")%></div>
-							</form>
-						</div>
-					</div>
-
-					<div class="panel">
-						<div class="panel-heading">
-							<h3 class="panel-title">Lista de usuarios disponibles</h3>
-						</div>
-						<div class="panel-body">
+			<div id="page-content">
+				<div class="panel">
+					<div class="panel-body">
+						<form id="select_user" method="post" action="get_user">
+							<input id="selected_user" name="selected_user" type="hidden"
+								value="0">
 							<table id="demo-dt-basic"
 								class="table table-striped table-bordered" cellspacing="0"
 								width="100%">
@@ -153,36 +74,43 @@ function newUser(){
 									<tr>
 										<th>Usuario</th>
 										<th>Nombre</th>
-										<th>Administrativo</th>
+										<th>Autorizaciones</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
 									<%
 										for (User user : users) {
+											String onclick = "'setSelectedUser(" + user.getId() + ")'";
+											String btnAdmin = "<button class='demo-delete-row btn btn-default btn-xs btn-icon fa fa-user-plus'></button>";
+											String btnUser = "<button class='demo-delete-row btn btn-default btn-xs btn-icon fa fa-user'></button>";
 									%>
 									<tr>
-										<td><%=user.getShortName()%></td>
+										<td><%=(user.getIsAdmin() ? btnAdmin : btnUser) + " " + user.getShortName()%></td>
 										<td><%=user.getName()%></td>
-										<td><%=(user.getIsAdmin() ? "si" : "no")%></td>
+										<td>
+											<%
+												List<Location> permissions = UserManager.getInstance().getPermissions(user.getId());
+													for (Location l : permissions) {
+											%> <%="<button class='demo-delete-row btn btn-default btn-xs'>" + l.getName() + "</button>"%>
+											<%
+												}
+											%>
+										</td>
 										<td><button
 												class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-pencil"
-												onclick=<%="'editUser(" + user.getId() + ", \"" + user.getShortName() + "\", \"" + user.getName()
-						+ "\", " + user.getIsAdmin() + ")'"%>></button>
-											<button
-												class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-trash"></button></td>
+												onclick=<%=onclick%> type="submit"></button></td>
 									</tr>
 									<%
 										}
 									%>
 								</tbody>
 							</table>
-						</div>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </body>
 </html>

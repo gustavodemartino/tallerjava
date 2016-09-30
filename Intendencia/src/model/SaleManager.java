@@ -18,7 +18,6 @@ import data.Sale;
 public class SaleManager {
 	private static SaleManager instance = null;
 
-	private long nextTicketNumber;
 	private DataSource ds;
 
 	private SaleManager() {
@@ -93,8 +92,6 @@ public class SaleManager {
 			int m = (minutes / 30 + (minutes % 30 > 0 ? 1 : 0));
 			sale.setEndDateTime(startTime + (long)(m * 30) * 60000);
 			sale.setAmount(m * 1400);
-			nextTicketNumber++;
-			sale.seteTicketNumber(nextTicketNumber);
 			try {
 				Connection connection = this.ds.getConnection();
 				PreparedStatement pre;
@@ -122,6 +119,7 @@ public class SaleManager {
 					pre.close();
 					connection.commit();
 					connection.close();
+					sale.seteTicketNumber(operacion);
 				} catch (Exception e) {
 					sale.setResult(502);
 					sale.setMessage(e.getMessage());
@@ -142,8 +140,7 @@ public class SaleManager {
 			credit.setMessage("Ok");
 			credit.setAmount(-1400);
 			credit.setCustomerName("customerMame");
-			nextTicketNumber++;
-			credit.seteCreditNumber(this.nextTicketNumber);
+			credit.seteCreditNumber(0);
 			credit.seteTicketNumber(eTicketNumber);
 			credit.setSaleDate(new Date().getTime());
 		} else {

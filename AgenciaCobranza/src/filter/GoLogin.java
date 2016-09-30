@@ -1,6 +1,7 @@
 package filter;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -32,8 +33,9 @@ public class GoLogin implements Filter {
 			throws IOException, ServletException {
 		HttpSession session = ((HttpServletRequest) request).getSession();
 		String url = ((HttpServletRequest) request).getServletPath();
+		System.out.println(new Date() + url);
 		if (!url.contains("login")) {
-			Login loginInfo = (Login) session.getAttribute(Constants.IDENTFIER_SESSION_LOGIN_INFO);
+			Login loginInfo = (Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO);
 			if (loginInfo == null) {
 				((HttpServletResponse) response).sendRedirect("login.jsp");
 				return;

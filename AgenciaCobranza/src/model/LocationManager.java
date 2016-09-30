@@ -36,11 +36,11 @@ public class LocationManager {
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection.prepareStatement(
-				"SELECT Id FROM Ubicaciones WHERE Nombre = '" + Constants.IDENTFIER_WEB_LOCATION_NAME + "'");
+				"SELECT Id FROM Ubicaciones WHERE Nombre = '" + Constants.DB_IDENTFIER_WEB_LOCATION_NAME + "'");
 		ResultSet res = pre.executeQuery();
 		if (!res.next()) {
 			Statement sta = connection.createStatement();
-			sta.executeUpdate("INSERT INTO Ubicaciones (Nombre) VALUES ('" + Constants.IDENTFIER_WEB_LOCATION_NAME + "')");
+			sta.executeUpdate("INSERT INTO Ubicaciones (Nombre) VALUES ('" + Constants.DB_IDENTFIER_WEB_LOCATION_NAME + "')");
 			sta.close();
 		}
 		pre.close();

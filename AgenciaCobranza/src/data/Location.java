@@ -18,4 +18,11 @@ public class Location {
 		return name;
 	}
 
+	@Override
+	public boolean equals(Object l) {
+		if (l instanceof Location) {
+			return this.id == ((Location) l).id;
+		}
+		return false;
+	}
 }
