@@ -8,16 +8,16 @@
 <%@page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyyy-MM-dd");
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat dfdt = new SimpleDateFormat("dd-MM-yyyy kk:mm");
-	SimpleDateFormat dfh = new SimpleDateFormat("kk:mm");
+
 	String today = sdf.format(new Date());
 	String date_from = request.getParameter("date_from");
-	if (date_from == null) {
+	if (date_from == null || date_from.equals("")) {
 		date_from = today;
 	}
 	String date_to = request.getParameter("date_to");
-	if (date_to == null) {
+	if (date_to == null || date_to.equals("")) {
 		date_to = today;
 	}
 	Date from = sdf.parse(date_from);
@@ -32,11 +32,11 @@
 </head>
 <body>
 	<h1>Estacionamientos vendidos</h1>
-	<form id="form-1" method="post" action="">
+	<form method="post" action="parkinglist.jsp">
 		<label for="date_from">Desde: </label> <input id="date_from"
-			type="date" name="date_from" value="<%=today%>" /> <label
+			type="date" name="date_from" value="<%=date_from%>" /> <label
 			for="date_to">Desde: </label> <input id="date_to" type="date"
-			name="date_to" value="<%=today%>" />
+			name="date_to" value="<%=date_to%>" />
 		<button type="submit">Actualizar</button>
 	</form>
 	<table id="table-1">
