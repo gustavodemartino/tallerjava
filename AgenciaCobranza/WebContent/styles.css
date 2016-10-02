@@ -1,0 +1,18 @@
+table, th, td {
+	border-collapse: collapse;
+	border: 1px solid black;
+	text-align: center;
+}
+
+
+th {
+	background: none repeat scroll 0 0 #D0D0D0;
+	border-bottom: 1px solid black;
+	padding: 2px;
+}
+
+td {
+	background: none repeat scroll 0 0 #FFFFFFF;
+    border: 1px solid black;
+	padding: 5px;
+}

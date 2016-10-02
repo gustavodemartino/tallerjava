@@ -22,6 +22,16 @@
 	}
 	Date from = sdf.parse(date_from);
 	Date to = new Date(sdf.parse(date_to).getTime() + 86400000);
+
+	System.out.println(date_from);
+	System.out.println(date_to);
+
+	String prev_from = sdf.format(new Date(from.getTime() - 86400000));
+	String prev_to = sdf.format(new Date(to.getTime() - 2 * 86400000));
+
+	String next_from = sdf.format(new Date(from.getTime() + 86400000));
+	String next_to = sdf.format(new Date(to.getTime()));
+
 	List<ParkingDetail> sales = SalesManager.getInstance().getSales(from, to);
 %>
 <!DOCTYPE html>
@@ -29,6 +39,21 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Estacionamientos vendidos</title>
+<link href="styles.css" rel="stylesheet">
+<script>
+function previous_day(){
+	document.getElementById("date_from").value = "<%=prev_from%>"
+	document.getElementById("date_to").value = "<%=prev_to%>"
+}
+function today(){
+	document.getElementById("date_from").value = "<%=today%>"
+	document.getElementById("date_to").value = "<%=today%>"
+}
+function next_day(){
+	document.getElementById("date_from").value = "<%=next_from%>"
+	document.getElementById("date_to").value = "<%=next_to%>"
+}
+</script>
 </head>
 <body>
 	<h1>Estacionamientos vendidos</h1>
@@ -37,7 +62,10 @@
 			type="date" name="date_from" value="<%=date_from%>" /> <label
 			for="date_to">Desde: </label> <input id="date_to" type="date"
 			name="date_to" value="<%=date_to%>" />
-		<button type="submit">Actualizar</button>
+		<button type="submit">Actualizar</button> 
+		<button onclick="previous_day()">Anterior</button> 
+		<button onclick="today()">Hoy</button> 
+		<button onclick="next_day()">Siguiente</button>
 	</form>
 	<table id="table-1">
 		<thead>
@@ -51,19 +79,20 @@
 				<th>Autorización</th>
 				<th>Pago</th>
 				<th>Crédito</th>
-
 			</tr>
 		</thead>
 		<tbody>
 			<%
 				for (ParkingDetail p : sales) {
-			%>
-			<%="<tr><td>" + dfdt.format(p.getSaleDateTime()) + "</td><td>" + p.getPlate() + "</td><td>"
-						+ dfdt.format(p.getParkingStart()) + "</td><td>" + p.getDuration() + "</td><td>"
-						+ p.getSaleTicket() + "</td><td>" + dfdt.format(p.getCancelationDateTime()) + "</td><td>"
-						+ p.getCancelationNumber() + "</td><td>" + p.getAmount() + "</td><td>" + p.getCredit()
-						+ "</td></tr>"%>
-			<%
+					out.print("<tr><td>" + dfdt.format(p.getSaleDateTime()) + "</td><td>" + p.getPlate() + "</td><td>"
+							+ dfdt.format(p.getParkingStart()) + "</td><td>" + p.getDuration() + "</td><td>"
+							+ p.getSaleTicket() + "</td><td>");
+					if (p.getIsCanceled()) {
+						out.print(dfdt.format(p.getCancelationDateTime()) + "</td><td>" + p.getCancelationNumber()
+								+ "</td><td>" + p.getAmount() + "</td><td>" + p.getCredit() + "</td></tr>");
+					} else {
+						out.print("</td><td></td><td>" + p.getAmount() + "</td><td></td></tr>");
+					}
 				}
 			%>
 		</tbody>

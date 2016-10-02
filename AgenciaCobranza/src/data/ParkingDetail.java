@@ -13,6 +13,11 @@ public class ParkingDetail {
 	private long amount;
 	private long cancelationNumber;
 	private long credit;
+	private boolean isCanceled;
+	
+	public ParkingDetail(){
+		this.isCanceled = false;
+	}
 
 	public void setSaleDateTime(Date saleDateTime) {
 		this.saleDateTime = saleDateTime;
@@ -35,6 +40,7 @@ public class ParkingDetail {
 	}
 
 	public void setCancelationDateTime(Date cancelationDateTime) {
+		this.isCanceled = true;
 		this.cancelationDateTime = cancelationDateTime;
 	}
 
@@ -44,19 +50,18 @@ public class ParkingDetail {
 
 	public void setCancelationNumber(long cancelationNumber) {
 		this.cancelationNumber = cancelationNumber;
-
 	}
 
 	public void setCredit(long cents) {
 		this.credit = cents;
 	}
 
-	public Date getParkingStart() {
-		return parkingStart;
-	}
-
 	public void setParkingStart(Date parkingStart) {
 		this.parkingStart = parkingStart;
+	}
+	
+	public Date getParkingStart() {
+		return parkingStart;
 	}
 
 	public Date getSaleDateTime() {
@@ -75,20 +80,23 @@ public class ParkingDetail {
 		return duration;
 	}
 
+	public boolean getIsCanceled(){
+		return this.isCanceled;
+	}
 	public Date getCancelationDateTime() {
 		return cancelationDateTime;
 	}
 
-	public long getAmount() {
-		return amount;
+	public float getAmount() {
+		return ((float)amount)/100;
 	}
 
 	public long getCancelationNumber() {
 		return cancelationNumber;
 	}
 
-	public long getCredit() {
-		return credit;
+	public float getCredit() {
+		return ((float)credit)/100;
 	}
 
 }

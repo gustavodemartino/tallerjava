@@ -108,7 +108,7 @@ public class SalesManager {
 			p.setDuration(res.getInt("Minutos"));
 			p.setAmount(res.getLong("Pago"));
 			Long l = res.getLong("FechaHoraAnulacion");
-			if (l != null) {
+			if (l != 0) {
 				p.setCancelationDateTime(new Date(l));
 				p.setCancelationNumber(res.getLong("Anulacion"));
 				p.setCredit(res.getLong("Devolucion"));
