@@ -14,6 +14,7 @@ import tcp_service.Agencia;
 public class Main {
 
 	private static String terminal_id = "terminal_id";
+	private static String help = "Use:\n\t-h | -- help para obtener ayuda\n\t-t <terminal_id> para indicar el id de la terminal\n\t--clearpassword para ingresar la clave en texto claro (para procesamiento batch)";
 
 	private static String readPassword() throws Exception {
 		String result = null;
@@ -95,8 +96,30 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		if (args.length > 1 && args[0].equals("-t")) {
-			terminal_id = args[1];
+		boolean useClearPassword = false;
+		int index = 0;
+		while (args.length > index) {
+			if (args.length > (index) && (args[index].equals("-h") || args[index].equals("--help"))) {
+				System.out.println(help);
+				return;
+			} else if (args.length > index && args[index].equals("-t")) {
+				index ++;
+				if (args.length > index){
+					terminal_id = args[index];
+					index ++;
+				} else {
+					System.err
+					.println("Falta parámetro para -t. Use el parámetro -h para obtener ayuda.");
+					return;
+				}
+			} else if (args.length > index && args[index].equals("--clearpassword")) {
+				useClearPassword = true;
+				index++;
+			} else {
+				System.err
+						.println("Parámetro inválido \"" + args[index] + "\". Use el parámetro -h para obtener ayuda.");
+				return;
+			}
 		}
 		Agencia agencia;
 		boolean open = true;
@@ -114,7 +137,11 @@ public class Main {
 					break;
 				}
 				System.out.print("password: ");
-				password = readPassword();
+				if (useClearPassword) {
+					password = teclado.readLine();
+				} else {
+					password = readPassword();
+				}
 				System.out.println("Conecting to server...");
 				try {
 					agencia = new Agencia(terminal_id);
@@ -129,7 +156,7 @@ public class Main {
 					System.out.println(e.getMessage());
 					continue;
 				}
-				System.out.println("Login as: " + user.getName());
+				System.out.println("Loged as: " + user.getName());
 				while (true) {
 					System.out.print(">");
 					String entrada = teclado.readLine().replaceAll("\\s+", " ").trim();
