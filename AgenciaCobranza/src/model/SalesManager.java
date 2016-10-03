@@ -12,6 +12,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import data.ParkingDetail;
+import data.Refound;
 import data.Ticket;
 import data.TicketCancelParameters;
 import data.TicketSaleParameters;
@@ -122,7 +123,7 @@ public class SalesManager {
 		return result;
 	}
 
-	public void cancelTicket(TicketCancelParameters data) throws Exception {
+	public Refound cancelTicket(TicketCancelParameters data) throws Exception {
 		Credit credit = this.parkingService.parkingCancel(operador, data.getTicketNumber());
 		if (credit.getResult() != 200) {
 			throw new Exception(credit.getResult() + ": " + credit.getMessage());
@@ -134,8 +135,8 @@ public class SalesManager {
 		try {
 			pre = connection.prepareStatement("INSERT INTO Operaciones (FechaHora, Numero, Importe) VALUES (?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
-			pre.setLong(1, credit.getSaleDate());
-			pre.setLong(2, credit.getECreditNumber());
+			pre.setLong(1, credit.getCreditDate());
+			pre.setLong(2, credit.getAutorization());
 			pre.setLong(3, credit.getAmount());
 			pre.executeUpdate();
 			ResultSet res = pre.getGeneratedKeys();
@@ -145,7 +146,7 @@ public class SalesManager {
 			pre.close();
 			pre = connection.prepareStatement("INSERT INTO Anulaciones (Operacion, Numero) VALUES (?, ?)");
 			pre.setLong(1, operacion);
-			pre.setLong(2, credit.getETicketNumber());
+			pre.setLong(2, credit.getTicket());
 			pre.execute();
 			pre.close();
 			connection.commit();
@@ -155,6 +156,11 @@ public class SalesManager {
 			connection.close();
 			throw new Exception(e.getMessage());
 		}
+		Refound result = new Refound();
+		result.setDateTime(new Date(credit.getCreditDate()));
+		result.setTicket(credit.getTicket());
+		result.setAmount(credit.getAmount());
+		result.setAuthorization(credit.getAutorization());
+		return result;
 	}
-
 }

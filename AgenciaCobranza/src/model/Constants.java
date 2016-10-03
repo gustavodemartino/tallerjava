@@ -16,12 +16,14 @@ public class Constants {
 	public static final String JSON_IDENTFIER_PLATE = "plate";
 	public static final String JSON_IDENTFIER_END_TIME = "end_time";
 	public static final String JSON_IDENTFIER_START_TIME = "start_time";
-	public static final String JSON_IDENTFIER_MESSAGE = "message";
 	public static final String JSON_IDENTFIER_TICKET_NUMBER = "ticket_number";
 	public static final String JSON_IDENTFIER_SALE_DATETIME = "sale_timestamp";
+	public static final String JSON_IDENTFIER_CREDIT_DATETIME = "credit_timestamp";
+	public static final String JSON_IDENTFIER_MESSAGE = "message";
 	public static final String JSON_IDENTFIER_AMOUNT = "amount";
 	public static final String JSON_IDENTFIER_OPERATOR = "operator";
 	public static final String JSON_IDENTFIER_IS_ADMIN = "admin";
+	public static final String JSON_IDENTFIER_AUTHORIZATION = "authorization";
 
 	public static final String COMMAND_LOGIN = "login";
 	public static final String COMMAND_LOGOUT = "logout";

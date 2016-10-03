@@ -17,12 +17,12 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="amount" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="autorization" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="creditDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="customerName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="result" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="saleDate" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="eCreditNumber" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="eTicketNumber" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="ticket" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,22 +34,22 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "credit", propOrder = {
     "amount",
+    "autorization",
+    "creditDate",
     "customerName",
     "message",
     "result",
-    "saleDate",
-    "eCreditNumber",
-    "eTicketNumber"
+    "ticket"
 })
 public class Credit {
 
     protected long amount;
+    protected long autorization;
+    protected long creditDate;
     protected String customerName;
     protected String message;
     protected int result;
-    protected long saleDate;
-    protected long eCreditNumber;
-    protected long eTicketNumber;
+    protected long ticket;
 
     /**
      * Gets the value of the amount property.
@@ -65,6 +65,38 @@ public class Credit {
      */
     public void setAmount(long value) {
         this.amount = value;
+    }
+
+    /**
+     * Gets the value of the autorization property.
+     * 
+     */
+    public long getAutorization() {
+        return autorization;
+    }
+
+    /**
+     * Sets the value of the autorization property.
+     * 
+     */
+    public void setAutorization(long value) {
+        this.autorization = value;
+    }
+
+    /**
+     * Gets the value of the creditDate property.
+     * 
+     */
+    public long getCreditDate() {
+        return creditDate;
+    }
+
+    /**
+     * Sets the value of the creditDate property.
+     * 
+     */
+    public void setCreditDate(long value) {
+        this.creditDate = value;
     }
 
     /**
@@ -132,51 +164,19 @@ public class Credit {
     }
 
     /**
-     * Gets the value of the saleDate property.
+     * Gets the value of the ticket property.
      * 
      */
-    public long getSaleDate() {
-        return saleDate;
+    public long getTicket() {
+        return ticket;
     }
 
     /**
-     * Sets the value of the saleDate property.
+     * Sets the value of the ticket property.
      * 
      */
-    public void setSaleDate(long value) {
-        this.saleDate = value;
-    }
-
-    /**
-     * Gets the value of the eCreditNumber property.
-     * 
-     */
-    public long getECreditNumber() {
-        return eCreditNumber;
-    }
-
-    /**
-     * Sets the value of the eCreditNumber property.
-     * 
-     */
-    public void setECreditNumber(long value) {
-        this.eCreditNumber = value;
-    }
-
-    /**
-     * Gets the value of the eTicketNumber property.
-     * 
-     */
-    public long getETicketNumber() {
-        return eTicketNumber;
-    }
-
-    /**
-     * Sets the value of the eTicketNumber property.
-     * 
-     */
-    public void setETicketNumber(long value) {
-        this.eTicketNumber = value;
+    public void setTicket(long value) {
+        this.ticket = value;
     }
 
 }

@@ -10,6 +10,7 @@ import java.util.Date;
 import data.ErrorMessage;
 import data.LoginParameters;
 import data.Message;
+import data.Refound;
 import data.Ticket;
 import data.TicketCancelParameters;
 import data.TicketSaleParameters;
@@ -89,7 +90,7 @@ public class Agencia {
 		return (Ticket) respuesta.getData();
 	}
 
-	public void anular(long ticket) throws IOException, Exception {
+	public Refound anular(long ticket) throws IOException, Exception {
 		TicketCancelParameters parameters = new TicketCancelParameters(ticket);
 		Message command = new Message(Message.COMMAND_TICKET_CANCEL, parameters);
 		salida.println(command.toString() + "\n");
@@ -97,6 +98,7 @@ public class Agencia {
 		if (respuesta.getCommand() == Message.TICKET_CANCEL_ERROR) {
 			throw new Exception(((ErrorMessage) respuesta.getData()).getMessage());
 		}
+		return (Refound) respuesta.getData();
 	}
 
 	private Message procesarRespuesta() throws IOException, Exception  {

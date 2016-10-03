@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import data.Refound;
 import data.Ticket;
 import data.User;
 import gui.Terminal;
@@ -86,8 +87,12 @@ public class Main {
 			return;
 		}
 		try {
-			agencia.anular(ticket);
+			Refound refound = agencia.anular(ticket);
 			System.out.println("Ticket cancelado correctamente");
+			System.out.println("Fecha y hora: " + refound.getDateTime());
+			System.out.println("Autorización: " + refound.getAuthorization());
+			System.out.println("Ticket anulado: " + refound.getTicket());
+			System.out.println("Crédito: " + refound.getFloatAmount());
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 			return;

@@ -62,7 +62,7 @@ public class Message {
 			
 		} else if (action.equals(Constants.RESPONSE_TICKET_CANCEL_OK)) {
 			this.action = TICKET_CANCEL_OK;
-			this.data = null;
+			this.data = new Refound(data);
 			
 		} else if (action.equals(Constants.RESPONSE_LOGIN_ERROR)) {
 			this.action = LOGIN_ERROR;

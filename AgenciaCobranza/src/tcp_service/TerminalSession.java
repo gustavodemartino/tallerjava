@@ -11,6 +11,7 @@ import data.Location;
 import data.Login;
 import data.LoginParameters;
 import data.Message;
+import data.Refound;
 import data.Ticket;
 import data.TicketCancelParameters;
 import data.TicketSaleParameters;
@@ -19,7 +20,6 @@ import model.AuditManager;
 import model.Constants;
 import model.LoginManager;
 import model.SalesManager;
-
 
 public class TerminalSession implements Runnable {
 	private Socket socket;
@@ -39,7 +39,7 @@ public class TerminalSession implements Runnable {
 		try {
 			AuditManager auditor = AuditManager.getInstance();
 			String datosExtra = "";
-			
+
 			StringBuffer sb = new StringBuffer();
 			BufferedReader r = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 			boolean scan = true;
@@ -62,7 +62,7 @@ public class TerminalSession implements Runnable {
 				Message command = new Message(sb.toString());
 				sb.delete(0, sb.length());
 				Message response = null;
-				
+
 				// *********************
 				// *** COMMAND_LOGIN ***
 				// *********************
@@ -74,57 +74,63 @@ public class TerminalSession implements Runnable {
 					try {
 						LoginParameters infoParamLogin = (LoginParameters) command.getData();
 						datosExtra = infoParamLogin.getUserId() + ";" + infoParamLogin.getLocationName() + ";";
-						
+
 						loginResult = LoginManager.getInstance().login(infoParamLogin);
 						this.user = loginResult.getUser();
 						this.location = loginResult.getLocation();
 						response = new Message(Message.LOGIN_OK, this.user);
-						
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_INFO, datosExtra);
-						
+
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGIN,
+								AuditManager.EVENT_LEVEL_INFO, datosExtra);
+
 					} catch (Exception e) {
 						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(0, 0, AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_ERROR, datosExtra);
+						auditor.register(0, 0, AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_ERROR,
+								datosExtra);
 					}
 					writer.println(response.toString() + "\n");
-				
-				// **********************
-				// *** COMMAND_LOGOUT ***
-				// **********************	
+
+					// **********************
+					// *** COMMAND_LOGOUT ***
+					// **********************
 				} else if (command.getCommand() == Message.COMMAND_LOGOUT) {
 					if (this.user == null) {
 						throw new Exception(Constants.ERROR_MSG_LOGIN_REQUIRED);
 					}
-					auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGOUT, AuditManager.EVENT_LEVEL_INFO, "");
-					
+					auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGOUT,
+							AuditManager.EVENT_LEVEL_INFO, "");
+
 					this.user = null;
 					response = new Message(Message.LOGOUT_OK, null);
 					writer.println(response.toString() + "\n");
 
-				// ***************************
-				// *** COMMAND_TICKET_SALE ***
-				// ***************************				
+					// ***************************
+					// *** COMMAND_TICKET_SALE ***
+					// ***************************
 				} else if (command.getCommand() == Message.COMMAND_TICKET_SALE) {
 					if (this.user == null) {
 						throw new Exception(Constants.ERROR_MSG_LOGIN_REQUIRED);
 					}
 					try {
 						TicketSaleParameters infoParamSale = (TicketSaleParameters) command.getData();
-						datosExtra = infoParamSale.getPlate() + ";" + infoParamSale.getMinutes() + ";" + infoParamSale.getStartTime() + ";";
+						datosExtra = infoParamSale.getPlate() + ";" + infoParamSale.getMinutes() + ";"
+								+ infoParamSale.getStartTime() + ";";
 						Ticket ticket = SalesManager.getInstance().saleTicket(infoParamSale);
 						response = new Message(Message.TICKET_SALE_OK, ticket);
-						
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE, AuditManager.EVENT_LEVEL_INFO, datosExtra);
-						
+
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE,
+								AuditManager.EVENT_LEVEL_INFO, datosExtra);
+
 					} catch (Exception e) {
 						response = new Message(Message.TICKET_SALE_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE, AuditManager.EVENT_LEVEL_ERROR, datosExtra);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE,
+								AuditManager.EVENT_LEVEL_ERROR, datosExtra);
 					}
 					writer.println(response.toString() + "\n");
-					
-				// *****************************
-				// *** COMMAND_TICKET_CANCEL ***
-				// *****************************				
+
+					// *****************************
+					// *** COMMAND_TICKET_CANCEL ***
+					// *****************************
 				} else if (command.getCommand() == Message.COMMAND_TICKET_CANCEL) {
 					if (this.user == null) {
 						throw new Exception(Constants.ERROR_MSG_LOGIN_REQUIRED);
@@ -132,14 +138,15 @@ public class TerminalSession implements Runnable {
 					try {
 						TicketCancelParameters infoParamCancel = (TicketCancelParameters) command.getData();
 						datosExtra = infoParamCancel.getTicketNumber() + ";";
-						SalesManager.getInstance().cancelTicket(infoParamCancel);
-						response = new Message(Message.TICKET_CANCEL_OK, null);
-						
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION, AuditManager.EVENT_LEVEL_INFO, datosExtra);
-						
+						Refound refound = SalesManager.getInstance().cancelTicket(infoParamCancel);
+						response = new Message(Message.TICKET_CANCEL_OK, refound);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION,
+								AuditManager.EVENT_LEVEL_INFO, datosExtra);
+
 					} catch (Exception e) {
 						response = new Message(Message.TICKET_CANCEL_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION, AuditManager.EVENT_LEVEL_ERROR, datosExtra);
+						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION,
+								AuditManager.EVENT_LEVEL_ERROR, datosExtra);
 					}
 					writer.println(response.toString() + "\n");
 				}

@@ -20,6 +20,8 @@ public class SaleManager {
 
 	private DataSource ds;
 
+	private long nextOperation;
+
 	private SaleManager() {
 		this.ds = null;
 	}
@@ -35,6 +37,15 @@ public class SaleManager {
 		if (this.ds == null) {
 			InitialContext initContext = new InitialContext();
 			this.ds = (DataSource) initContext.lookup("java:jboss/datasources/IntendenciaDS");
+			Connection connection = ds.getConnection();
+			Statement sta = connection.createStatement();
+			ResultSet res = sta
+					.executeQuery("SELECT MAX(Ticket) as Ticket, MAX(Anulacion) as Anulacion FROM Estacionamientos");
+			res.next();
+			this.nextOperation = Math.max(res.getLong("Ticket"), res.getLong("Anulacion")) + 1;
+			res.close();
+			sta.close();
+			connection.close();
 		}
 	}
 
@@ -90,7 +101,7 @@ public class SaleManager {
 			sale.setStartDateTime(startTime);
 
 			int m = (minutes / 30 + (minutes % 30 > 0 ? 1 : 0));
-			sale.setEndDateTime(startTime + (long)(m * 30) * 60000);
+			sale.setEndDateTime(startTime + (long) (m * 30) * 60000);
 			sale.setAmount(m * 1400);
 			try {
 				Connection connection = this.ds.getConnection();
@@ -108,18 +119,18 @@ public class SaleManager {
 					res.close();
 					pre.close();
 					pre = connection.prepareStatement(
-							"INSERT INTO Estacionamientos (Operador, Operacion, Matricula, Inicio, Final, Anulado) VALUES (?, ?, ?, ?, ?, ?)");
+							"INSERT INTO Estacionamientos (Operador, Operacion, Matricula, Inicio, Final, Ticket) VALUES (?, ?, ?, ?, ?, ?)");
 					pre.setLong(1, operator.getId());
 					pre.setLong(2, operacion);
 					pre.setString(3, sale.getPlate());
 					pre.setLong(4, sale.getStartDateTime());
 					pre.setLong(5, sale.getEndDateTime());
-					pre.setBoolean(6, false);
+					pre.setLong(6, this.nextOperation);
 					pre.execute();
 					pre.close();
 					connection.commit();
 					connection.close();
-					sale.seteTicketNumber(operacion);
+					sale.seteTicketNumber(this.nextOperation++);
 				} catch (Exception e) {
 					sale.setResult(502);
 					sale.setMessage(e.getMessage());
@@ -135,96 +146,82 @@ public class SaleManager {
 
 	public Credit parkingCancel(String operatorName, long eTicketNumber) {
 		Credit credit = new Credit();
-		
 		Operator operator = null;
-		try {
-			this.init();
-			operator = OperatorManager.getInstance().getOperator(operatorName);
-		} catch (Exception e) {
-			credit.setResult(501);
-			credit.setMessage(e.getMessage());
-		}
-		
-		if (operator == null) {
-			credit.setResult(401);
-			credit.setMessage("No se pudieron validar las credenciales del operador");
-		} else if (eTicketNumber <= 0 ) {
-			credit.setResult(402);
-			credit.setMessage("Ticket inválido");
-		} else {
-			
+		do {
+			try {
+				this.init();
+				operator = OperatorManager.getInstance().getOperator(operatorName);
+			} catch (Exception e) {
+				credit.setResult(401);
+				credit.setMessage("No se pudieron validar las credenciales del operador");
+				break;
+			}
 			try {
 				Connection connection = this.ds.getConnection();
-				PreparedStatement pre;
 				connection.setAutoCommit(false);
-				
-				pre = connection.prepareStatement("SELECT Importe, Operador FROM Operaciones, Estacionamientos WHERE Id=? AND Id=Operacion");
-				pre.setLong(1, eTicketNumber);
+				PreparedStatement pre = connection.prepareStatement(
+						"SELECT Id, FechaHora, Importe, Matricula, Inicio, Anulacion, Autorizacion FROM Operaciones as op, Estacionamientos as es WHERE op.Id = es.Operacion AND es.Operador = ? AND es.Ticket = ?");
+				pre.setLong(1, operator.getId());
+				pre.setLong(2, eTicketNumber);
 				ResultSet res = pre.executeQuery();
-				if (res.next()) {
-					if (operator.getId() != res.getLong(2)) {
-						credit.setResult(403);
-						credit.setMessage("El ticket no fue expedido por operador " + operator.getName());
-						return credit;
-					}
-					credit.setAmount(res.getLong(1));
-					credit.seteTicketNumber(eTicketNumber);
-					credit.setSaleDate(new Date().getTime());
-				} else {
+				if (!res.next()) {
 					credit.setResult(404);
-					credit.setMessage("No existe registro de ticket en el sistema");
-					return credit;
+					credit.setMessage("Número de ticket inválido");
+					break;
 				}
-				String token = "token 1";	
-				pre = connection.prepareStatement("INSERT INTO Operaciones (FechaHora, Importe) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-				pre.setLong(1, credit.getSaleDate());
-				pre.setLong(2, credit.getAmount());
+				res.getLong("Anulacion");
+				if (!res.wasNull()) {
+					credit.setResult(405);
+					credit.setMessage("El ticket solicitado ya ha sido anulado");
+					break;
+				}
+				if (res.getLong("Inicio") < (new Date()).getTime()) {
+					credit.setResult(406);
+					credit.setMessage("Imposible anular un ticket ya utilizado");
+					break;
+				}
+				long id = res.getLong("Id");
+				credit.setAmount(-res.getLong("Importe"));
+				credit.setAutorization(nextOperation);
+				credit.setTicket(eTicketNumber);
+				credit.setCreditDate(new Date().getTime());
+				res.close();
+				pre.close();
+
 				try {
+					pre = connection.prepareStatement("INSERT INTO Operaciones (FechaHora, Importe) VALUES (?, ?)",
+							Statement.RETURN_GENERATED_KEYS);
+					pre.setLong(1, credit.getCreditDate());
+					pre.setLong(2, credit.getAmount());
 					pre.executeUpdate();
 					res = pre.getGeneratedKeys();
 					res.next();
 					long operacion = res.getLong(1);
 					res.close();
 					pre.close();
-					pre = connection.prepareStatement("UPDATE Estacionamientos SET Anulado=?, Anulacion=? WHERE Operacion=" + eTicketNumber );
-					pre.setBoolean(1, true);
-					pre.setLong(2, operacion);
-					
-					token = "token 2";
-					pre.execute();
+
+					pre = connection.prepareStatement(
+							"UPDATE Estacionamientos SET  Anulacion=?, Autorizacion = ? WHERE Operacion=?");
+					pre.setLong(1, operacion);
+					pre.setLong(2, credit.getAutorization());
+					pre.setLong(3, id);
+					pre.executeUpdate();
 					pre.close();
 					connection.commit();
 					connection.close();
-					
-					credit.seteCreditNumber(operacion);
 					credit.setResult(200);
 					credit.setMessage("Ok");
-					
+					nextOperation++;
 				} catch (Exception e) {
-					credit.setResult(502);
-					credit.setMessage(token + e.getMessage());
-					pre.close();
 					connection.rollback();
+					connection.close();
+					throw new Exception(e.getMessage());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				credit.setResult(501);
+				credit.setMessage(e.getMessage());
 			}
-			
-		}
-		
-//		if (eTicketNumber % 2 == 0) {
-//			credit.setResult(200);
-//			credit.setMessage("Ok");
-//			credit.setAmount(-1400);
-//			credit.setCustomerName("customerMame");
-//			credit.seteCreditNumber(0);
-//			credit.seteTicketNumber(eTicketNumber);
-//			credit.setSaleDate(new Date().getTime());
-//		} else {
-//			credit.setResult(402);
-//			credit.setMessage("Invalid ticket number");
-//		}
-		
+		} while (false);
 		return credit;
 	}
 }
