@@ -12,7 +12,7 @@
 			Administración
 		</h1>
 		<div>
-			<%=((Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO)).getUser().getName()%></strong>
+			<%=((Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO)).getUser().getName()%>
 			| <a href="logout">Cerrar Sesión</a>
 		</div>
 	</div>
