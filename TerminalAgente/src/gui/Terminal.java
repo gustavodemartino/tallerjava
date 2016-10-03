@@ -198,7 +198,8 @@ public class Terminal extends JFrame  implements ActionListener {
 		botonLogin.setMargin(new Insets(2, 2, 2, 2));
 		
 		mensajeError.setForeground(Color.RED);
-		mensajeError.setBounds(130, 220, 500, 100);
+		mensajeError.setBounds(130, 220, 300, 100);
+		mensajeError.setText("");
 		cardLogin.add(mensajeError);
 
 		botonLogin.addActionListener(new ActionListener() {
@@ -212,10 +213,7 @@ public class Terminal extends JFrame  implements ActionListener {
 					usuarioDatos = agencia.login(userText.getText(), strPassword);
 					
 					infoUsuario.setText("Bienvenido " + usuarioDatos.getName());
-					//infoUsuario.setText("Hola " + userText.getText());
-					
-					//userText.setText("");
-					//passwordText.setText("");
+					infoTerminal.setText("Terminal: " + agencia.getTerminalId());
 					
 					CardLayout cl = (CardLayout) (cartas.getLayout());
 					cl.show(cartas, "INICIO");
@@ -308,13 +306,11 @@ public class Terminal extends JFrame  implements ActionListener {
 		contenedor.add(spinnerMinutos);
 
 		
-		JLabel mensajeLinea1 = new JLabel("");
-		mensajeLinea1.setBounds(50, 150, 300, 25);
-		contenedor.add(mensajeLinea1);
-		JLabel mensajeLinea2 = new JLabel("");
-		mensajeLinea2.setBounds(50, 175, 300, 25);
-		contenedor.add(mensajeLinea2);
-
+		JLabel mensajeLinea = new JLabel("");
+		mensajeLinea.setBounds(50, 150, 300, 100);
+		mensajeLinea.setText("");
+		mensajeLinea.setForeground(Color.RED);
+		contenedor.add(mensajeLinea);
 
 		JButton botonConfirm = new JButton("Confirmar");
 		botonConfirm.setBounds(140, 120, 100, 30);
@@ -322,8 +318,6 @@ public class Terminal extends JFrame  implements ActionListener {
 		botonConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent eve) {
 				try {
-					mensajeLinea1.setText("");
-					
 					SimpleDateFormat sdf = new SimpleDateFormat("k:m");
 					Date date = sdf.parse(spinnerHora.getValue()+":"+spinnerMinutos.getValue());
 					
@@ -356,8 +350,7 @@ public class Terminal extends JFrame  implements ActionListener {
 					// CardLayout cl = (CardLayout)(cartas.getLayout());
 					// cl.show(cartas,"INICIO");
 				} catch (Exception e) {
-					mensajeLinea1.setForeground(Color.RED);
-					mensajeLinea1.setText(e.getMessage());
+					mensajeLinea.setText(e.getMessage());
 					//e.printStackTrace();
 				}
 			}
@@ -386,9 +379,11 @@ public class Terminal extends JFrame  implements ActionListener {
 		ticketText.setBounds(140, 30, 160, 25);
 		contenedor.add(ticketText);
 		
-		JLabel mensajeLinea1 = new JLabel("");
-		mensajeLinea1.setBounds(50, 110, 300, 25);
-		contenedor.add(mensajeLinea1);
+		JLabel mensajeLinea = new JLabel("");
+		mensajeLinea.setBounds(50, 110, 300, 100);
+		mensajeLinea.setForeground(Color.RED);
+		mensajeLinea.setText("");
+		contenedor.add(mensajeLinea);
 		
 		JButton botonConfirm = new JButton("Confirmar");
 		botonConfirm.setBounds(140, 70, 100, 30);
@@ -396,8 +391,6 @@ public class Terminal extends JFrame  implements ActionListener {
 		botonConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent eve) {
 				try {
-					mensajeLinea1.setText("");
-					
 					long ticketLong = Integer.parseInt(ticketText.getText());
 					agencia.anular(ticketLong);
 
@@ -411,8 +404,7 @@ public class Terminal extends JFrame  implements ActionListener {
 					// CardLayout cl = (CardLayout)(cartas.getLayout());
 					// cl.show(cartas,"INICIO");
 				} catch (Exception e) {
-					mensajeLinea1.setForeground(Color.RED);
-					mensajeLinea1.setText(e.getMessage());
+					mensajeLinea.setText(e.getMessage());
 				}
 			}
 		});
