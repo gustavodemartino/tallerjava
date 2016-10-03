@@ -42,13 +42,15 @@ public class AuditManager {
 		// Si no hay ubicación, pasar un valor negativo
 		
 		String descripcion = null;
+		String[] detailItem = detail.split(";");
 		
-		switch (level) {
+		switch (event) {
 	        case AUDIT_EVENT_LOGIN:
+	        	//infoParamLogin.getUserId() + ";" + infoParamLogin.getLocationName() + ";";
 	        	if (level == EVENT_LEVEL_INFO)
-	        		descripcion = "OK Ingreso al sistema " + detail;
+	        		descripcion = "OK Ingreso al sistema por " + detailItem[0] + " en " + detailItem[1];
 	        	else if (level == EVENT_LEVEL_ERROR)
-	        		descripcion = "FAIL Ingreso al sistema " + detail;
+	        		descripcion = "FAIL Ingreso al sistema " + detailItem[0] + " en " + detailItem[1];
 	            break;
 	            
 	        case AUDIT_EVENT_LOGOUT:  
@@ -59,17 +61,19 @@ public class AuditManager {
 	            break;
 	            
 	        case AUDIT_EVENT_SALE:  
+	        	//infoParamSale.getPlate() + ";" + infoParamSale.getMinutes() + ";" + infoParamSale.getStartTime() + ";";
 	        	if (level == EVENT_LEVEL_INFO)
-	        		descripcion = "OK Venta " + detail;
+	        		descripcion = "OK Venta para " + detailItem[0] + " por " + detailItem[1] + " desde " + detailItem[2];
 	        	else if (level == EVENT_LEVEL_ERROR)
-	        		descripcion = "FAIL Venta " + detail;
+	        		descripcion = "FAIL Venta para "  + detailItem[0] + " por " + detailItem[1] + " desde " + detailItem[2];
 	            break;
 	                 
-	        case AUDIT_EVENT_ANNULATION:  
+	        case AUDIT_EVENT_ANNULATION: 
+	        	//infoParamCancel.getTicketNumber() + ";";
 	        	if (level == EVENT_LEVEL_INFO)
-	        		descripcion = "OK Anulación " + detail;
+	        		descripcion = "OK Anulación para ticket " + detailItem[0];
 	        	else if (level == EVENT_LEVEL_ERROR)
-	        		descripcion = "FAIL Anulación " + detail;
+	        		descripcion = "FAIL Anulación para ticket " + detailItem[0];
 	            break;
 	                 
 	        case AUDIT_EVENT_USER_CREATE:  
@@ -87,7 +91,7 @@ public class AuditManager {
 	            break;
 	                 
 	        default: 
-	        	descripcion = "";
+	        	descripcion = "Sin descripción";
 	            break;
 	    }
 		

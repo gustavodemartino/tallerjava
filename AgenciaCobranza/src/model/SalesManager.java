@@ -24,6 +24,7 @@ public class SalesManager {
 	private static SalesManager instance = null;
 	private Parking parkingService;
 	private DataSource ds;
+	private String operador = "abitab";
 
 	private SalesManager() throws Exception {
 		ParkingService p = new ParkingService();
@@ -40,7 +41,7 @@ public class SalesManager {
 	}
 
 	public Ticket saleTicket(TicketSaleParameters data) throws Exception {
-		Sale sale = this.parkingService.parkingSale("abitab", data.getPlate(), data.getStartTime().getTime(),
+		Sale sale = this.parkingService.parkingSale(operador, data.getPlate(), data.getStartTime().getTime(),
 				data.getMinutes());
 		if (sale.getResult() != 200) {
 			throw new Exception(sale.getResult() + ": " + sale.getMessage());
@@ -122,7 +123,7 @@ public class SalesManager {
 	}
 
 	public void cancelTicket(TicketCancelParameters data) throws Exception {
-		Credit credit = this.parkingService.parkingCancel("Agencia de cobranza", data.getTicketNumber());
+		Credit credit = this.parkingService.parkingCancel(operador, data.getTicketNumber());
 		if (credit.getResult() != 200) {
 			throw new Exception(credit.getResult() + ": " + credit.getMessage());
 		}

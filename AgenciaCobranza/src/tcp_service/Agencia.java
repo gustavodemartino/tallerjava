@@ -30,6 +30,10 @@ public class Agencia {
 		this.entrada = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		this.salida = new PrintWriter(socket.getOutputStream(), true);
 	}
+	
+	public String getTerminalId() {
+		return this.terminalId;
+	}
 
 	public User login(String userName, String password) throws Exception {
 		LoginParameters parameters = new LoginParameters(userName, password, this.terminalId);
