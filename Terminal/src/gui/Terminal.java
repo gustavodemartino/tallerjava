@@ -422,7 +422,7 @@ public class Terminal extends JFrame  implements ActionListener {
 
 	}
 	
-	public static void main(String[] args) {
+	public static void main_(String[] args) {
 		EventQueue.invokeLater(() -> {
 			Terminal ventana = new Terminal();
 			ventana.setVisible(true);

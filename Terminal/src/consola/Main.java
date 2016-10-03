@@ -1,5 +1,6 @@
-package terminal;
+package consola;
 
+import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
@@ -9,12 +10,13 @@ import java.util.Date;
 
 import data.Ticket;
 import data.User;
+import gui.Terminal;
 import tcp_service.Agencia;
 
 public class Main {
 
 	private static String terminal_id = "terminal_id";
-	private static String help = "Use:\n\t-h | -- help para obtener ayuda\n\t-t <terminal_id> para indicar el id de la terminal\n\t--clearpassword para ingresar la clave en texto claro (para procesamiento batch)";
+	private static String help = "Use:\n\t-h | -- help para obtener ayuda\n\t--textmode Usar consola en modo texto\n\t-t <terminal_id> para indicar el id de la terminal\n\t--clearpassword para ingresar la clave en texto claro (para procesamiento batch)";
 
 	private static String readPassword() throws Exception {
 		String result = null;
@@ -97,23 +99,27 @@ public class Main {
 
 	public static void main(String[] args) {
 		boolean useClearPassword = false;
+		boolean useGui = true;
 		int index = 0;
 		while (args.length > index) {
 			if (args.length > (index) && (args[index].equals("-h") || args[index].equals("--help"))) {
 				System.out.println(help);
 				return;
 			} else if (args.length > index && args[index].equals("-t")) {
-				index ++;
-				if (args.length > index){
+				index++;
+				if (args.length > index) {
 					terminal_id = args[index];
-					index ++;
+					index++;
 				} else {
-					System.err
-					.println("Falta parámetro para -t. Use el parámetro -h para obtener ayuda.");
+					System.err.println("Falta parámetro para -t. Use el parámetro -h para obtener ayuda.");
 					return;
 				}
 			} else if (args.length > index && args[index].equals("--clearpassword")) {
 				useClearPassword = true;
+				useGui = false;
+				index++;
+			} else if (args.length > index && args[index].equals("--textmode")) {
+				useGui = false;
 				index++;
 			} else {
 				System.err
@@ -121,69 +127,76 @@ public class Main {
 				return;
 			}
 		}
-		Agencia agencia;
-		boolean open = true;
-		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			while (open) {
-				User user = null;
-				String userName = "";
-				String password = "";
-				while (userName.equals("")) {
-					System.out.print("login: ");
-					userName = teclado.readLine().trim();
-				}
-				if (userName.equals("exit")) {
-					break;
-				}
-				System.out.print("password: ");
-				if (useClearPassword) {
-					password = teclado.readLine();
-				} else {
-					password = readPassword();
-				}
-				System.out.println("Conecting to server...");
-				try {
-					agencia = new Agencia(terminal_id);
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
-					continue;
-				}
-				try {
-					user = agencia.login(userName, password);
-				} catch (Exception e) {
-					agencia.close();
-					System.out.println(e.getMessage());
-					continue;
-				}
-				System.out.println("Loged as: " + user.getName());
-				while (true) {
-					System.out.print(">");
-					String entrada = teclado.readLine().replaceAll("\\s+", " ").trim();
-					if (entrada.length() == 0) {
+		if (useGui) {
+			EventQueue.invokeLater(() -> {
+				Terminal ventana = new Terminal();
+				ventana.setVisible(true);
+			});
+
+		} else {
+			Agencia agencia;
+			boolean open = true;
+			BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
+			try {
+				while (open) {
+					User user = null;
+					String userName = "";
+					String password = "";
+					while (userName.equals("")) {
+						System.out.print("login: ");
+						userName = teclado.readLine().trim();
+					}
+					if (userName.equals("exit")) {
+						break;
+					}
+					System.out.print("password: ");
+					if (useClearPassword) {
+						password = teclado.readLine();
+					} else {
+						password = readPassword();
+					}
+					System.out.println("Conecting to server...");
+					try {
+						agencia = new Agencia(terminal_id);
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
 						continue;
 					}
-					String[] comando = entrada.split(" ");
-					if (comando[0].equals("logout")) {
-						agencia.logout();
-						break;
-					} else if (comando[0].equals("vender")) {
-						vender(agencia, comando);
-					} else if (comando[0].equals("anular")) {
-						anular(agencia, comando);
-					} else if (comando[0].equals("exit")) {
-						open = false;
-						break;
-					} else {
-						System.out.println("Comando incorrecto");
+					try {
+						user = agencia.login(userName, password);
+					} catch (Exception e) {
+						agencia.close();
+						System.out.println(e.getMessage());
+						continue;
 					}
+					System.out.println("Loged as: " + user.getName());
+					while (true) {
+						System.out.print(">");
+						String entrada = teclado.readLine().replaceAll("\\s+", " ").trim();
+						if (entrada.length() == 0) {
+							continue;
+						}
+						String[] comando = entrada.split(" ");
+						if (comando[0].equals("logout")) {
+							agencia.logout();
+							break;
+						} else if (comando[0].equals("vender")) {
+							vender(agencia, comando);
+						} else if (comando[0].equals("anular")) {
+							anular(agencia, comando);
+						} else if (comando[0].equals("exit")) {
+							open = false;
+							break;
+						} else {
+							System.out.println("Comando incorrecto");
+						}
+					}
+					agencia.close();
 				}
-				agencia.close();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Exit program");
 		}
-		System.out.println("Exit program");
 	}
-
 }
