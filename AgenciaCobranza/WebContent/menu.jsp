@@ -25,7 +25,10 @@
 		<a href="parkinglist.jsp">[ Reporte de estacionamientos ]</a>
 		</div>
 		<div>
+<!--
 		<a href="auditor.jsp">[ Reporte de auditoria ]</a>
+-->
+		
 		</div>
 	</div>
 </body>

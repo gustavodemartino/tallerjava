@@ -45,7 +45,7 @@
 <title>Estacionamientos vendidos</title>
 <link href="styles.css" rel="stylesheet">
 <script>
-function previous_day(){
+function previous(){
 	document.getElementById("date_from").value = '<%=prev_from%>'
 	document.getElementById("date_to").value = '<%=prev_to%>'
 }
@@ -55,7 +55,7 @@ function today(){
 	document.getElementById("date_to").value = '<%=today%>'
 }
 
-function next_day(){
+function next(){
 	document.getElementById("date_from").value = '<%=next_from%>'
 	document.getElementById("date_to").value = '<%=next_to%>'
 	}
@@ -77,9 +77,9 @@ function next_day(){
 			for="date_to">Desde: </label> <input id="date_to" type="date"
 			name="date_to" value="<%=date_to%>" />
 		<button type="submit">Actualizar</button>
-		<button onclick="previous_day()">Anterior</button>
+		<button onclick="previous()">Anterior</button>
 		<button onclick="today()">Hoy</button>
-		<button onclick="next_day()">Siguiente</button>
+		<button onclick="next()">Siguiente</button>
 	</form>
 	<table id="table-1">
 		<thead>

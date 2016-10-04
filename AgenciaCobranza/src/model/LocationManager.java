@@ -36,11 +36,12 @@ public class LocationManager {
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection.prepareStatement(
-				"SELECT Id FROM Ubicaciones WHERE Nombre = '" + Constants.DB_IDENTFIER_WEB_LOCATION_NAME + "'");
+				"SELECT Id FROM Ubicaciones WHERE Firma = '" + Constants.DB_IDENTFIER_WEB_LOCATION_NAME + "'");
 		ResultSet res = pre.executeQuery();
 		if (!res.next()) {
 			Statement sta = connection.createStatement();
-			sta.executeUpdate("INSERT INTO Ubicaciones (Nombre) VALUES ('" + Constants.DB_IDENTFIER_WEB_LOCATION_NAME + "')");
+			sta.executeUpdate("INSERT INTO Ubicaciones (Firma, Nombre) VALUES ('"
+					+ Constants.DB_IDENTFIER_WEB_LOCATION_NAME + "', 'BackOffice')");
 			sta.close();
 		}
 		pre.close();
@@ -48,10 +49,11 @@ public class LocationManager {
 		connection.close();
 	}
 
-	public Location getLocation(String terminalId) throws Exception {
+	public Location getLocation(String locationId) throws Exception {
 		Connection connection = this.ds.getConnection();
-		PreparedStatement pre = connection.prepareStatement("SELECT Id FROM Ubicaciones WHERE Nombre = ? LIMIT 1");
-		pre.setString(1, terminalId);
+		PreparedStatement pre = connection
+				.prepareStatement("SELECT Id, Nombre FROM Ubicaciones WHERE Firma = ? LIMIT 1");
+		pre.setString(1, locationId);
 		ResultSet res = pre.executeQuery();
 		if (!res.next()) {
 			pre.close();
@@ -59,7 +61,7 @@ public class LocationManager {
 			connection.close();
 			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
 		}
-		Location result = new Location(res.getLong(1), terminalId);
+		Location result = new Location(res.getLong("Id"), locationId, res.getString("Nombre"));
 		pre.close();
 		res.close();
 		connection.close();
@@ -68,7 +70,8 @@ public class LocationManager {
 
 	public Location getLocation(long locationId) throws Exception {
 		Connection connection = this.ds.getConnection();
-		PreparedStatement pre = connection.prepareStatement("SELECT Nombre FROM Ubicaciones WHERE Id = ? LIMIT 1");
+		PreparedStatement pre = connection
+				.prepareStatement("SELECT Firma, Nombre FROM Ubicaciones WHERE Id = ? LIMIT 1");
 		pre.setLong(1, locationId);
 		ResultSet res = pre.executeQuery();
 		if (!res.next()) {
@@ -77,16 +80,18 @@ public class LocationManager {
 			connection.close();
 			throw new Exception(Constants.ERROR_MSG_INVALID_LOCATION);
 		}
-		Location result = new Location(locationId, res.getString(1));
+		Location result = new Location(locationId, res.getString("Firma"), res.getString("Nombre"));
 		pre.close();
 		res.close();
 		connection.close();
 		return result;
 	}
 
-	public void addLocation(String nombre) throws Exception {
+	public void addLocation(String locationId, String name) throws Exception {
 		Connection connection = this.ds.getConnection();
-		PreparedStatement pre = connection.prepareStatement("INSERT INTO Ubicaciones (Nombre) VALUES (?)");
+		PreparedStatement pre = connection.prepareStatement("INSERT INTO Ubicaciones (Firma, Nombre) VALUES (?, ?)");
+		pre.setString(1, locationId);
+		pre.setString(2, name);
 		pre.execute();
 		pre.close();
 		connection.close();
@@ -96,14 +101,13 @@ public class LocationManager {
 		List<Location> result = new ArrayList<Location>();
 		Connection connection = this.ds.getConnection();
 		Statement sta = connection.createStatement();
-		ResultSet res = sta.executeQuery("SELECT Id, Nombre FROM Ubicaciones");
+		ResultSet res = sta.executeQuery("SELECT Id, Firma, Nombre FROM Ubicaciones");
 		while (res.next()) {
-			result.add(new Location(res.getLong(1), res.getString(2)));
+			result.add(new Location(res.getLong("Id"), res.getString("Firma"), res.getString("Nombre")));
 		}
 		sta.close();
 		res.close();
 		connection.close();
 		return result;
 	}
-
 }

@@ -9,17 +9,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import data.AuditEvent;
 import data.Login;
 import model.AuditManager;
 import model.Constants;
 import model.LoginManager;
 
-@WebServlet(value ={"/login", "/logout"})
+@WebServlet(value = { "/login", "/logout" })
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private AuditManager auditor;
 
 	public LoginServlet() {
 		super();
+		try {
+			auditor = AuditManager.getInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void login(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -32,17 +39,14 @@ public class LoginServlet extends HttpServlet {
 			if (loginInfo != null) {
 				loginInfo.getUser().setPassword(password);
 				session.setAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO, loginInfo);
-				AuditManager.getInstance().register(loginInfo.getUser().getId(), loginInfo.getLocation().getId(),
-						AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_INFO, null);
+				auditor.register(loginInfo.getUser(), loginInfo.getLocation(), AuditEvent.AUDIT_EVENT_LOGIN_OK, null);
 			}
 			response.sendRedirect("menu.jsp");
 			session.setAttribute("userError", "");
 		} catch (Exception e) {
 			session.setAttribute("userError", e.getMessage());
 			try {
-				AuditManager.getInstance().register(-1, -1, AuditManager.AUDIT_EVENT_LOGIN_ERROR,
-						AuditManager.EVENT_LEVEL_WARNING, "{\"nickname\":\"" + userId + "\",\"location\": \""
-								+ Constants.DB_IDENTFIER_WEB_LOCATION_NAME + "\"}");
+				auditor.register(userId, Constants.DB_IDENTFIER_WEB_LOCATION_NAME, AuditEvent.AUDIT_EVENT_LOGIN_ERROR);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -55,8 +59,7 @@ public class LoginServlet extends HttpServlet {
 		Login loginInfo = (Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO);
 		session.removeAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO);
 		try {
-			AuditManager.getInstance().register(loginInfo.getUser().getId(), loginInfo.getLocation().getId(),
-					AuditManager.AUDIT_EVENT_LOGOUT, AuditManager.EVENT_LEVEL_INFO, null);
+			auditor.register(loginInfo.getUser(),loginInfo.getLocation(), AuditEvent.AUDIT_EVENT_LOGOUT_OK, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

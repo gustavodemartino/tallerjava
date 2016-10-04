@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 
+import data.AuditEvent;
 import data.ErrorMessage;
 import data.Location;
 import data.Login;
@@ -37,9 +39,9 @@ public class TerminalSession implements Runnable {
 	@Override
 	public void run() {
 		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+			SimpleDateFormat sdfh = new SimpleDateFormat("kk:mm");
 			AuditManager auditor = AuditManager.getInstance();
-			String datosExtra = "";
-
 			StringBuffer sb = new StringBuffer();
 			BufferedReader r = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 			boolean scan = true;
@@ -71,22 +73,19 @@ public class TerminalSession implements Runnable {
 						throw new Exception(Constants.ERROR_MSG_REPEATED_LOGIN);
 					}
 					Login loginResult;
+					LoginParameters param = (LoginParameters) command.getData();
 					try {
-						LoginParameters infoParamLogin = (LoginParameters) command.getData();
-						datosExtra = infoParamLogin.getUserId() + ";" + infoParamLogin.getLocationName() + ";";
-
-						loginResult = LoginManager.getInstance().login(infoParamLogin);
+						loginResult = LoginManager.getInstance().login(param);
 						this.user = loginResult.getUser();
 						this.location = loginResult.getLocation();
 						response = new Message(Message.LOGIN_OK, this.user);
 
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGIN,
-								AuditManager.EVENT_LEVEL_INFO, datosExtra);
+						auditor.register(this.user, this.location, AuditEvent.AUDIT_EVENT_LOGIN_OK, (String) null);
 
 					} catch (Exception e) {
 						response = new Message(Message.LOGIN_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(0, 0, AuditManager.AUDIT_EVENT_LOGIN, AuditManager.EVENT_LEVEL_ERROR,
-								datosExtra);
+						auditor.register(param.getUserId(), param.getLocationName(),
+								AuditEvent.AUDIT_EVENT_LOGIN_ERROR);
 					}
 					writer.println(response.toString() + "\n");
 
@@ -97,8 +96,7 @@ public class TerminalSession implements Runnable {
 					if (this.user == null) {
 						throw new Exception(Constants.ERROR_MSG_LOGIN_REQUIRED);
 					}
-					auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_LOGOUT,
-							AuditManager.EVENT_LEVEL_INFO, "");
+					auditor.register(this.user, this.location, AuditEvent.AUDIT_EVENT_LOGOUT_OK, (String) null);
 
 					this.user = null;
 					response = new Message(Message.LOGOUT_OK, null);
@@ -111,20 +109,26 @@ public class TerminalSession implements Runnable {
 					if (this.user == null) {
 						throw new Exception(Constants.ERROR_MSG_LOGIN_REQUIRED);
 					}
+					TicketSaleParameters param = (TicketSaleParameters) command.getData();
 					try {
-						TicketSaleParameters infoParamSale = (TicketSaleParameters) command.getData();
-						datosExtra = infoParamSale.getPlate() + ";" + infoParamSale.getMinutes() + ";"
-								+ infoParamSale.getStartTime() + ";";
-						Ticket ticket = SalesManager.getInstance().saleTicket(infoParamSale);
+
+						Ticket ticket = SalesManager.getInstance().saleTicket(param);
 						response = new Message(Message.TICKET_SALE_OK, ticket);
 
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE,
-								AuditManager.EVENT_LEVEL_INFO, datosExtra);
+						auditor.register(this.user, this.location, AuditEvent.AUDIT_EVENT_SALE_OK,
+								"Hora: " + sdf.format(ticket.getSaleDateTime()) + "\nMatrícula: "
+										+ ticket.getPlate() + "\nInicio: " + sdfh.format(param.getStartTime())
+										+ "\nMinutos solicitados: " + param.getMinutes() + "\nInicio autorizado: "
+										+ sdfh.format(ticket.getStartDateTime()) + "\nFinal autorizado: " + sdfh.format(ticket.getEndDateTime())
+										+ "\nTicket: " + ticket.getTicketNumber() + "\nImporte: "
+										+ ticket.getFloatAmount());
 
 					} catch (Exception e) {
 						response = new Message(Message.TICKET_SALE_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_SALE,
-								AuditManager.EVENT_LEVEL_ERROR, datosExtra);
+						auditor.register(this.user, this.location, AuditEvent.AUDIT_EVENT_SALE_ERROR,
+								"Matrícula: " + param.getPlate() + "\nInicio: "
+										+ sdf.format(param.getStartTime()) + "\nMinutos: "
+										+ param.getMinutes() + "\nError: " + e.getMessage());
 					}
 					writer.println(response.toString() + "\n");
 
@@ -135,18 +139,19 @@ public class TerminalSession implements Runnable {
 					if (this.user == null) {
 						throw new Exception(Constants.ERROR_MSG_LOGIN_REQUIRED);
 					}
+					TicketCancelParameters param = (TicketCancelParameters) command.getData();
 					try {
-						TicketCancelParameters infoParamCancel = (TicketCancelParameters) command.getData();
-						datosExtra = infoParamCancel.getTicketNumber() + ";";
-						Refound refound = SalesManager.getInstance().cancelTicket(infoParamCancel);
+						Refound refound = SalesManager.getInstance().cancelTicket(param);
 						response = new Message(Message.TICKET_CANCEL_OK, refound);
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION,
-								AuditManager.EVENT_LEVEL_INFO, datosExtra);
+						auditor.register(this.user, this.location, AuditEvent.AUDIT_EVENT_ANNULATION_OK,
+								"Hora: " + sdf.format(refound.getDateTime()) + "\nTicket: "
+										+ refound.getTicket() + "\nAutorización: " + refound.getAuthorization()
+										+ "\nImporte: " + refound.getFloatAmount());
 
 					} catch (Exception e) {
 						response = new Message(Message.TICKET_CANCEL_ERROR, new ErrorMessage(e.getMessage()));
-						auditor.register(this.user.getId(), this.location.getId(), AuditManager.AUDIT_EVENT_ANNULATION,
-								AuditManager.EVENT_LEVEL_ERROR, datosExtra);
+						auditor.register(this.user, this.location, AuditEvent.AUDIT_EVENT_ANNULATION_ERROR,
+								"Ticket: " + param.getTicketNumber()+"\nError: "+ e.getMessage());
 					}
 					writer.println(response.toString() + "\n");
 				}
