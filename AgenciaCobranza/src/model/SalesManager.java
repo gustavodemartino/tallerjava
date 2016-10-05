@@ -31,7 +31,7 @@ public class SalesManager {
 		ParkingService p = new ParkingService();
 		this.parkingService = p.getParkingPort();
 		InitialContext initContext = new InitialContext();
-		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
+		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE);
 	}
 
 	public static SalesManager getInstance() throws Exception {

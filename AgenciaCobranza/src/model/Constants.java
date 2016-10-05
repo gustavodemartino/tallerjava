@@ -2,7 +2,7 @@ package model;
 
 public class Constants {
 
-	public static final String DATASOURCE_LOOKUP = "java:jboss/datasources/AgenciaDS";
+	public static final String DATASOURCE = "java:jboss/datasources/AgenciaDS";
 	public static final String DB_IDENTFIER_WEB_LOCATION_NAME = "web";
 	public static final String SESSION_IDENTFIER_LOGIN_INFO = "loginInfo";
 	public static final String SESSION_IDENTFIER_USER_INFO = "userInfo";

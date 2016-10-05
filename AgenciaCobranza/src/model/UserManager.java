@@ -22,7 +22,7 @@ public class UserManager {
 	// Singleton
 	private UserManager() throws Exception {
 		InitialContext initContext = new InitialContext();
-		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
+		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE);
 		init();
 	}
 

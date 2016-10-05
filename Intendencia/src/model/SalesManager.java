@@ -15,20 +15,20 @@ import data.Credit;
 import data.Operator;
 import data.Sale;
 
-public class SaleManager {
-	private static SaleManager instance = null;
+public class SalesManager {
+	private static SalesManager instance = null;
 
 	private DataSource ds;
 
 	private long nextOperation;
 
-	private SaleManager() {
+	private SalesManager() {
 		this.ds = null;
 	}
 
-	public static SaleManager getInstance() {
+	public static SalesManager getInstance() {
 		if (instance == null) {
-			instance = new SaleManager();
+			instance = new SalesManager();
 		}
 		return instance;
 	}

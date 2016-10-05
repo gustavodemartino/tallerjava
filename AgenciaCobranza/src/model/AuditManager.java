@@ -20,7 +20,7 @@ public class AuditManager {
 
 	private AuditManager() throws Exception {
 		InitialContext initContext = new InitialContext();
-		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE_LOOKUP);
+		this.ds = (DataSource) initContext.lookup(Constants.DATASOURCE);
 	}
 
 	public static AuditManager getInstance() throws Exception {
@@ -118,66 +118,5 @@ public class AuditManager {
 
 		}
 		return result;
-		// String descripcion = null;
-		// String[] detailItem = detail.split(";");
-
-		// switch (event) {
-		// case AUDIT_EVENT_LOGIN:
-		// //infoParamLogin.getUserId() + ";" + infoParamLogin.getLocationName()
-		// + ";";
-		// if (level == EVENT_LEVEL_INFO)
-		// descripcion = "OK Ingreso al sistema por " + detailItem[0] + " en " +
-		// detailItem[1];
-		// else if (level == EVENT_LEVEL_ERROR)
-		// descripcion = "FAIL Ingreso al sistema " + detailItem[0] + " en " +
-		// detailItem[1];
-		// break;
-		//
-		// case AUDIT_EVENT_LOGOUT:
-		// if (level == EVENT_LEVEL_INFO)
-		// descripcion = "OK Salida del sistema " + detail;
-		// else if (level == EVENT_LEVEL_ERROR)
-		// descripcion = "FAIL Salida del sistema " + detail;
-		// break;
-		//
-		// case AUDIT_EVENT_SALE:
-		// //infoParamSale.getPlate() + ";" + infoParamSale.getMinutes() + ";" +
-		// infoParamSale.getStartTime() + ";";
-		// if (level == EVENT_LEVEL_INFO)
-		// descripcion = "OK Venta para " + detailItem[0] + " por " +
-		// detailItem[1] + " desde " + detailItem[2];
-		// else if (level == EVENT_LEVEL_ERROR)
-		// descripcion = "FAIL Venta para " + detailItem[0] + " por " +
-		// detailItem[1] + " desde " + detailItem[2];
-		// break;
-		//
-		// case AUDIT_EVENT_ANNULATION:
-		// //infoParamCancel.getTicketNumber() + ";";
-		// if (level == EVENT_LEVEL_INFO)
-		// descripcion = "OK Anulación para ticket " + detailItem[0];
-		// else if (level == EVENT_LEVEL_ERROR)
-		// descripcion = "FAIL Anulación para ticket " + detailItem[0];
-		// break;
-		//
-		// case AUDIT_EVENT_USER_CREATE:
-		// if (level == EVENT_LEVEL_INFO)
-		// descripcion = "OK Creación de usuario " + detail;
-		// else if (level == EVENT_LEVEL_ERROR)
-		// descripcion = "FAIL Creación de usuario " + detail;
-		// break;
-		//
-		// case AUDIT_EVENT_USER_UPDATE:
-		// if (level == EVENT_LEVEL_INFO)
-		// descripcion = "OK Modificación de usuario " + detail;
-		// else if (level == EVENT_LEVEL_ERROR)
-		// descripcion = "FAIL Modificación de usuario " + detail;
-		// break;
-		//
-		// default:
-		// descripcion = "Sin descripción";
-		// break;
-		// }
-
 	}
-
 }
