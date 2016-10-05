@@ -92,7 +92,6 @@ function showDetail(puDetail) {
 		<%
 			int line = 0;
 			for (AuditEvent ev : events) {
-				line++;
 				out.print("<tr><td>" + ev.getLevel() + "</td><td>" + dfdt.format(ev.getDateTime()) + "</td><td>"
 						+ ev.getSType() + "</td><td>"
 						+ (ev.getUser() == null ? "" : ev.getUser().getName())
