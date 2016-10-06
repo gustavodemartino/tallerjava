@@ -68,8 +68,7 @@ function setSelectedUser(userId) {
 							<input id="selected_user" name="selected_user" type="hidden"
 								value="0">
 							<table id="demo-dt-basic"
-								class="table table-striped table-bordered" cellspacing="0"
-								width="100%">
+								class="table table-striped table-bordered">
 								<thead>
 									<tr>
 										<th>Usuario</th>

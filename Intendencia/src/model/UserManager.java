@@ -44,7 +44,6 @@ public class UserManager {
 			pre.setString(1, "admin");
 			pre.setString(2, "Administrador");
 			pre.setString(3, User.hashPassword("admin"));
-			pre.setInt(4, 1);
 			pre.execute();
 			pre.close();
 		}
