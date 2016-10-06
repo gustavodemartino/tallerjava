@@ -6,22 +6,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Intendencia - Login</title>
+<title>Estacionamientos</title>
 </head>
 <body>
 	<f:view>
-		<h1>Intendencia</h1>
-		<h:form>
-			<h:panelGrid columns="2">
-				<h:outputLabel value="Usuario" />
-				<h:inputText value="#{loginBean.username}" />
-				<h:outputLabel value="Contraseña" />
-				<h:inputSecret value="#{loginBean.password}" />
-				<h:outputText />
-				<h:commandButton action="#{loginBean.login()}" value="Ingresar" />
-			</h:panelGrid>
-			<h:messages />
-		</h:form>
+		<h1>Estacionamientos</h1>
+		<a href="/Intendencia//login.jsf">[ Cerrar sesión ]</a>
+		<a href="/Intendencia/restricted/menu.jsf">[ Menú Principal ]</a>
 	</f:view>
 </body>
 </html>

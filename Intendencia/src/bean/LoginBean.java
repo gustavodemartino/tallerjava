@@ -14,6 +14,8 @@ public class LoginBean {
 	private String password;
 
 	public LoginBean() {
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+		session.removeAttribute("user");
 	}
 
 	public String getUsername() {
@@ -41,7 +43,6 @@ public class LoginBean {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(Constants.ERROR_MSG_INVALID_LOGIN));
 			return "";
 		}
-		return "menu.jsf";
+		return "restricted/menu.jsf";
 	}
-
 }
