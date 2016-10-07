@@ -3,10 +3,13 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -14,6 +17,7 @@ import javax.sql.DataSource;
 import data.Credit;
 import data.Operator;
 import data.Sale;
+import data.SaleDetail;
 
 public class SalesManager {
 	private static SalesManager instance = null;
@@ -39,10 +43,10 @@ public class SalesManager {
 			this.ds = (DataSource) initContext.lookup("java:jboss/datasources/IntendenciaDS");
 			Connection connection = ds.getConnection();
 			Statement sta = connection.createStatement();
-			ResultSet res = sta
-					.executeQuery("SELECT MAX(Ticket) as Ticket, MAX(Anulacion) as Anulacion FROM Estacionamientos");
+			ResultSet res = sta.executeQuery(
+					"SELECT MAX(Ticket) as Ticket, MAX(Autorizacion) as Autorizacion FROM Estacionamientos");
 			res.next();
-			this.nextOperation = Math.max(res.getLong("Ticket"), res.getLong("Anulacion")) + 1;
+			this.nextOperation = Math.max(res.getLong("Ticket"), res.getLong("Autorizacion")) + 1;
 			res.close();
 			sta.close();
 			connection.close();
@@ -120,7 +124,7 @@ public class SalesManager {
 					pre.close();
 					pre = connection.prepareStatement(
 							"INSERT INTO Estacionamientos (Operador, Operacion, Matricula, Inicio, Final, Ticket) VALUES (?, ?, ?, ?, ?, ?)");
-					pre.setLong(1, operator.getId());
+					pre.setLong(1, operator.getDbId());
 					pre.setLong(2, operacion);
 					pre.setString(3, sale.getPlate());
 					pre.setLong(4, sale.getStartDateTime());
@@ -161,7 +165,7 @@ public class SalesManager {
 				connection.setAutoCommit(false);
 				PreparedStatement pre = connection.prepareStatement(
 						"SELECT Id, FechaHora, Importe, Matricula, Inicio, Anulacion, Autorizacion FROM Operaciones as op, Estacionamientos as es WHERE op.Id = es.Operacion AND es.Operador = ? AND es.Ticket = ?");
-				pre.setLong(1, operator.getId());
+				pre.setLong(1, operator.getDbId());
 				pre.setLong(2, eTicketNumber);
 				ResultSet res = pre.executeQuery();
 				if (!res.next()) {
@@ -223,5 +227,27 @@ public class SalesManager {
 			}
 		} while (false);
 		return credit;
+	}
+
+	List<SaleDetail> getSales(Date from, Date to) throws SQLException {
+		List<SaleDetail> result = new ArrayList<SaleDetail>();
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement(
+				"SELECT o.FechaHora AS tsEmision, p.Id AS IdOperador, p.Firma AS FirmaOperador, p.Nombre AS NombreOperador, Matricula, Inicio AS tsInicio, Final AS tsFinal,Ticket,o.Importe, a.FechaHora AS tsAnulacion,Autorizacion, a.Importe AS Credito FROM Estacionamientos AS e INNER JOIN Operaciones AS o ON e.Operacion= o.Id INNER JOIN Operadores AS p ON e.Operador = p.id LEFT JOIN Operaciones AS a ON e.Anulacion= a.Id WHERE o.FechaHora >=? AND o.FechaHora<=?");
+		ResultSet res = pre.executeQuery();
+		while (res.next()) {
+			Operator o = new Operator(res.getLong("IdOperador"), res.getString("FirmaOperador"),
+					res.getString("NombreOperador"));
+			SaleDetail sale = new SaleDetail(o, new Date(res.getLong("tsEmision")), res.getString("Matricula"),
+					new Date(res.getLong("tsInicio")), new Date(res.getLong("tsFinal")), res.getLong("Ticket"),
+					res.getLong("Importe"));
+			long tsa = res.getLong("tsAnulacion");
+			if (!res.wasNull()) {
+				sale.setCancelation(new Date(tsa), res.getLong("Autorizacion"), res.getLong("Credito"));
+			}
+			result.add(sale);
+		}
+		return result;
 	}
 }

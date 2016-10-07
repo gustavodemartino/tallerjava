@@ -7,6 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Intendencia - Login</title>
+<meta http-equiv="refresh" content="90; login.jsf">
 </head>
 <body>
 	<f:view>

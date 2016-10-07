@@ -1,24 +1,22 @@
 package data;
 
 public class Operator {
-	private long id;
-	private String name;
+	private long dbId;
 	private String signature;
+	private String name;
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
+	public Operator(long dbId, String signature, String name) {
+		this.dbId = dbId;
+		this.signature = signature;
 		this.name = name;
+	}
+
+	public long getDbId() {
+		return dbId;
+	}
+
+	public void setDbId(long id) {
+		this.dbId = id;
 	}
 
 	public void setSignature(String signature) {
@@ -29,4 +27,11 @@ public class Operator {
 		return signature;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

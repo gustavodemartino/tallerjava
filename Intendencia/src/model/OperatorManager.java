@@ -27,24 +27,17 @@ public class OperatorManager {
 
 	public Operator getOperator(String signature) throws Exception {
 		Operator result = null;
-		try {
-			Connection connection = this.ds.getConnection();
-			PreparedStatement pre;
-			pre = connection.prepareStatement("SELECT Id, Nombre FROM Operadores WHERE firma = ?");
-			pre.setString(1, signature);
-			ResultSet res = pre.executeQuery();
-			if (res.next()) {
-				result = new Operator();
-				result.setId(res.getLong("Id"));
-				result.setSignature(signature);
-				result.setName(res.getString("Nombre"));
-			}
-			res.close();
-			pre.close();
-			connection.close();
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement("SELECT Id, Nombre FROM Operadores WHERE firma = ?");
+		pre.setString(1, signature);
+		ResultSet res = pre.executeQuery();
+		if (res.next()) {
+			result = new Operator(res.getLong("Id"), signature, res.getString("Nombre"));
 		}
+		res.close();
+		pre.close();
+		connection.close();
 		return result;
 	}
 }
