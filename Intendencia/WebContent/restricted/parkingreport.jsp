@@ -13,6 +13,63 @@
 		<h1>Estacionamientos</h1>
 		<a href="/Intendencia//login.jsf">[ Cerrar sesión ]</a>
 		<a href="/Intendencia/restricted/menu.jsf">[ Menú Principal ]</a>
+		<h:form>
+			<h:inputText title="Desde" value="#{parkingReportBean.reportFrom}" />
+			<h:inputText title="Desde" value="#{parkingReportBean.reportTo}" />
+			<h:commandButton action="#{parkingReportBean.update()}"
+				value="Update" />
+			<h:messages />
+		</h:form>
+		<h:dataTable value="#{parkingReportBean.sales}" var="sale">
+			<h:column>
+				<f:facet name="header"><h:outputText value="Venta"/></f:facet>
+				<h:outputText value="#{sale.saleTimeStamp}">
+				<f:convertDateTime pattern="yyyy-MM-dd hh:mm"/>
+				</h:outputText>
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Operador"/></f:facet>
+				<h:outputText value="#{sale.operator.name}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Matrícula"/></f:facet>
+				<h:outputText value="#{sale.plate}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Inicio"/></f:facet>
+				<h:outputText value="#{sale.startTimeStamp}">
+				<f:convertDateTime pattern="hh:mm"/>
+				</h:outputText>
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Final"/></f:facet>
+				<h:outputText value="#{sale.endTimeStamp}">
+				<f:convertDateTime pattern="hh:mm"/>
+				</h:outputText>
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Ticket"/></f:facet>
+				<h:outputText value="#{sale.ticket}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Importe"/></f:facet>
+				<h:outputText value="#{sale.floatAmount}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Anulación"/></f:facet>
+				<h:outputText value="#{sale.cancelationTimeStamp}" >
+				<f:convertDateTime pattern="yyyy-MM-dd hh:mm"/>
+				</h:outputText>
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Autorización"/></f:facet>
+				<h:outputText value="#{sale.authorization}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header"><h:outputText value="Crédito"/></f:facet>
+				<h:outputText value="#{sale.floatCredit}" />
+			</h:column>
+		</h:dataTable>
 	</f:view>
 </body>
 </html>

@@ -3,7 +3,6 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -229,12 +228,15 @@ public class SalesManager {
 		return credit;
 	}
 
-	List<SaleDetail> getSales(Date from, Date to) throws SQLException {
+	public List<SaleDetail> getSales(Date from, Date to) throws Exception {
+		this.init();
 		List<SaleDetail> result = new ArrayList<SaleDetail>();
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection.prepareStatement(
 				"SELECT o.FechaHora AS tsEmision, p.Id AS IdOperador, p.Firma AS FirmaOperador, p.Nombre AS NombreOperador, Matricula, Inicio AS tsInicio, Final AS tsFinal,Ticket,o.Importe, a.FechaHora AS tsAnulacion,Autorizacion, a.Importe AS Credito FROM Estacionamientos AS e INNER JOIN Operaciones AS o ON e.Operacion= o.Id INNER JOIN Operadores AS p ON e.Operador = p.id LEFT JOIN Operaciones AS a ON e.Anulacion= a.Id WHERE o.FechaHora >=? AND o.FechaHora<=?");
+		pre.setLong(1, from.getTime());
+		pre.setLong(2, to.getTime());
 		ResultSet res = pre.executeQuery();
 		while (res.next()) {
 			Operator o = new Operator(res.getLong("IdOperador"), res.getString("FirmaOperador"),

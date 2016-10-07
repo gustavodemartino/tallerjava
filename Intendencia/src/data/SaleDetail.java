@@ -10,7 +10,7 @@ public class SaleDetail {
 	private Date endTimeStamp;
 	private long ticket;
 	private long amount;
-	private Date cancelationTimeStam;
+	private Date cancelationTimeStamp;
 	private long authorization;
 	private long creditAmount;
 
@@ -26,7 +26,7 @@ public class SaleDetail {
 	}
 
 	public void setCancelation(Date cancelationTimeStam, long authorization, long creditAmount) {
-		this.cancelationTimeStam = cancelationTimeStam;
+		this.cancelationTimeStamp = cancelationTimeStam;
 		this.authorization = authorization;
 		this.creditAmount = creditAmount;
 	}
@@ -55,20 +55,19 @@ public class SaleDetail {
 		return ticket;
 	}
 
-	public long getAmount() {
-		return amount;
+	public float getFloatAmount() {
+		return ((float)amount)/100;
 	}
 
-	public Date getCancelationTimeStam() {
-		return cancelationTimeStam;
+	public Date getCancelationTimeStamp() {
+		return cancelationTimeStamp;
 	}
 
 	public long getAuthorization() {
 		return authorization;
 	}
 
-	public long getCreditAmount() {
-		return creditAmount;
+	public float getFloatCredit() {
+		return ((float)creditAmount)/100;
 	}
-
 }
