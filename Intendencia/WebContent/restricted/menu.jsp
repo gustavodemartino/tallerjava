@@ -6,15 +6,21 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Menú principal</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/estilo.css">
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<title>Menú principal > Intendencia</title>
 </head>
 <body>
+	<div class="cajaBlancaFondo">
 	<f:view>
+		<a class="buttonMenu" href="/Intendencia/login.jsf">Cerrar sesión</a>
+		<a class="buttonMenu" href="/Intendencia/restricted/auditreport.jsf">Auditoría</a>
+		<a class="buttonMenu" href="/Intendencia/restricted/useradmin.jsf">Usuarios</a>
+		<a class="buttonMenu" href="/Intendencia/restricted/parkingreport.jsf">Estacionamientos</a>
 		<h1>Menú principal</h1>
-		<a href="/Intendencia/login.jsf">[ Cerrar sesión ]</a>
-		<a href="/Intendencia/restricted/useradmin.jsf">[ Usuarios ]</a>
-		<a href="/Intendencia/restricted/parkingreport.jsf">[ Estacionamientos ]</a>
-		<a href="/Intendencia/restricted/auditreport.jsf">[ Auditoría ]</a>
+		<br/>
 	</f:view>
+	</div>
 </body>
 </html>

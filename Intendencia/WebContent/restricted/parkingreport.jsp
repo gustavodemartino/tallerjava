@@ -6,20 +6,26 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Estacionamientos</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/estilo.css">
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<title>Estacionamientos > Intendencia</title>
 </head>
 <body>
+	<div class="cajaBlancaFondo">
 	<f:view>
+		<a class="buttonMenu" href="/Intendencia/login.jsf">Cerrar sesión</a>
+		<a class="buttonMenu" href="/Intendencia/restricted/menu.jsf">Menú Principal</a>
 		<h1>Estacionamientos</h1>
-		<a href="/Intendencia//login.jsf">[ Cerrar sesión ]</a>
-		<a href="/Intendencia/restricted/menu.jsf">[ Menú Principal ]</a>
+		<br/>
 		<h:form>
 			<h:inputText title="Desde" value="#{parkingReportBean.reportFrom}" />
 			<h:inputText title="Desde" value="#{parkingReportBean.reportTo}" />
 			<h:commandButton action="#{parkingReportBean.update()}"
-				value="Update" />
+				value="Filtrar" />
 			<h:messages />
 		</h:form>
+		<br/>
 		<h:dataTable value="#{parkingReportBean.sales}" var="sale">
 			<h:column>
 				<f:facet name="header"><h:outputText value="Venta"/></f:facet>
@@ -71,5 +77,6 @@
 			</h:column>
 		</h:dataTable>
 	</f:view>
+	</div>
 </body>
 </html>

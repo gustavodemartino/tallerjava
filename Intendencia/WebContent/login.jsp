@@ -6,10 +6,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Intendencia - Login</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/estilo.css">
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<title>Login > Intendencia</title>
 <meta http-equiv="refresh" content="90; login.jsf">
 </head>
 <body>
+	<div class="cajaBlancaCentrada">
 	<f:view>
 		<h1>Intendencia</h1>
 		<h:form>
@@ -19,10 +23,12 @@
 				<h:outputLabel value="Contraseña" />
 				<h:inputSecret value="#{loginBean.password}" />
 				<h:outputText />
-				<h:commandButton action="#{loginBean.login()}" value="Ingresar" />
+				<br/>
+				<h:commandButton style="float:right" styleClass="button" action="#{loginBean.login()}" value="Ingresar" />
 			</h:panelGrid>
 			<h:messages />
 		</h:form>
 	</f:view>
+	</div>
 </body>
 </html>

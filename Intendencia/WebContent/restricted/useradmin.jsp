@@ -6,13 +6,19 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Usuarios</title>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/estilo.css">
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<title>Usuarios > Intendencia</title>
 </head>
 <body>
-	<f:view>
+	<div class="cajaBlancaFondo">
+	<f:view>		
+		<a class="buttonMenu" href="/Intendencia/login.jsf">Cerrar sesión</a>
+		<a class="buttonMenu" href="/Intendencia/restricted/menu.jsf">Menú Principal</a>
 		<h1>Administración de usuarios</h1>
-		<a href="/Intendencia/login.jsf">[ Cerrar sesión ]</a>
-		<a href="/Intendencia/restricted/menu.jsf">[ Menú Principal ]</a>
+		<br/>
 	</f:view>
+	</div>
 </body>
 </html>

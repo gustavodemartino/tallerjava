@@ -1,0 +1,85 @@
+@CHARSET "ISO-8859-1";
+
+html, body {
+	background:#296ad4;
+	font-family: 'latoregular', "Trebuchet MS", Arial, Helvetica, sans-serif;
+    color: #5C666A;
+    font-size: 14px;
+    padding:20px;
+    height: 100%; 
+    margin: 0px; 
+}
+
+input {
+	font-family: 'latoregular', "Trebuchet MS", Arial, Helvetica, sans-serif;
+    color: #5C666A;
+    font-size: 14px;
+}
+
+.cajaBlancaCentrada{
+	width:350px;
+	height:200px;
+	background:white;
+	padding:10px;
+	padding-left:20px;
+	border-radius: 25px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	/* bring your own prefixes */
+	transform: translate(-50%, -80%);
+}
+
+.cajaBlancaFondo{
+	height:100%;
+	background:white;
+	padding:25px;
+	padding-left:35px;
+	border-radius: 25px;
+}
+
+
+/* Botones */
+
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #296ad4;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  transition: all 0.5s;
+  cursor: pointer;
+  width:100px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.button:hover {
+  background-color: #245cb9;
+  font-size: 14px;
+  transition: 0.5s;
+}
+
+.buttonMenu {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    float: right;
+}
+
+.buttonMenu:hover {
+    background-color: #3e8e41;
+}
+
+
+
