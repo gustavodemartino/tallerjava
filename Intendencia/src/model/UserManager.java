@@ -73,6 +73,25 @@ public class UserManager {
 		connection.close();
 		return result;
 	}
+	
+	public User getUser(long userId) throws Exception {
+		User result = null;
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement("SELECT * FROM Usuarios WHERE Id = ?");
+		pre.setLong(1, userId);
+		ResultSet res = pre.executeQuery();
+		if (!res.next()) {
+			pre.close();
+			res.close();
+			connection.close();
+		}
+		result = new User(res.getLong("Id"), res.getString("Identificador"), res.getString("Nombre"));
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
 
 	public List<User> getUsers() throws SQLException {
 		List<User> result = new ArrayList<User>();

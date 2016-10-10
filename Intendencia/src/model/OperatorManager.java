@@ -40,4 +40,20 @@ public class OperatorManager {
 		connection.close();
 		return result;
 	}
+	
+	public Operator getOperator(long operatorId) throws Exception {
+		Operator result = null;
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement("SELECT * FROM Operadores WHERE Id = ?");
+		pre.setLong(1, operatorId);
+		ResultSet res = pre.executeQuery();
+		if (res.next()) {
+			result = new Operator(res.getLong("Id"), res.getString("Firma"), res.getString("Nombre"));
+		}
+		res.close();
+		pre.close();
+		connection.close();
+		return result;
+	}
 }

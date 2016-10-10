@@ -14,7 +14,7 @@
 <body>
 	<div class="cajaBlancaFondo">
 	<f:view>
-		<a class="buttonMenu" href="/Intendencia/login.jsf">Cerrar sesión</a>
+		<a class="buttonMenu buttonLogout" href="/Intendencia/login.jsf">Cerrar sesión</a>
 		<a class="buttonMenu" href="/Intendencia/restricted/auditreport.jsf">Auditoría</a>
 		<a class="buttonMenu" href="/Intendencia/restricted/useradmin.jsf">Usuarios</a>
 		<a class="buttonMenu" href="/Intendencia/restricted/parkingreport.jsf">Estacionamientos</a>

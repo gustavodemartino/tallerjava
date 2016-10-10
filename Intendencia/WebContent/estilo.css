@@ -18,7 +18,7 @@ input {
 
 .cajaBlancaCentrada{
 	width:350px;
-	height:200px;
+	min-height:200px;
 	background:white;
 	padding:10px;
 	padding-left:20px;
@@ -36,6 +36,31 @@ input {
 	padding:25px;
 	padding-left:35px;
 	border-radius: 25px;
+}
+
+/* Grillas */
+
+.grilla table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.grilla th, .grilla td {
+    text-align: left;
+    padding: 8px;
+}
+
+.grilla tr:nth-child(even) {
+	background-color: #f2f2f2
+}
+
+.grilla th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.grilla tr:hover {
+	background-color: #d7eed8;
 }
 
 
@@ -80,6 +105,15 @@ input {
 .buttonMenu:hover {
     background-color: #3e8e41;
 }
+
+.buttonLogout {
+    background-color: #c30000;
+}  	
+
+.buttonLogout:hover {
+    background-color: #910000;
+}  	
+
 
 
 
