@@ -26,7 +26,7 @@
 				<br/>
 				<h:commandButton style="float:right" styleClass="button" action="#{loginBean.login()}" value="Ingresar" />
 			</h:panelGrid>
-			<h:messages />
+			<h:messages errorStyle="display:inline;background:#f9a1a1;margin:-40px;list-style-type:none;padding:8px;" infoStyle="display:inline;background:#ffefb0;margin:-40px;list-style-type:none;padding:8px;" />
 		</h:form>
 	</f:view>
 	</div>

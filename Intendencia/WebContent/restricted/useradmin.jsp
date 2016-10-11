@@ -20,7 +20,7 @@
 			<h1>Administración de usuarios</h1>
 			<br/>		
 			<fieldset>
-	    		<legend><strong>Nuevo usuario</strong></legend>				
+	    		<legend><strong><h:outputText value="#{usuarioBean.accionEtiqueta}"></h:outputText></strong></legend>				
 				<h:outputText value="Identificador: "></h:outputText>
 				<h:inputText title="Identificador" value="#{usuarioBean.usuarioId}" />
 				&nbsp;
@@ -30,10 +30,11 @@
 				<h:outputText value=" Clave: "></h:outputText>
 				<h:inputSecret title="Clave" value="#{usuarioBean.usuarioClavePlana}" />
 				&nbsp;&nbsp;&nbsp;
-				<h:commandButton styleClass="buttonGrilla" action="#{usuarioBean.nuevoUsuario()}" value="Crear" />
-				<h:messages />
+				<h:commandButton styleClass="buttonGrilla" action="#{usuarioBean.nuevoUsuario()}" value="#{usuarioBean.botonEtiqueta}" />&nbsp;
+				<h:commandButton styleClass="buttonGrilla" action="#{usuarioBean.limpiarVariables()}" value="X" />
 			</fieldset>		
 			<br/>
+			<h:messages errorStyle="display:inline;background:#f9a1a1;margin:-40px;list-style-type:none;padding:8px;" infoStyle="display:inline;background:#ffefb0;margin:-40px;list-style-type:none;padding:8px;" /> 
 			<br/>
 			<div class="grilla">				
 				<h:dataTable value="#{usuarioBean.lista}" var="item">
@@ -48,6 +49,7 @@
 					</h:column>
 					<h:column>
 						<f:facet name="header"><h:outputText value=""/></f:facet>
+						<h:commandButton styleClass="buttonGrilla" action="#{usuarioBean.cargarUsuario(item)}" value="Modificar" />&nbsp;
 						<h:commandButton styleClass="buttonGrilla" action="#{usuarioBean.eliminarUsuario(item)}" value="Eliminar" />
 					</h:column>
 				</h:dataTable>
