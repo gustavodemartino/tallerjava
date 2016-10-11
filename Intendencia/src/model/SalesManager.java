@@ -52,7 +52,7 @@ public class SalesManager {
 		}
 	}
 
-	public Sale saleParking(String operatorName, String plate, long startTime, int minutes) {
+	public Sale parkingSale(String operatorName, String plate, long startTime, int minutes) {
 		Sale sale = new Sale();
 		Operator operator = null;
 		try {
@@ -178,7 +178,8 @@ public class SalesManager {
 					credit.setMessage("El ticket solicitado ya ha sido anulado");
 					break;
 				}
-				if (res.getLong("Inicio") < (new Date()).getTime()) {
+				if (res.getLong("Inicio") < (new Date()).getTime()-180000) {
+					System.out.println(res.getLong("Inicio")+", "+(new Date()).getTime()+180000);
 					credit.setResult(406);
 					credit.setMessage("Imposible anular un ticket ya utilizado");
 					break;

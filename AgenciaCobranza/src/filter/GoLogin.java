@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import data.Login;
 import model.Constants;
 
 @WebFilter(value = "/*")
@@ -32,7 +33,7 @@ public class GoLogin implements Filter {
 		HttpSession session = ((HttpServletRequest) request).getSession();
 		String url = ((HttpServletRequest) request).getServletPath();
 		if (!url.contains("login")) {
-			GoLogin loginInfo = (GoLogin) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO);
+			Login loginInfo = (Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO);
 			if (loginInfo == null) {
 				((HttpServletResponse) response).sendRedirect("login.jsp");
 				return;

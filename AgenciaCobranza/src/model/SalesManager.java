@@ -91,29 +91,135 @@ public class SalesManager {
 		return result;
 	}
 
-	public List<ParkingDetail> getSales(Date from, Date to) throws Exception {
-		System.out.println("From: " + from + " to: " + to);
+	public long getSalesCount(Date from, Date to) throws Exception {
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement(
+				"SELECT COUNT(Ticket) FROM Estacionamientos WHERE tsVenta >= ? AND tsVenta <= ?");
+		pre.setLong(1, from.getTime());
+		pre.setLong(2, to.getTime());
+		ResultSet res = pre.executeQuery();
+		res.next();
+		long result = res.getLong(1);
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+
+	public long getActiveSalesCount(Date from, Date to) throws Exception {
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement(
+				"SELECT COUNT(Ticket) FROM Estacionamientos WHERE tsAnulacion IS NULL AND tsVenta >= ? AND tsVenta <= ?");
+		pre.setLong(1, from.getTime());
+		pre.setLong(2, to.getTime());
+		ResultSet res = pre.executeQuery();
+		res.next();
+		long result = res.getLong(1);
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+
+	public long getCanceledSalesCount(Date from, Date to) throws Exception {
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement(
+				"SELECT COUNT(Ticket) FROM Estacionamientos WHERE tsAnulacion IS NOT NULL AND tsVenta >= ? AND tsVenta <= ?");
+		pre.setLong(1, from.getTime());
+		pre.setLong(2, to.getTime());
+		ResultSet res = pre.executeQuery();
+		res.next();
+		long result = res.getLong(1);
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+
+	public List<ParkingDetail> getActiveSales(Date from, Date to, long fromRecord, int limit) throws Exception {
 		List<ParkingDetail> result = new ArrayList<ParkingDetail>();
 		Connection connection = this.ds.getConnection();
 		PreparedStatement pre;
 		pre = connection.prepareStatement(
-				"SELECT v.FechaHoraVenta, v.Ticket, v.Matricula, v.Inicio, v.Minutos, c.FechaHoraAnulacion, c.Anulacion, v.Pago, c.Devolucion FROM ( SELECT op.FechaHora as FechaHoraVenta, op.Numero as Ticket, op.Importe as Pago, ti.Matricula, ti.Inicio, ti.Minutos FROM Operaciones as op, Tickets as ti WHERE ti.Operacion = op.Id AND op.FechaHora > ? AND op.FechaHora < ?) AS v LEFT OUTER JOIN ( SELECT op.FechaHora as FechaHoraAnulacion, op.Numero as Anulacion, op.Importe as Devolucion, an.Numero as Ticket FROM Operaciones as op, Anulaciones as an WHERE an.Operacion = op.Id ) AS c ON v.Ticket = c.Ticket");
+				"SELECT * FROM Estacionamientos WHERE tsAnulacion IS NULL AND tsVenta >= ? AND tsVenta <= ? LIMIT ? OFFSET ?");
 		pre.setLong(1, from.getTime());
 		pre.setLong(2, to.getTime());
+		pre.setInt(3, limit);
+		pre.setLong(4, fromRecord);
 		ResultSet res = pre.executeQuery();
 		while (res.next()) {
 			ParkingDetail p = new ParkingDetail();
-			p.setSaleDateTime(new Date(res.getLong("FechaHoraVenta")));
+			p.setSaleDateTime(new Date(res.getLong("tsVenta")));
 			p.setSaleTicket(res.getLong("Ticket"));
 			p.setPlate(res.getString("Matricula"));
 			p.setStartDateTime(new Date(res.getLong("Inicio")));
 			p.setDuration(res.getInt("Minutos"));
 			p.setAmount(res.getLong("Pago"));
-			Long l = res.getLong("FechaHoraAnulacion");
+			result.add(p);
+		}
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+
+	public List<ParkingDetail> getCanceledSales(Date from, Date to, long fromRecord, int limit) throws Exception {
+		List<ParkingDetail> result = new ArrayList<ParkingDetail>();
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement(
+				"SELECT * FROM Estacionamientos WHERE tsAnulacion IS NOT NULL AND tsVenta >= ? AND tsVenta <= ? LIMIT ? OFFSET ?");
+		pre.setLong(1, from.getTime());
+		pre.setLong(2, to.getTime());
+		pre.setInt(3, limit);
+		pre.setLong(4, fromRecord);
+		ResultSet res = pre.executeQuery();
+		while (res.next()) {
+			ParkingDetail p = new ParkingDetail();
+			p.setSaleDateTime(new Date(res.getLong("tsVenta")));
+			p.setSaleTicket(res.getLong("Ticket"));
+			p.setPlate(res.getString("Matricula"));
+			p.setStartDateTime(new Date(res.getLong("Inicio")));
+			p.setDuration(res.getInt("Minutos"));
+			p.setAmount(res.getLong("Pago"));
+			p.setCancelationDateTime(new Date(res.getLong("tsAnulacion")));
+			p.setCancelationNumber(res.getLong("Autorizacion"));
+			p.setCredit(res.getLong("Credito"));
+			result.add(p);
+		}
+		pre.close();
+		res.close();
+		connection.close();
+		return result;
+	}
+
+	public List<ParkingDetail> getSales(Date from, Date to, long fromRecord, int limit) throws Exception {
+		System.out.println("From: " + from + " to: " + to);
+		List<ParkingDetail> result = new ArrayList<ParkingDetail>();
+		Connection connection = this.ds.getConnection();
+		PreparedStatement pre;
+		pre = connection.prepareStatement("SELECT * FROM Estacionamientos WHERE tsVenta >= ? AND tsVenta <= ? LIMIT ? OFFSET ?");
+		pre.setLong(1, from.getTime());
+		pre.setLong(2, to.getTime());
+		pre.setInt(3, limit);
+		pre.setLong(4, fromRecord);
+		ResultSet res = pre.executeQuery();
+		while (res.next()) {
+			ParkingDetail p = new ParkingDetail();
+			p.setSaleDateTime(new Date(res.getLong("tsVenta")));
+			p.setSaleTicket(res.getLong("Ticket"));
+			p.setPlate(res.getString("Matricula"));
+			p.setStartDateTime(new Date(res.getLong("Inicio")));
+			p.setDuration(res.getInt("Minutos"));
+			p.setAmount(res.getLong("Pago"));
+			Long l = res.getLong("tsAnulacion");
 			if (l != 0) {
 				p.setCancelationDateTime(new Date(l));
-				p.setCancelationNumber(res.getLong("Anulacion"));
-				p.setCredit(res.getLong("Devolucion"));
+				p.setCancelationNumber(res.getLong("Autorizacion"));
+				p.setCredit(res.getLong("Credito"));
 			}
 			result.add(p);
 		}
@@ -144,7 +250,7 @@ public class SalesManager {
 			long operacion = res.getLong(1);
 			res.close();
 			pre.close();
-			pre = connection.prepareStatement("INSERT INTO Anulaciones (Operacion, Numero) VALUES (?, ?)");
+			pre = connection.prepareStatement("INSERT INTO Anulaciones (Operacion, Ticket) VALUES (?, ?)");
 			pre.setLong(1, operacion);
 			pre.setLong(2, credit.getTicket());
 			pre.execute();

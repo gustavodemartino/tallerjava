@@ -16,7 +16,7 @@ public class Parking {
 	public Sale parkingSale(String operator, String plate, long startTime, int minutes) {
 		System.out.println("\nIntendencia" + "\nOperación: Venta" + "\nOperador: " + operator + "\nMatrícula: " + plate
 				+ "\nInicio: " + new Date(startTime) + "\nDuración: " + minutes + " minutos");
-		return SalesManager.getInstance().saleParking(operator, plate, startTime, minutes);
+		return SalesManager.getInstance().parkingSale(operator, plate, startTime, minutes);
 	}
 
 	@WebMethod
