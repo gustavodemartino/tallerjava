@@ -13,11 +13,46 @@
 </head>
 <body>
 	<div class="cajaBlancaFondo">
-	<f:view>		
-		<a class="buttonMenu buttonLogout" href="/Intendencia/login.jsf">Cerrar sesión</a>
-		<a class="buttonMenu" href="/Intendencia/restricted/menu.jsf">Volver</a>
-		<h1>Administración de usuarios</h1>
-		<br/>
+	<f:view>	
+		<h:form>
+			<a class="buttonMenu buttonLogout" href="/Intendencia/login.jsf">Cerrar sesión</a>
+			<a class="buttonMenu" href="/Intendencia/restricted/menu.jsf">Volver</a>
+			<h1>Administración de usuarios</h1>
+			<br/>		
+			<fieldset>
+	    		<legend><strong>Nuevo usuario</strong></legend>				
+				<h:outputText value="Identificador: "></h:outputText>
+				<h:inputText title="Identificador" value="#{usuarioBean.usuarioId}" />
+				&nbsp;
+				<h:outputText value=" Nombre: "></h:outputText>
+				<h:inputText title="Nombre" value="#{usuarioBean.usuarioNombre}" />
+				&nbsp;
+				<h:outputText value=" Clave: "></h:outputText>
+				<h:inputSecret title="Clave" value="#{usuarioBean.usuarioClavePlana}" />
+				&nbsp;&nbsp;&nbsp;
+				<h:commandButton styleClass="buttonGrilla" action="#{usuarioBean.nuevoUsuario()}" value="Crear" />
+				<h:messages />
+			</fieldset>		
+			<br/>
+			<br/>
+			<div class="grilla">				
+				<h:dataTable value="#{usuarioBean.lista}" var="item">
+					<h:column>
+						<f:facet name="header"><h:outputText value="Identificador"/></f:facet>
+						<h:outputText value="#{item.id}">
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header"><h:outputText value="Nombre"/></f:facet>
+						<h:outputText value="#{item.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header"><h:outputText value=""/></f:facet>
+						<h:commandButton styleClass="buttonGrilla" action="#{usuarioBean.eliminarUsuario(item)}" value="Eliminar" />
+					</h:column>
+				</h:dataTable>
+			</div>
+		</h:form>
 	</f:view>
 	</div>
 </body>

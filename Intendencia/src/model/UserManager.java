@@ -130,4 +130,61 @@ public class UserManager {
 			throw new Exception(e.getMessage());
 		}
 	}
+	
+	public void updateUser(User updUser) throws Exception {
+		if (updUser == null || updUser.getDbId() == 0) {
+			throw new Exception(Constants.ERROR_MSG_INVALID_ID);
+		}
+		if (updUser.getId().isEmpty() && updUser.getName().isEmpty() && updUser.getHashedPassword().isEmpty()) {
+			throw new Exception(Constants.ERROR_MSG_INVALID_USER_UPD);
+		}
+		Connection connection = this.ds.getConnection();
+		try {
+			PreparedStatement pre = null;
+			
+			if (!updUser.getId().isEmpty()) {
+				pre = connection.prepareStatement("UPDATE Usuarios SET Identificador=? WHERE Id=?");
+				pre.setString(1, updUser.getId());
+				pre.setLong(2, updUser.getDbId());
+				pre.execute();
+			}
+			
+			if (!updUser.getName().isEmpty()) {
+				pre = connection.prepareStatement("UPDATE Usuarios SET Nombre=? WHERE Id=?");
+				pre.setString(1, updUser.getName());
+				pre.setLong(2, updUser.getDbId());
+				pre.execute();
+			}
+			
+			if (!updUser.getHashedPassword().isEmpty()) {
+				pre = connection.prepareStatement("UPDATE Usuarios SET Clave =? WHERE Id=?");
+				pre.setString(1, updUser.getHashedPassword());
+				pre.setLong(2, updUser.getDbId());
+				pre.execute();
+			}
+			
+			pre.close();
+			connection.close();
+		} catch (Exception e) {
+			connection.close();
+			throw new Exception(Constants.ERROR_MSG_INVALID_USER_UPD);
+		}
+	}
+	
+	public void deleteUser(User dltUser) throws Exception {
+		if (dltUser == null || dltUser.getDbId() == 0) {
+			throw new Exception(Constants.ERROR_MSG_INVALID_ID);
+		}		
+		Connection connection = this.ds.getConnection();
+		try {
+			PreparedStatement pre = connection.prepareStatement("DELETE FROM Usuarios WHERE Id=?");			
+			pre.setLong(1, dltUser.getDbId());
+			pre.execute();
+			pre.close();
+			connection.close();
+		} catch (Exception e) {
+			connection.close();
+			throw new Exception(Constants.ERROR_MSG_INVALID_USER_DLT);
+		}
+	}
 }

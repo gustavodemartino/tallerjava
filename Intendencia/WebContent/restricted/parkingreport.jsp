@@ -19,9 +19,11 @@
 		<h1>Estacionamientos</h1>
 		<br/>
 		<h:form>
-			<h:inputText title="Desde" value="#{parkingReportBean.reportFrom}" />
-			<h:inputText title="Desde" value="#{parkingReportBean.reportTo}" />
-			<h:commandButton action="#{parkingReportBean.update()}"
+			<h:outputText value="Desde "></h:outputText>&nbsp;
+			<h:inputText title="Desde" value="#{parkingReportBean.reportFrom}" />&nbsp;
+			<h:outputText value="Hasta "></h:outputText>&nbsp;
+			<h:inputText title="Desde" value="#{parkingReportBean.reportTo}" />&nbsp;&nbsp;&nbsp;
+			<h:commandButton styleClass="buttonGrilla" action="#{parkingReportBean.update()}"
 				value="Filtrar" />
 			<h:messages />
 		</h:form>

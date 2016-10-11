@@ -19,6 +19,20 @@ public class User {
 			e.printStackTrace();
 		}
 	}
+	
+	public User(String id, String name, String password) {
+		this.dbId = 0;
+		this.id = id;
+		this.name = name;
+		try {
+			if (password.isEmpty())
+				this.hashedPassword = hashPassword(((Integer) new Random().nextInt()).toString());
+			else
+				this.hashedPassword = hashPassword(password);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static String hashPassword(String password) throws Exception {
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -28,6 +42,14 @@ public class User {
 
 	public long getDbId() {
 		return dbId;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getId() {

@@ -16,6 +16,15 @@ input {
     font-size: 14px;
 }
 
+fieldset { 
+    display: block;
+    padding: 15px;
+	border: solid 1px #CCC;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
 .cajaBlancaCentrada{
 	width:350px;
 	min-height:200px;
@@ -93,7 +102,7 @@ input {
     background-color: #4CAF50; /* Green */
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 10px 32px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -114,6 +123,18 @@ input {
     background-color: #910000;
 }  	
 
+.buttonGrilla {
+	border-radius: 10px;
+	background-color: #CCC;
+	padding-left: 15px;
+    padding-right: 15px;
+    height: 20px;
+	border:none;
+}
+
+.buttonGrilla:hover {
+    color: white;
+}
 
 
 

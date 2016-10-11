@@ -18,9 +18,11 @@
 		<h1>Informe de auditoría</h1>
 		<br/>
 		<h:form>
-			<h:inputText title="Desde" value="#{auditorBean.filtroDesde}" />
-			<h:inputText title="Hasta" value="#{auditorBean.filtroHasta}" />
-			<h:commandButton action="#{auditorBean.listarAuditoria()}" value="Filtrar" />
+			<h:outputText value="Desde "></h:outputText>&nbsp;
+			<h:inputText title="Desde" value="#{auditorBean.filtroDesde}" />&nbsp;
+			<h:outputText value="Hasta "></h:outputText>&nbsp;
+			<h:inputText title="Hasta" value="#{auditorBean.filtroHasta}" />&nbsp;&nbsp;&nbsp;
+			<h:commandButton styleClass="buttonGrilla" action="#{auditorBean.listarAuditoria()}" value="Filtrar" />
 			<h:messages />
 		</h:form>
 		<br/>
