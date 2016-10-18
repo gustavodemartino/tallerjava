@@ -11,6 +11,11 @@ body {
 	color: #5f5f5f;
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased !important;
+	margin:30px;
+}
+
+.titulo {
+	margin-bottom:50px;
 }
 
 h1, .h1 {

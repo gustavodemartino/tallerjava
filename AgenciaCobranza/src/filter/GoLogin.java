@@ -32,7 +32,7 @@ public class GoLogin implements Filter {
 			throws IOException, ServletException {
 		HttpSession session = ((HttpServletRequest) request).getSession();
 		String url = ((HttpServletRequest) request).getServletPath();
-		if (!url.contains("login")) {
+		if (!url.contains("login") && !url.contains(".css") && !url.contains(".png") && !url.contains(".js")) {
 			Login loginInfo = (Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO);
 			if (loginInfo == null) {
 				((HttpServletResponse) response).sendRedirect("login.jsp");

@@ -50,106 +50,137 @@
 		document.getElementById("action").value = "rem_all";
 	}
 </script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/estilo.css">
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+<!--Font Awesome-->
+<link href="plugins/font-awesome/css/font-awesome.css" rel="stylesheet">
 </head>
 <body>
-	<h1><%=title%></h1>
-	<%=((Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO)).getUser().getName()%>
-	|
-	<a href="logout">Cerrar Sesión</a> |
-	<a href="menu.jsp">Menú principal</a>
-	<form method="post" action="modify_user">
-		<input type="hidden" id="userid" name="userid" value=<%=user.getId()%>>
-		<table>
-			<tr>
-				<td><label for="shortName">Usuario</label></td>
-				<td><input type="text" id="shortName" name="shortName"
-					value="<%=user.getShortName()%>" placeholder="Nickname" required />
-				</td>
-			</tr>
-			<tr>
-				<td><label for="name">Nombre completo</label></td>
-				<td><input type="text" id="name" name="name"
-					value="<%=user.getName()%>" placeholder="Nombre completo" required /></td>
-			</tr>
-			<tr>
-				<td><label for="password">Contraseña</label></td>
-				<td><input type="password" id="password" name="password"
-					placeholder="Contraseña" required /></td>
-			</tr>
-			<tr>
-				<td>Administrador</td>
-				<td><input id="admin" name="admin" type="checkbox"
-					<%=(user.getIsAdmin() ? "checked" : "")%> /></td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>
-					<button id="btnAdd" type="submit"><%=button%></button>
-				</td>
-			</tr>
-		</table>
-		<%=message%>
-	</form>
+	<!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <span class="navbar-brand">Agencia de Cobranza</span>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="userlist.jsp">Mantenimiento de usuarios</a></li>
+            <li><a href="parkinglist.jsp">Reporte de estacionamientos</a></li>
+            <li><a href="auditor.jsp">Reporte de auditoria</a></li>
+            <li><a href="logout">Cerrar Sesión</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+    <div class="container theme-showcase" role="main">
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h1><%=title%></h1>
+        	<form method="post" action="modify_user">
+			<input type="hidden" id="userid" name="userid" value=<%=user.getId()%>>
+				<div class="form-group">
+					<label for="shortName">Usuario</label>
+					<input class="form-control" type="text" id="shortName" name="shortName" value="<%=user.getShortName()%>" placeholder="Nickname" required />
+				</div>
+				
+				<div class="form-group">
+					<label for="name">Nombre completo</label>
+					<input class="form-control" type="text" id="name" name="name" value="<%=user.getName()%>" placeholder="Nombre completo" required />
+				</div>
+				
+				<div class="form-group">
+					<label for="password">Contraseña</label>
+					<input class="form-control" type="password" id="password" name="password" placeholder="Contraseña" required />
+				</div>
+				
+				<div class="checkbox">
+				    <label>
+				      <input type="checkbox" id="admin" name="admin" <%=(user.getIsAdmin() ? "checked" : "")%>> Administrador
+				    </label>
+				</div>
+				
+				<button class="btn btn-lg btn-primary btn-block" id="btnAdd" type="submit"><%=button%></button>
+
+			<%=message%>
+		</form>
+      </div>
+    </div>
+    
+    <div class="container">
 	<h2>Permisos</h2>
 	<form method="post" action="permit_user">
 		<input id="action" name="action" type="hidden" value="none">
-		<table>
-			<col width="200">
-			<col width="100">
-			<col width="200">
-			<tr>
-				<td>Permisos inactivos</td>
-				<td></td>
-				<td>Permisos activos</td>
-			</tr>
-			<tr>
-				<td><select id="to_add_location" name="to_add_location"
-					size="10" style="width: 200px">
-						<%
-							for (Location l : missingPermissions) {
-								out.print("<option value ='" + l.getId() + "'>" + l.getName() + "</option>");
-							}
-						%>
-				</select></td>
-				<td>
-					<table>
-						<tr>
-							<td align="center">
-								<button onclick="addPermission()">Agregar</button>
-							</td>
-						</tr>
-						<tr>
-							<td align="center">
-								<button onclick="addAllPermissions()">Agregar todos</button>
-							</td>
-						</tr>
-						<tr>
-							<td align="center">
-								<button onclick="removePermission()">Quitar</button>
-							</td>
-						</tr>
-						<tr>
-							<td align="center">
-								<button onclick="removeAllPermissions()">Quitar todos</button>
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td><select id="to_remove_location" name="to_remove_location"
-					size="10" style="width: 200px">
-						<%
-							for (Location l : currentPermissions) {
-								out.print("<option value ='" + l.getId() + "'>" + l.getName() + "</option>");
-							}
-						%>
-				</select></td>
-			</tr>
-		</table>
+		<div class="form-group">
+			<div style="float:left;width:45%" class="form-group">
+				<p>Permisos inactivos</p>
+				<select id="to_add_location" name="to_add_location" size="10" style="width: 100%">
+					<%
+						for (Location l : missingPermissions) {
+							out.print("<option value ='" + l.getId() + "'>" + l.getName() + "</option>");
+						}
+					%>
+				</select>
+			</div>
+			<div style="float:left;padding-left: 3%;" class="form-group">
+				<p>Acciones</p>
+				<table>
+					<tr>
+						<td align="center">
+							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addPermission()" style="width: 40px;height: 40px;">
+							  <span class="fa fa-angle-right" aria-hidden="true"></span>
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td align="center">
+							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addAllPermissions()" style="width: 40px;height: 40px;">
+							  <span class="fa fa-angle-double-right" aria-hidden="true"></span>
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td align="center">
+							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="removePermission()" style="width: 40px;height: 40px;">
+							  <span class="fa fa-angle-left" aria-hidden="true"></span>
+							</button>
+						</td>
+					</tr>
+					<tr>
+						<td align="center">
+							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="removeAllPermissions()" style="width: 40px;height: 40px;">
+							  <span class="fa fa-angle-double-left" aria-hidden="true"></span>
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div style="float:right;width:45%" class="form-group">
+				<p>Permisos activos</p>
+				<select id="to_remove_location" name="to_remove_location" size="10" style="width: 100%">
+							<%
+								for (Location l : currentPermissions) {
+									out.print("<option value ='" + l.getId() + "'>" + l.getName() + "</option>");
+								}
+							%>
+				</select>
+			</div>
+		</div>
 	</form>
+	<br/><br/><br/>
 	<form method="post" action="delete_user">
 		<input id="userid" name="userid" type="hidden" value=<%=user.getId()%>>
-		<button <%=(user.getId() == 0 ? "disabled" : "")%>>Eliminar este usuario</button>
+		<button class="btn btn-lg btn-danger btn-block" id="btnDlt" <%=(user.getId() == 0 ? "disabled" : "")%> >Eliminar este usuario</button>
 	</form>
-	<button onclick="window.location.href='userlist.jsp'">Volver</button>
+	<br/>
+	<button class="btn btn-lg btn-default btn-block" onclick="window.location.href='userlist.jsp'">Volver</button>
+	</div>
 </body>
 </html>

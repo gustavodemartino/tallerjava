@@ -43,7 +43,33 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Informe de auditoria</title>
-<link href="styles.css" rel="stylesheet">
+
+<!--Font Awesome-->
+<link href="plugins/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+<!--Bootstrap Table-->
+<link href="plugins/datatables/media/css/dataTables.bootstrap.css"
+	rel="stylesheet">
+
+<!--Page Load Progress Bar [ OPTIONAL ]-->
+<link href="plugins/pace/pace.min.css" rel="stylesheet">
+<script src="plugins/pace/pace.min.js"></script>
+
+<!--jQuery-->
+<script src="js/jquery-2.1.1.min.js"></script>
+
+<!--DataTables-->
+<script src="plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="plugins/datatables/media/js/dataTables.bootstrap.js"></script>
+
+<!--DataTables Sample-->
+<script src="js/tables-datatables.js"></script>
+
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/estilo.css">
+<link rel="shortcut icon" type="image/png" href="${pageContext.request.contextPath}/favicon.png"/>
+
 <script>
 function previous() {
 	document.getElementById("date_from").value = '<%=prev_from%>'
@@ -66,43 +92,96 @@ function showDetail(puDetail) {
 </script>
 </head>
 <body>
-	<h1>Informe de auditoria</h1>
-	<%=((Login) session.getAttribute(Constants.SESSION_IDENTFIER_LOGIN_INFO)).getUser().getName()%>
-	|
-	<a href="logout">Cerrar Sesión</a> |
-	<a href="menu.jsp">Menú principal</a>
-	<form method="post" action="auditor.jsp">
-		<select id="filter" name="filter" onchange="this.form.submit()">
-			<option value="info" <%=(filter.equals("info") ? "selected" : "")%>>Todo</option>
-			<option value="warning"
-				<%=(filter.equals("warning") ? "selected" : "")%>>Alertas y
-				errores</option>
-			<option value="error" <%=(filter.equals("error") ? "selected" : "")%>>Sólo
-				errores</option>
-		</select> <label for="date_from">Desde: </label> <input id="date_from"
-			type="date" name="date_from" value="<%=date_from%>" /> <label
-			for="date_to">Desde: </label> <input id="date_to" type="date"
-			name="date_to" value="<%=date_to%>" />
-		<button type="submit">Actualizar</button>
-		<button onclick="previous()">Anterior</button>
-		<button onclick="next()">Siguiente</button>
-		<button onclick="today()">Hoy</button>
-	</form>
-	<table>
-		<%
-			int line = 0;
-			for (AuditEvent ev : events) {
-				out.print("<tr><td>" + ev.getLevel() + "</td><td>" + dfdt.format(ev.getDateTime()) + "</td><td>"
-						+ ev.getSType() + "</td><td>"
-						+ (ev.getUser() == null ? "" : ev.getUser().getName())
-						+ "</td><td>" + (ev.getLocation() == null ? "" : ev.getLocation().getName()) + "</td><td>");
-				if (ev.getDetail() != null) {
-					out.print("<div class='tooltip'>Detalles<span class='tooltiptext'>"
-							+ ev.getDetail().replaceAll("\n", "<br />") + "</span></div>");
-				}
-				out.print("</td></tr>\n");
-			}
-		%>
-	</table>
+<!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <span class="navbar-brand">Agencia de Cobranza</span>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="userlist.jsp">Mantenimiento de usuarios</a></li>
+            <li class="active"><a href="parkinglist.jsp">Reporte de estacionamientos</a></li>
+            <li><a href="auditor.jsp">Reporte de auditoria</a></li>
+            <li><a href="logout">Cerrar Sesión</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+    
+		
+    <div class="container theme-showcase" role="main">
+		<form method="post" action="auditor.jsp">
+			<!-- Main jumbotron for a primary marketing message or call to action -->
+		    <div class="jumbotron">
+				<h2 class=>Informe de auditoria</h2>
+				<br/><br/>
+				<label for="filter">Estado </label> 
+				<select id="filter" name="filter" onchange="this.form.submit()">
+					<option value="info" <%=(filter.equals("info") ? "selected" : "")%>>Todo</option>
+					<option value="warning"
+						<%=(filter.equals("warning") ? "selected" : "")%>>Alertas y
+						errores</option>
+					<option value="error" <%=(filter.equals("error") ? "selected" : "")%>>Sólo
+						errores</option>
+				</select> 
+				<label for="date_from">Desde </label> 
+				<input id="date_from" type="date" name="date_from" value="<%=date_from%>" /> 
+				<label for="date_to">Hasta </label> 
+				<input id="date_to" type="date" name="date_to" value="<%=date_to%>" />
+					
+				<button type="submit" class="btn btn-default" aria-label="Left Align">
+				  <span class="fa fa-refresh" aria-hidden="true"></span>
+				</button>
+				<button type="button" class="btn btn-default" aria-label="Left Align" onclick="previous()">
+				  <span class="fa fa-caret-square-o-left" aria-hidden="true"></span>
+				</button>
+				<button type="button" class="btn btn-default" aria-label="Left Align" onclick="today()">
+				  <span class="fa fa-calendar" aria-hidden="true"></span>
+				</button>
+				<button type="button" class="btn btn-default" aria-label="Left Align" onclick="next()">
+				  <span class="fa fa-caret-square-o-right" aria-hidden="true"></span>
+				</button>
+			</div>
+			
+			<div id="container">
+				<table id="table" class="table table-striped">
+				<thead>
+					<tr>
+						<th>Nivel</th>
+						<th>Fecha/Hora</th>
+						<th>Tipo</th>
+						<th>Usuario</th>
+						<th>Ubicacion</th>
+						<th>Detalle</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%
+					int line = 0;
+					for (AuditEvent ev : events) {
+						out.print("<tr><td>" + ev.getLevel() + "</td><td>" + dfdt.format(ev.getDateTime()) + "</td><td>"
+								+ ev.getSType() + "</td><td>"
+								+ (ev.getUser() == null ? "" : ev.getUser().getName())
+								+ "</td><td>" + (ev.getLocation() == null ? "" : ev.getLocation().getName()) + "</td><td>");
+						if (ev.getDetail() != null) {
+							out.print("<div class='tooltip'>Detalles<span class='tooltiptext'>"
+									+ ev.getDetail().replaceAll("\n", "<br />") + "</span></div>");
+						}
+						out.print("</td></tr>\n");
+					}
+				%>
+				</tbody>
+				</table>
+			</div>
+		</form>
+	</div>
 </body>
 </html>
