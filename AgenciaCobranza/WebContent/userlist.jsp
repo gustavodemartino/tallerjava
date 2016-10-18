@@ -111,8 +111,8 @@ function setSelectedUser(userId) {
 										<%
 											for (User user : users) {
 												String onclick = "'setSelectedUser(" + user.getId() + ")'";
-												String btnAdmin = "<button class='demo-delete-row btn btn-default btn-xs btn-icon fa fa-user-plus' disabled></button>";
-												String btnUser = "<button class='demo-delete-row btn btn-default btn-xs btn-icon fa fa-user' disabled></button>";
+												String btnAdmin = "<span style='width:30px' class='demo-delete-row btn btn-default btn-xs btn-icon fa fa-user-plus'></span>";
+												String btnUser = "<span style='width:30px' class='demo-delete-row btn btn-default btn-xs btn-icon fa fa-user'></span>";
 										%>
 										<tr>
 											<td><%=(user.getIsAdmin() ? btnAdmin : btnUser) + " " + user.getShortName()%></td>
@@ -121,14 +121,12 @@ function setSelectedUser(userId) {
 												<%
 													List<Location> permissions = UserManager.getInstance().getPermissions(user.getId());
 														for (Location l : permissions) {
-												%> <%="<button class='demo-delete-row btn btn-default btn-xs'>" + l.getName() + "</button>"%>
+												%> <%="<span class='demo-delete-row btn btn-default btn-xs'>" + l.getName() + "</span>"%>
 												<%
 													}
 												%>
 											</td>
-											<td><button
-													class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-pencil"
-													onclick=<%=onclick%> type="submit"></button></td>
+											<td><button type="submit" class="demo-delete-row btn btn-default btn-xs btn-icon fa fa-pencil" onclick=<%= onclick %>></button></td>
 										</tr>
 										<%
 											}

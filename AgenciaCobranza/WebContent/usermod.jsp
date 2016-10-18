@@ -109,13 +109,13 @@
 				
 				<button class="btn btn-lg btn-primary btn-block" id="btnAdd" type="submit"><%=button%></button>
 
-			<%=message%>
+			<p class="mensajeError"> <%=message%> </p>
 		</form>
       </div>
     </div>
     
     <div class="container">
-	<h2>Permisos</h2>
+	<h2>Asignación de permisos</h2>
 	<form method="post" action="permit_user">
 		<input id="action" name="action" type="hidden" value="none">
 		<div class="form-group">
@@ -130,32 +130,32 @@
 				</select>
 			</div>
 			<div style="float:left;padding-left: 3%;" class="form-group">
-				<p>Acciones</p>
+				<p>&nbsp;</p>
 				<table>
 					<tr>
 						<td align="center">
-							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addPermission()" style="width: 40px;height: 40px;">
+							<button type="submit" class="btn btn-default" aria-label="Left Align" onclick="addPermission()" style="width: 40px;height: 40px;">
 							  <span class="fa fa-angle-right" aria-hidden="true"></span>
 							</button>
 						</td>
 					</tr>
 					<tr>
 						<td align="center">
-							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="addAllPermissions()" style="width: 40px;height: 40px;">
+							<button type="submit" class="btn btn-default" aria-label="Left Align" onclick="addAllPermissions()" style="width: 40px;height: 40px;">
 							  <span class="fa fa-angle-double-right" aria-hidden="true"></span>
 							</button>
 						</td>
 					</tr>
 					<tr>
 						<td align="center">
-							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="removePermission()" style="width: 40px;height: 40px;">
+							<button type="submit" class="btn btn-default" aria-label="Left Align" onclick="removePermission()" style="width: 40px;height: 40px;">
 							  <span class="fa fa-angle-left" aria-hidden="true"></span>
 							</button>
 						</td>
 					</tr>
 					<tr>
 						<td align="center">
-							<button type="button" class="btn btn-default" aria-label="Left Align" onclick="removeAllPermissions()" style="width: 40px;height: 40px;">
+							<button type="submit" class="btn btn-default" aria-label="Left Align" onclick="removeAllPermissions()" style="width: 40px;height: 40px;">
 							  <span class="fa fa-angle-double-left" aria-hidden="true"></span>
 							</button>
 						</td>

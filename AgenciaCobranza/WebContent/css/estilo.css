@@ -18,3 +18,9 @@ body {
 .theme-showcase .navbar .container {
   width: auto;
 }
+
+.mensajeError {
+	color:red;
+	font-size:15px;
+	margin-top:10px;
+}
