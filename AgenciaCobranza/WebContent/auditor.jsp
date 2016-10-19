@@ -107,8 +107,8 @@ function showDetail(puDetail) {
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="userlist.jsp">Mantenimiento de usuarios</a></li>
-            <li class="active"><a href="parkinglist.jsp">Reporte de estacionamientos</a></li>
-            <li><a href="auditor.jsp">Reporte de auditoria</a></li>
+            <li><a href="parkinglist.jsp">Reporte de estacionamientos</a></li>
+            <li class="active"><a href="auditor.jsp">Reporte de auditoria</a></li>
             <li><a href="logout">Cerrar Sesión</a></li>
           </ul>
         </div><!--/.nav-collapse -->

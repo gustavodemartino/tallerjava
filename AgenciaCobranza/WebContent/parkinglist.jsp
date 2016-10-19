@@ -120,6 +120,9 @@ function update(){
 	document.getElementById("firstrecord").value = 0	
 	document.getElementById("parking").submit()
 }
+function reporte(){
+	document.getElementById("report").submit()
+}
 </script>
 </head>
 <body>
@@ -150,6 +153,14 @@ function update(){
 		
     <div class="container theme-showcase" role="main">
     
+    	<form id="report" method="post" action="reportServlet">
+    		<input type="hidden" id="filter" name="filter" value="<%=filter%>"/>
+			<input type="hidden" id="date_from" name="date_from" value="<%=date_from%>"/>
+			<input type="hidden" id="date_to" name="date_to" value="<%=date_to%>"/>
+			<input type="hidden" id="firstrecord" name="firstrecord" value="<%=nFirstRecord%>"/>
+			<input type="hidden" id="show" name="show" value="<%=show%>"/>
+    	</form>
+     
 	    <form id="parking" method="post" action="parkinglist.jsp">
 	    
 	      <!-- Main jumbotron for a primary marketing message or call to action -->
@@ -198,6 +209,9 @@ function update(){
 		  </div>
 	    	 	
 		<div id="container">
+			<button type="button" class="btn btn-default" aria-label="Left Align" onclick="reporte()" style="float:right;margin-bottom:10px">
+			  <span class="fa fa-file-excel-o" aria-hidden="true"></span>
+			</button>
 			<table id="table" class="table table-striped">
 				<thead>
 					<tr>
